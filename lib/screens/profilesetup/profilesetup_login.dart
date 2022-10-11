@@ -106,11 +106,17 @@ class _AddProfileLoginPageState extends State<AddProfileLoginPage> {
               controller:
                   email, //Form data lastname collected and sent to database
               keyboardType: TextInputType.emailAddress,
-              decoration: (const InputDecoration(
-                  labelText: 'Email',
-                  icon: Padding(
-                      padding: EdgeInsets.only(top: 15.0),
-                      child: Icon(Icons.email)))),
+              style: Theme.of(context).textTheme.bodyText2,
+              decoration: (InputDecoration(
+                  hintText: "Email",
+                  contentPadding:
+                      Theme.of(context).inputDecorationTheme.contentPadding,
+                  border: Theme.of(context).inputDecorationTheme.border,
+                  focusedBorder:
+                      Theme.of(context).inputDecorationTheme.focusedBorder,
+                  enabledBorder:
+                      Theme.of(context).inputDecorationTheme.enabledBorder,
+                  floatingLabelBehavior: FloatingLabelBehavior.never)),
               inputFormatters: [
                 //Only allows the input of letters a-z and A-Z and @,.-
                 FilteringTextInputFormatter.allow(RegExp('[a-zA-Z0-9@,.-]'))
@@ -129,11 +135,17 @@ class _AddProfileLoginPageState extends State<AddProfileLoginPage> {
             ListTile(
               title: TextFormField(
                 keyboardType: TextInputType.visiblePassword,
-                decoration: (const InputDecoration(
-                    labelText: 'Password',
-                    icon: Padding(
-                        padding: EdgeInsets.only(top: 15.0),
-                        child: Icon(Icons.lock)))),
+                style: Theme.of(context).textTheme.bodyText2,
+                decoration: (InputDecoration(
+                    hintText: "Password",
+                    contentPadding:
+                        Theme.of(context).inputDecorationTheme.contentPadding,
+                    border: Theme.of(context).inputDecorationTheme.border,
+                    focusedBorder:
+                        Theme.of(context).inputDecorationTheme.focusedBorder,
+                    enabledBorder:
+                        Theme.of(context).inputDecorationTheme.enabledBorder,
+                    floatingLabelBehavior: FloatingLabelBehavior.never)),
                 inputFormatters: [
                   //Password cannnot use " or ' in order to prevent SQL injection
                   FilteringTextInputFormatter.allow(
