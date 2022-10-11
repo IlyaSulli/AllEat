@@ -38,13 +38,13 @@ class HomePage extends StatelessWidget {
                     );
                   } else {
                     return Text(
-                      'Are you hungry?',
+                      'Profile Unknown.',
                       style: Theme.of(context).textTheme.headline2,
                     );
                   }
                 } else {
                   return Text(
-                    'Hungry?.',
+                    'Loading Profile...',
                     style: Theme.of(context).textTheme.headline2,
                   );
                 }
