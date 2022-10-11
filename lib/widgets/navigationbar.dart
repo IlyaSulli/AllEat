@@ -2,7 +2,6 @@ import 'package:alleat/screens/navigationscreens/browse.dart';
 import 'package:alleat/screens/navigationscreens/foryou.dart';
 import 'package:alleat/screens/navigationscreens/homepage.dart';
 import 'package:alleat/screens/navigationscreens/profiles.dart';
-import 'package:alleat/theme/theme.dart';
 import 'package:flutter/material.dart';
 
 class Navigation extends StatefulWidget {

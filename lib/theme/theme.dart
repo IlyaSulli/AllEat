@@ -1,5 +1,7 @@
 library globals;
 
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -52,27 +54,27 @@ class ThemeClass {
         headline1: TextStyle(
             color: textLight,
             fontFamily: 'Satoshi',
-            fontWeight: FontWeight.bold,
-            fontSize: 36),
+            fontWeight: FontWeight.w800,
+            fontSize: 32),
         headline2: TextStyle(
             color: mono900,
             fontFamily: 'Satoshi',
-            fontWeight: FontWeight.w600,
-            fontSize: 32),
+            fontWeight: FontWeight.w700,
+            fontSize: 28),
         headline3: TextStyle(
             color: mono800,
             fontFamily: 'Satoshi',
-            fontWeight: FontWeight.w400,
-            fontSize: 28),
+            fontWeight: FontWeight.w600,
+            fontSize: 24),
         headline4: TextStyle(
             color: mono700,
             fontFamily: 'Satoshi',
-            fontWeight: FontWeight.w900,
-            fontSize: 24),
+            fontWeight: FontWeight.w500,
+            fontSize: 21),
         headline5: TextStyle(
             color: mono500,
             fontFamily: 'Satoshi',
-            fontWeight: FontWeight.w500,
+            fontWeight: FontWeight.w600,
             fontSize: 20),
         headline6: TextStyle(
             color: mono400,
@@ -87,22 +89,65 @@ class ThemeClass {
   );
 
   static ThemeData darkTheme = ThemeData(
-    primaryColor: primaryDark,
-    colorScheme: ColorScheme.fromSwatch().copyWith(
-      secondary: secondaryDark,
-      error: errorDark,
-    ),
-    bottomNavigationBarTheme: BottomNavigationBarThemeData(
-        backgroundColor: mono800, unselectedItemColor: mono600),
-    appBarTheme: AppBarTheme(backgroundColor: primaryDark),
-    backgroundColor: bgDark,
-    scaffoldBackgroundColor: bgDark,
-    fontFamily: 'Satoshi',
-    buttonTheme: ButtonThemeData(
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-        padding:
-            const EdgeInsets.only(top: 18, bottom: 18, left: 30, right: 30)),
-  );
+      primaryColor: primaryDark,
+      colorScheme: ColorScheme.fromSwatch().copyWith(
+        secondary: secondaryDark,
+        error: errorDark,
+      ),
+      bottomNavigationBarTheme: BottomNavigationBarThemeData(
+          backgroundColor: mono800, unselectedItemColor: mono600),
+      appBarTheme: AppBarTheme(backgroundColor: mono800),
+      backgroundColor: bgDark,
+      scaffoldBackgroundColor: bgDark,
+      textTheme: TextTheme(
+          headline1: TextStyle(
+              color: textDark,
+              fontFamily: 'Satoshi',
+              fontWeight: FontWeight.w800,
+              fontSize: 32),
+          headline2: TextStyle(
+              color: mono050,
+              fontFamily: 'Satoshi',
+              fontWeight: FontWeight.w700,
+              fontSize: 28),
+          headline3: TextStyle(
+              color: mono100,
+              fontFamily: 'Satoshi',
+              fontWeight: FontWeight.w600,
+              fontSize: 24),
+          headline4: TextStyle(
+              color: mono200,
+              fontFamily: 'Satoshi',
+              fontWeight: FontWeight.w500,
+              fontSize: 21),
+          headline5: TextStyle(
+              color: mono300,
+              fontFamily: 'Satoshi',
+              fontWeight: FontWeight.w500,
+              fontSize: 20),
+          headline6: TextStyle(
+              color: mono400,
+              fontFamily: 'Satoshi',
+              fontWeight: FontWeight.w600,
+              fontSize: 16),
+          bodyText1: TextStyle(
+              color: textDark,
+              fontWeight: FontWeight.w600,
+              fontFamily: 'NotoSans',
+              fontSize: 14)),
+      buttonTheme: ButtonThemeData(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+          padding:
+              const EdgeInsets.only(top: 18, bottom: 18, left: 30, right: 30)),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+              primary: primaryDark,
+              minimumSize: const Size.fromHeight(50),
+              textStyle: TextStyle(
+                  color: mono900,
+                  fontFamily: 'Satoshi',
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16))));
   //If app theme is set to light
 }

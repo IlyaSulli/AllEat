@@ -202,9 +202,7 @@ class _ProfilePageState extends State<ProfilePage> {
         //At the bottom of the page, include a button that allows the user to add a new profile
         padding: const EdgeInsets.all(10),
         child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-              minimumSize: const Size.fromHeight(50),
-              primary: const Color(0xff5806FF)),
+          style: Theme.of(context).elevatedButtonTheme.style,
           onPressed: () {
             // Navigator.push(context,
             //     MaterialPageRoute(builder: (context) => const AddProfile()));

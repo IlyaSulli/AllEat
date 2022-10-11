@@ -1,7 +1,4 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatelessWidget {
@@ -39,13 +36,13 @@ class HomePage extends StatelessWidget {
                   } else {
                     return Text(
                       'Profile Unknown.',
-                      style: Theme.of(context).textTheme.headline2,
+                      style: Theme.of(context).textTheme.headline1,
                     );
                   }
                 } else {
                   return Text(
                     'Loading Profile...',
-                    style: Theme.of(context).textTheme.headline2,
+                    style: Theme.of(context).textTheme.headline1,
                   );
                 }
               },

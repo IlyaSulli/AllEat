@@ -77,9 +77,54 @@ flutter:
   fonts:
     - family: Satoshi
       fonts:
-        - asset: lib\assets\fonts\Satoshi-Variable.ttf
-        - asset: lib\assets\fonts\Satoshi-VariableItalic.ttf
+        - asset: lib\assets\fonts\Satoshi-Light.otf
+          weight: 300
+        - asset: lib\assets\fonts\Satoshi-LightItalic.otf
+          weight: 300
           style: italic
+        - asset: lib\assets\fonts\Satoshi-Regular.otf
+          weight: 400
+        - asset: lib\assets\fonts\Satoshi-Italic.otf
+          weight: 400
+          style: italic
+        - asset: lib\assets\fonts\Satoshi-Medium.otf
+          weight: 500
+        - asset: lib\assets\fonts\Satoshi-MediumItalic.otf
+          weight: 500
+          style: italic
+        - asset: lib\assets\fonts\Satoshi-Bold.otf
+          weight: 700
+        - asset: lib\assets\fonts\Satoshi-BoldItalic.otf
+          weight: 700
+          style: italic
+        - asset: lib\assets\fonts\Satoshi-Black.otf
+          weight: 800
+        - asset: lib\assets\fonts\Satoshi-BlackItalic.otf
+          weight: 800
+          style: italic
+    - family: NotoSans
+      fonts:
+        - asset: lib\assets\fonts\NotoSans-Light.ttf
+          weight: 300
+        - asset: lib\assets\fonts\NotoSans-LightItalic.ttf
+          weight: 300
+          style: italic
+        - asset: lib\assets\fonts\NotoSans-Regular.ttf
+          weight: 400
+        - asset: lib\assets\fonts\NotoSans-Italic.ttf
+          weight: 400
+          style: italic
+        - asset: lib\assets\fonts\NotoSans-Medium.ttf
+          weight: 500
+        - asset: lib\assets\fonts\NotoSans-MediumItalic.ttf
+          weight: 500
+          style: italic
+        - asset: lib\assets\fonts\NotoSans-SemiBold.ttf
+          weight: 600
+        - asset: lib\assets\fonts\NotoSans-SemiBoldItalic.ttf
+          weight: 600
+          style: italic
+
 
   # To add assets to your application, add an assets section, like this:
   # assets:

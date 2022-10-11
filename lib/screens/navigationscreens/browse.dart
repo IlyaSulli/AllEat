@@ -12,7 +12,12 @@ class BrowsePage extends StatefulWidget {
 class _BrowsePageState extends State<BrowsePage> {
   @override
   Widget build(BuildContext context) {
-    return const Text("Browse");
+    return Center(
+      child: Text(
+        'Browse',
+        style: Theme.of(context).textTheme.headline1,
+      ),
+    );
     //return SingleChildScrollView(
     //Enable scrollable screen
     //    child: Column(children: const [
