@@ -1,8 +1,8 @@
-import 'package:alleat/screens/main_app/browse.dart';
-import 'package:alleat/screens/main_app/favourites.dart';
-import 'package:alleat/screens/main_app/foryou.dart';
-import 'package:alleat/screens/main_app/homepage.dart';
-import 'package:alleat/screens/main_app/profiles.dart';
+import 'package:alleat/screens/navigationscreens/browse.dart';
+import 'package:alleat/screens/navigationscreens/foryou.dart';
+import 'package:alleat/screens/navigationscreens/homepage.dart';
+import 'package:alleat/screens/navigationscreens/profiles.dart';
+import 'package:alleat/theme/theme.dart';
 import 'package:flutter/material.dart';
 
 class Navigation extends StatefulWidget {
@@ -35,13 +35,10 @@ class _NavigationState extends State<Navigation> {
         onWillPop: () async => false,
         child: MaterialApp(
             title: "All Eat.",
-            theme: ThemeData(
-                scaffoldBackgroundColor: const Color(0xffFAFAFA),
-                primaryColor: const Color(0xff5806FF)),
+            theme: AppTheme.theme,
             home: Scaffold(
               appBar: AppBar(
                 title: const Text("All Eat."),
-                backgroundColor: const Color(0xff5806FF),
                 actions: [
                   //Top right action buttons on app bar
                   IconButton(
@@ -49,10 +46,10 @@ class _NavigationState extends State<Navigation> {
                       icon: const Icon(Icons.favorite_outline),
                       onPressed: () {
                         Navigator.of(context).pop();
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const FavouritesPage()));
+                        // Navigator.push(
+                        //     context,
+                        //     MaterialPageRoute(
+                        //         builder: (context) => const FavouritesPage()));
                       }),
                   //Top navigation bar icons
                   const Padding(

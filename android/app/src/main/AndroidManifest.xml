@@ -1,16 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.alleat">
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
    <application
-        android:label="All Eat."
+        android:label="alleat"
         android:name="${applicationName}"
-        android:icon="@mipmap/launcher_icon">
-        <meta-data android:name="com.google.android.geo.API_KEY"
-               android:value="AIzaSyCvnZrClS8PUbmZkw3nkLDovu_BEMaR9y0"/>
+        android:icon="@mipmap/alleaticon">
         <activity
             android:name=".MainActivity"
             android:exported="true"
