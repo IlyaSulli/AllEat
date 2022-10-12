@@ -1,6 +1,7 @@
 import 'package:alleat/screens/navigationscreens/profiles.dart';
 import 'package:alleat/screens/profilesetup/profilesetup.dart';
 import 'package:alleat/screens/profilesetup/profilesetup_login.dart';
+import 'package:alleat/screens/profilesetup/welcomescreen.dart';
 import 'package:alleat/services/localprofiles_service.dart';
 import 'package:alleat/widgets/genericlocading.dart';
 import 'package:alleat/widgets/navigationbar.dart';
@@ -46,7 +47,7 @@ class _SetupWrapperState extends State<SetupWrapper> {
             bool setup = snapshot.data ?? [] as bool; //Get data from Future
             if (setup == false) {
               //If setup is not complete
-              return const ProfileSetupExisting(); //Go to Setup page
+              return const ProfileSetupWelcome(); //Go to Setup page
             } else if (setup == true) {
               //If setup is complete
               return const Navigation(); //Go to main page

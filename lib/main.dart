@@ -1,6 +1,6 @@
 import 'package:alleat/screens/profilesetup/profilesetup_login.dart';
 import 'package:alleat/screens/setupverification.dart';
-
+import 'package:flutter/services.dart';
 import 'package:alleat/services/localprofiles_service.dart';
 import 'package:alleat/theme/theme.dart';
 import 'package:alleat/widgets/genericlocading.dart';
@@ -24,6 +24,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      //Force portrait mode
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     WidgetsFlutterBinding.ensureInitialized();
     getTheme();
     switch (globals.appthemepreference) {

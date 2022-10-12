@@ -1,9 +1,5 @@
 library globals;
-
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 dynamic appthemepreference = 0;
 
@@ -46,6 +42,8 @@ class ThemeClass {
   static Color primary200 = const Color(0xffC1A3FF);
   static Color primary100 = const Color(0xffD6C2FF);
   static Color primary050 = const Color(0xffEBE0FF);
+
+
 
   static ThemeData lightTheme = ThemeData(
 
