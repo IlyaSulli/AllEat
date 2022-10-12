@@ -1,4 +1,5 @@
 library globals;
+
 import 'package:flutter/material.dart';
 
 dynamic appthemepreference = 0;
@@ -12,7 +13,7 @@ class ThemeClass {
   static Color bgLight = const Color(0xffFAFAFA);
   static Color bottomAppBarLight = const Color(0xffffffff);
 
-  static Color primaryDark = const Color(0xffAD84FF);
+  static Color primaryDark = const Color(0xffC1A3FF);
   static Color secondaryDark = const Color(0xff8EE2C7);
   static Color successDark = const Color(0xff60F68A);
   static Color errorDark = const Color(0xffF2555F);
@@ -42,8 +43,6 @@ class ThemeClass {
   static Color primary200 = const Color(0xffC1A3FF);
   static Color primary100 = const Color(0xffD6C2FF);
   static Color primary050 = const Color(0xffEBE0FF);
-
-
 
   static ThemeData lightTheme = ThemeData(
 
@@ -118,10 +117,40 @@ class ThemeClass {
               const EdgeInsets.only(top: 18, bottom: 18, left: 30, right: 30)),
       elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
+              padding: const EdgeInsets.only(
+                  top: 15, bottom: 15, left: 30, right: 30),
               primary: primaryLight,
-              minimumSize: const Size.fromHeight(50),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5), // <-- Radius
+              ),
+              // minimumSize: const Size.fromHeight(50),
+              onPrimary: bgLight,
               textStyle: TextStyle(
-                  color: mono050,
+                  color: bgLight,
+                  fontFamily: 'Satoshi',
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16))),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+          style: OutlinedButton.styleFrom(
+              padding: const EdgeInsets.only(
+                  top: 15, bottom: 15, left: 30, right: 30),
+              primary: primaryLight,
+              side: BorderSide(color: primaryLight, width: 3),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5), // <-- Radius
+              ),
+              textStyle: TextStyle(
+                  color: primaryLight,
+                  fontFamily: 'Satoshi',
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16))),
+      textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(
+              padding: const EdgeInsets.only(
+                  top: 18, bottom: 18, left: 30, right: 30),
+              primary: primaryLight,
+              textStyle: TextStyle(
+                  color: primaryLight,
                   fontFamily: 'Satoshi',
                   fontWeight: FontWeight.w600,
                   fontSize: 16))),
@@ -220,15 +249,42 @@ class ThemeClass {
               const EdgeInsets.only(top: 18, bottom: 18, left: 30, right: 30)),
       elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.all(18),
+              padding: const EdgeInsets.only(
+                  top: 15, bottom: 15, left: 30, right: 30),
               primary: primaryDark,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10), // <-- Radius
+                borderRadius: BorderRadius.circular(5), // <-- Radius
               ),
-              minimumSize: const Size.fromHeight(50),
-              onPrimary: mono000,
+              // minimumSize: const Size.fromHeight(50),
+              onPrimary: bgDark,
               textStyle: TextStyle(
                   color: mono900,
+                  fontFamily: 'Satoshi',
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16))),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+          style: OutlinedButton.styleFrom(
+              padding: const EdgeInsets.only(
+                  top: 15, bottom: 15, left: 30, right: 30),
+              primary: primaryDark,
+              side: BorderSide(color: primaryDark, width: 3),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5), // <-- Radius
+              ),
+              // minimumSize: const Size.fromHeight(50),
+
+              textStyle: TextStyle(
+                  color: primaryDark,
+                  fontFamily: 'Satoshi',
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16))),
+      textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(
+              padding: const EdgeInsets.only(
+                  top: 18, bottom: 18, left: 30, right: 30),
+              primary: primaryDark,
+              textStyle: TextStyle(
+                  color: primaryDark,
                   fontFamily: 'Satoshi',
                   fontWeight: FontWeight.w600,
                   fontSize: 16))),

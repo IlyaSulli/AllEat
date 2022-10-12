@@ -1,10 +1,6 @@
-import 'package:alleat/screens/profilesetup/profilesetup_login.dart';
 import 'package:alleat/screens/setupverification.dart';
 import 'package:flutter/services.dart';
-import 'package:alleat/services/localprofiles_service.dart';
 import 'package:alleat/theme/theme.dart';
-import 'package:alleat/widgets/genericlocading.dart';
-import 'package:alleat/widgets/navigationbar.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:alleat/theme/theme.dart' as globals;
@@ -61,34 +57,4 @@ class MyApp extends StatelessWidget {
           const SetupWrapper(), //SetupWrapper(), //Check if setup is complete for app (reference)
     );
   }
-
-  // switch (globals.appthemepreference) {
-  //   case 1:
-  //     return MaterialApp(
-  //       //Create main app
-  //       title: 'AllEat.',
-  //       themeMode: ThemeMode.light,
-  //       theme: ThemeClass.lightTheme,
-  //       home:
-  //           const Navigation(), //SetupWrapper(), //Check if setup is complete for app (reference)
-  //     );
-  //   case 2:
-  //     return MaterialApp(
-  //       //Create main app
-  //       title: 'AllEat.',
-  //       themeMode: ThemeMode.dark,
-  //       theme: ThemeClass.darkTheme,
-  //       home:
-  //           , //SetupWrapper(), //Check if setup is complete for app (reference)
-  //     );
-  // }
-  // return MaterialApp(
-  //   //Create main app
-  //   title: 'AllEat.',
-  //   themeMode: ThemeMode.system,
-  //   theme: ThemeClass.lightTheme,
-  //   darkTheme: ThemeClass.darkTheme,
-  //   home:
-  //       setupWrapper, //SetupWrapper(), //Check if setup is complete for app (reference)
-  // );
 }

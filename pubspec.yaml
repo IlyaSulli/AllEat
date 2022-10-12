@@ -77,6 +77,8 @@ flutter:
   assets:
     - lib/assets/images/screens/welcomescreen/welcomescreenfood.jpg
     - lib/assets/images/logo/logodark.png
+    - lib/assets/images/screens/profilesetup/login-illustration-light.png
+    - lib/assets/images/screens/profilesetup/login-illustration-dark.png
 
   fonts:
     - family: Satoshi

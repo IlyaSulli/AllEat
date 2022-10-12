@@ -19,6 +19,7 @@ class _ProfileSetupWelcome extends State<ProfileSetupWelcome> {
 
       body: Stack(children: [
         Image.asset(
+          //Fullscreen image of food
           'lib/assets/images/screens/welcomescreen/welcomescreenfood.jpg',
           fit: BoxFit.cover,
           height: double.infinity,
@@ -28,6 +29,7 @@ class _ProfileSetupWelcome extends State<ProfileSetupWelcome> {
         Column(
           children: [
             Padding(
+                //Image of All Eat logo
                 padding: const EdgeInsets.only(
                     top: 70, left: 40, right: 40, bottom: 200),
                 child: Image.asset(
@@ -39,24 +41,27 @@ class _ProfileSetupWelcome extends State<ProfileSetupWelcome> {
         ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment
+              .end, //Create content at the bottom of the screen
           children: [
             Padding(
                 padding: const EdgeInsets.only(left: 10, right: 10),
                 child: Container(
+                  //Bottom container with login and register actions
                   decoration: BoxDecoration(
                       color: Theme.of(context).backgroundColor,
                       borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(20),
-                          topRight: Radius.circular(20))),
+                          topRight: Radius.circular(
+                              20))), // Round the top corners of container
                   width: double.infinity,
                   padding: const EdgeInsets.only(left: 20, right: 20),
                   child: Column(children: [
                     const SizedBox(
                       height: 40,
                     ),
-                    Text("Let's Get Started",
-                        style: Theme.of(context).textTheme.headline1),
+                    Text("Let's Get Started.",
+                        style: Theme.of(context).textTheme.headline2),
                     Padding(
                         padding: const EdgeInsets.only(
                             left: 50, right: 50, top: 10, bottom: 10),
@@ -68,14 +73,35 @@ class _ProfileSetupWelcome extends State<ProfileSetupWelcome> {
                     const SizedBox(
                       height: 20,
                     ),
-                    ElevatedButton(
-                        style: Theme.of(context).elevatedButtonTheme.style,
-                        onPressed: () => (Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    const AddProfileLogin()))),
-                        child: const Text("Login")),
+                    Padding(
+                      //Button actions
+                      padding: const EdgeInsets.only(left: 20, right: 20),
+                      child: Column(children: [
+                        SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                                style:
+                                    Theme.of(context).elevatedButtonTheme.style,
+                                onPressed: () => (Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const AddProfileLogin()))),
+                                child: const Text("Create a profile"))),
+                        SizedBox(
+                            width: 250,
+                            child: TextButton(
+                                style: Theme.of(context).textButtonTheme.style,
+                                onPressed: () => (Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const AddProfileLogin()))),
+                                child: const Align(
+                                    alignment: Alignment.center,
+                                    child: Text("I already have a profile"))))
+                      ]),
+                    ),
                     const SizedBox(
                       height: 40,
                     ),

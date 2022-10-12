@@ -16,10 +16,7 @@ class _ProfileSetupExisting extends State<ProfileSetupExisting> {
     return Scaffold(
       //Create new screen
       resizeToAvoidBottomInset: false, //Allow resize
-      appBar: AppBar(
-        title: const Text('Add new profile.'),
-        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
-      ),
+
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
