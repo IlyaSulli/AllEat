@@ -92,7 +92,7 @@ class _AddProfileLoginPageState extends State<AddProfileLoginPage> {
     var brightness = MediaQuery.of(context).platformBrightness;
     bool darkModeOn = brightness == Brightness.dark;
     return SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
+        physics: const PageScrollPhysics(),
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

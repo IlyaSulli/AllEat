@@ -6,7 +6,7 @@ dynamic appthemepreference = 0;
 
 class ThemeClass {
   static Color primaryLight = const Color(0xff5806FF);
-  static Color secondaryLight = const Color(0xff33C496);
+  static Color secondaryLight = const Color(0xffAD84FF);
   static Color successLight = const Color(0xff07852A);
   static Color errorLight = const Color(0xffAF0E17);
   static Color textLight = const Color(0xff1A1A1A);
@@ -14,7 +14,7 @@ class ThemeClass {
   static Color bottomAppBarLight = const Color(0xffffffff);
 
   static Color primaryDark = const Color(0xffC1A3FF);
-  static Color secondaryDark = const Color(0xff8EE2C7);
+  static Color secondaryDark = const Color(0xffAD84FF);
   static Color successDark = const Color(0xff60F68A);
   static Color errorDark = const Color(0xffF2555F);
   static Color textDark = const Color(0xffEAEAEA);
