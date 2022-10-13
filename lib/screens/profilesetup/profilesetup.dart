@@ -30,7 +30,8 @@ class _ProfileSetupExisting extends State<ProfileSetupExisting> {
                       onPressed: () => (Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const AddProfileLogin()))),
+                              builder: (context) =>
+                                  const AddProfileLoginPage()))),
                       child: const Text("Login"))),
             ],
           )

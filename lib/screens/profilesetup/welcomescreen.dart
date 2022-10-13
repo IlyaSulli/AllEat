@@ -1,3 +1,4 @@
+import 'package:alleat/screens/profilesetup/profilesetup_create.dart';
 import 'package:alleat/screens/profilesetup/profilesetup_login.dart';
 import 'package:flutter/material.dart';
 
@@ -86,7 +87,7 @@ class _ProfileSetupWelcome extends State<ProfileSetupWelcome> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            const AddProfileLogin()))),
+                                            const AddProfileCreationPageName()))),
                                 child: const Text("Create a profile"))),
                         SizedBox(
                             width: 250,
@@ -96,7 +97,7 @@ class _ProfileSetupWelcome extends State<ProfileSetupWelcome> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            const AddProfileLogin()))),
+                                            const AddProfileLoginPage()))),
                                 child: const Align(
                                     alignment: Alignment.center,
                                     child: Text("I already have a profile"))))
