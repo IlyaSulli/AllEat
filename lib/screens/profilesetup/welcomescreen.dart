@@ -100,7 +100,10 @@ class _ProfileSetupWelcome extends State<ProfileSetupWelcome> {
                                             const AddProfileLoginPage()))),
                                 child: const Align(
                                     alignment: Alignment.center,
-                                    child: Text("I already have a profile"))))
+                                    child: Text(
+                                      "I already have a profile",
+                                      textAlign: TextAlign.center,
+                                    ))))
                       ]),
                     ),
                     const SizedBox(

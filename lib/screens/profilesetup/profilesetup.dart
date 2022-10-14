@@ -24,7 +24,7 @@ class _ProfileSetupExisting extends State<ProfileSetupExisting> {
             //Create 2 buttons which allows you to either create a new profile or login with an existing profile
             children: [
               Padding(
-                  padding: EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(20),
                   child: ElevatedButton(
                       style: Theme.of(context).elevatedButtonTheme.style,
                       onPressed: () => (Navigator.push(

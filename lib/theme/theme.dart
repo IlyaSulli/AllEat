@@ -117,14 +117,11 @@ class ThemeClass {
               const EdgeInsets.only(top: 18, bottom: 18, left: 30, right: 30)),
       elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.only(
+              foregroundColor: bgLight, backgroundColor: primaryLight, padding: const EdgeInsets.only(
                   top: 15, bottom: 15, left: 30, right: 30),
-              primary: primaryLight,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(5), // <-- Radius
               ),
-              // minimumSize: const Size.fromHeight(50),
-              onPrimary: bgLight,
               textStyle: TextStyle(
                   color: bgLight,
                   fontFamily: 'Satoshi',
@@ -132,9 +129,8 @@ class ThemeClass {
                   fontSize: 16))),
       outlinedButtonTheme: OutlinedButtonThemeData(
           style: OutlinedButton.styleFrom(
-              padding: const EdgeInsets.only(
+              foregroundColor: primaryLight, padding: const EdgeInsets.only(
                   top: 15, bottom: 15, left: 30, right: 30),
-              primary: primaryLight,
               side: BorderSide(color: primaryLight, width: 3),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(5), // <-- Radius
@@ -146,9 +142,8 @@ class ThemeClass {
                   fontSize: 16))),
       textButtonTheme: TextButtonThemeData(
           style: TextButton.styleFrom(
-              padding: const EdgeInsets.only(
+              foregroundColor: primaryLight, padding: const EdgeInsets.only(
                   top: 18, bottom: 18, left: 30, right: 30),
-              primary: primaryLight,
               textStyle: TextStyle(
                   color: primaryLight,
                   fontFamily: 'Satoshi',
@@ -249,14 +244,11 @@ class ThemeClass {
               const EdgeInsets.only(top: 18, bottom: 18, left: 30, right: 30)),
       elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.only(
+              foregroundColor: bgDark, backgroundColor: primaryDark, padding: const EdgeInsets.only(
                   top: 15, bottom: 15, left: 30, right: 30),
-              primary: primaryDark,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(5), // <-- Radius
               ),
-              // minimumSize: const Size.fromHeight(50),
-              onPrimary: bgDark,
               textStyle: TextStyle(
                   color: mono900,
                   fontFamily: 'Satoshi',
@@ -264,9 +256,8 @@ class ThemeClass {
                   fontSize: 16))),
       outlinedButtonTheme: OutlinedButtonThemeData(
           style: OutlinedButton.styleFrom(
-              padding: const EdgeInsets.only(
+              foregroundColor: primaryDark, padding: const EdgeInsets.only(
                   top: 15, bottom: 15, left: 30, right: 30),
-              primary: primaryDark,
               side: BorderSide(color: primaryDark, width: 3),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(5), // <-- Radius
@@ -280,9 +271,8 @@ class ThemeClass {
                   fontSize: 16))),
       textButtonTheme: TextButtonThemeData(
           style: TextButton.styleFrom(
-              padding: const EdgeInsets.only(
+              foregroundColor: primaryDark, padding: const EdgeInsets.only(
                   top: 18, bottom: 18, left: 30, right: 30),
-              primary: primaryDark,
               textStyle: TextStyle(
                   color: primaryDark,
                   fontFamily: 'Satoshi',

@@ -7,11 +7,11 @@ import 'package:alleat/theme/theme.dart' as globals;
 
 void main() {
   //Start App
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  MyApp({super.key});
+  const MyApp({super.key});
   Future getTheme() async {
     final prefs = await SharedPreferences.getInstance();
     final int? appTheme = prefs.getInt('appTheme');

@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 
 class ScreenBackButton extends StatelessWidget {
-  const ScreenBackButton({Key? key}) : super(key: key);
+  final dynamic data;
+  const ScreenBackButton({Key? key, this.data}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
         padding: const EdgeInsets.only(top: 50),
         child: TextButton.icon(
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () => Navigator.of(context).pop(data),
             label: Text(
               "Back",
               style: Theme.of(context)

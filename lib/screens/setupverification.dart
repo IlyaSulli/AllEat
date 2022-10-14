@@ -1,6 +1,3 @@
-import 'package:alleat/screens/navigationscreens/profiles.dart';
-import 'package:alleat/screens/profilesetup/profilesetup.dart';
-import 'package:alleat/screens/profilesetup/profilesetup_login.dart';
 import 'package:alleat/screens/profilesetup/welcomescreen.dart';
 import 'package:alleat/services/localprofiles_service.dart';
 import 'package:alleat/widgets/genericlocading.dart';
