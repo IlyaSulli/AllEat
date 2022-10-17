@@ -16,7 +16,7 @@ class _AddProfileCreationPageNameState
   final _formKey = GlobalKey<FormState>();
   static TextEditingController firstnameText = TextEditingController();
   static TextEditingController lastnameText = TextEditingController();
-  dynamic data = [firstnameText.text = "", lastnameText.text = ""];
+  final data = [firstnameText.text = "", lastnameText.text = ""];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -177,7 +177,13 @@ class _AddProfileCreationPageNameState
                                                 context,
                                                 MaterialPageRoute(
                                                     builder: (context) =>
-                                                        const AddProfileCreationPageEmail()));
+                                                        AddProfileCreationPageEmail(
+                                                          firstname:
+                                                              firstnameText
+                                                                  .text,
+                                                          lastname:
+                                                              lastnameText,
+                                                        )));
                                           } else {
                                             null;
                                           }
@@ -194,11 +200,14 @@ class _AddProfileCreationPageNameState
 }
 
 class AddProfileCreationPageEmail extends StatefulWidget {
-  const AddProfileCreationPageEmail({super.key});
+  const AddProfileCreationPageEmail({super.key, this.firstname, this.lastname});
+  final dynamic firstname;
+  final dynamic lastname;
 
   @override
   State<AddProfileCreationPageEmail> createState() =>
-      _AddProfileCreationPageEmailState();
+      _AddProfileCreationPageEmailState(
+          firstname: this.firstname, lastname: this.lastname);
 }
 
 class _AddProfileCreationPageEmailState
@@ -206,6 +215,9 @@ class _AddProfileCreationPageEmailState
   final _formKey = GlobalKey<FormState>();
   static TextEditingController emailText = TextEditingController();
   static TextEditingController confirmemailText = TextEditingController();
+  final dynamic firstname;
+  final dynamic lastname;
+  _AddProfileCreationPageEmailState({this.firstname, this.lastname});
   dynamic data = [emailText.text = "", confirmemailText.text = ""];
   @override
   Widget build(BuildContext context) {
@@ -367,12 +379,15 @@ class _AddProfileCreationPageEmailState
                                           if (_formKey.currentState!
                                               .validate()) {
                                             //If fields have no errors
-
                                             Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
                                                     builder: (context) =>
-                                                        const AddProfileCreationPagePassword()));
+                                                        AddProfileCreationPagePassword(
+                                                          email: emailText.text,
+                                                          firstname: firstname,
+                                                          lastname: lastname,
+                                                        )));
                                           } else {
                                             null;
                                           }
@@ -386,7 +401,11 @@ class _AddProfileCreationPageEmailState
 }
 
 class AddProfileCreationPagePassword extends StatefulWidget {
-  const AddProfileCreationPagePassword({super.key});
+  const AddProfileCreationPagePassword(
+      {super.key, this.email, this.firstname, this.lastname});
+  final dynamic email;
+  final dynamic firstname;
+  final dynamic lastname;
 
   @override
   State<AddProfileCreationPagePassword> createState() =>
