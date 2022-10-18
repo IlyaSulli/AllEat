@@ -23,7 +23,7 @@ class _AddProfileLoginPageState extends State<AddProfileLoginPage> {
   static dynamic encryptPassword;
   late dynamic profileInfoImport;
 
-  Future<void> loginUser() async {
+  Future<void> _loginUser() async {
     encryptPassword = await DataEncryption.encrpyt(password.text);
     var recievedServerData =
         await QueryServer.query("https://alleat.cpur.net/query/login.php", {
@@ -221,7 +221,7 @@ class _AddProfileLoginPageState extends State<AddProfileLoginPage> {
                             style: Theme.of(context).elevatedButtonTheme.style,
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
-                                loginUser();
+                                _loginUser();
                               }
                             },
                             child: const Text('Login to Profile'),

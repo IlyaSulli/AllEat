@@ -1,3 +1,7 @@
+import 'package:alleat/services/dataencryption.dart';
+import 'package:alleat/services/localprofiles_service.dart';
+import 'package:alleat/services/queryserver.dart';
+import 'package:alleat/services/setselected.dart';
 import 'package:alleat/widgets/elements/elements.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -179,8 +183,7 @@ class _AddProfileCreationPageNameState
                                                     builder: (context) =>
                                                         AddProfileCreationPageEmail(
                                                           firstname:
-                                                              firstnameText
-                                                                  .text,
+                                                              firstnameText,
                                                           lastname:
                                                               lastnameText,
                                                         )));
@@ -200,14 +203,14 @@ class _AddProfileCreationPageNameState
 }
 
 class AddProfileCreationPageEmail extends StatefulWidget {
-  const AddProfileCreationPageEmail({super.key, this.firstname, this.lastname});
+  const AddProfileCreationPageEmail({Key? key, this.firstname, this.lastname})
+      : super(key: key);
   final dynamic firstname;
   final dynamic lastname;
 
   @override
   State<AddProfileCreationPageEmail> createState() =>
-      _AddProfileCreationPageEmailState(
-          firstname: this.firstname, lastname: this.lastname);
+      _AddProfileCreationPageEmailState();
 }
 
 class _AddProfileCreationPageEmailState
@@ -215,9 +218,6 @@ class _AddProfileCreationPageEmailState
   final _formKey = GlobalKey<FormState>();
   static TextEditingController emailText = TextEditingController();
   static TextEditingController confirmemailText = TextEditingController();
-  final dynamic firstname;
-  final dynamic lastname;
-  _AddProfileCreationPageEmailState({this.firstname, this.lastname});
   dynamic data = [emailText.text = "", confirmemailText.text = ""];
   @override
   Widget build(BuildContext context) {
@@ -384,9 +384,13 @@ class _AddProfileCreationPageEmailState
                                                 MaterialPageRoute(
                                                     builder: (context) =>
                                                         AddProfileCreationPagePassword(
-                                                          email: emailText.text,
-                                                          firstname: firstname,
-                                                          lastname: lastname,
+                                                          email: emailText,
+                                                          confirmemail:
+                                                              confirmemailText,
+                                                          firstname:
+                                                              widget.firstname,
+                                                          lastname:
+                                                              widget.lastname,
                                                         )));
                                           } else {
                                             null;
@@ -401,11 +405,13 @@ class _AddProfileCreationPageEmailState
 }
 
 class AddProfileCreationPagePassword extends StatefulWidget {
-  const AddProfileCreationPagePassword(
-      {super.key, this.email, this.firstname, this.lastname});
-  final dynamic email;
-  final dynamic firstname;
-  final dynamic lastname;
+  AddProfileCreationPagePassword(
+      {Key? key, this.email, this.confirmemail, this.firstname, this.lastname})
+      : super(key: key);
+  dynamic email;
+  dynamic confirmemail;
+  dynamic firstname;
+  dynamic lastname;
 
   @override
   State<AddProfileCreationPagePassword> createState() =>
@@ -417,6 +423,7 @@ class _AddProfileCreationPagePasswordState
   final _formKey = GlobalKey<FormState>();
   static TextEditingController passwordText = TextEditingController();
   static TextEditingController confirmpasswordText = TextEditingController();
+  static dynamic encryptPassword;
   dynamic data = [passwordText.text = "", confirmpasswordText.text = ""];
   bool _passwordVisible = false;
   @override
@@ -614,12 +621,7 @@ class _AddProfileCreationPagePasswordState
                                           if (_formKey.currentState!
                                               .validate()) {
                                             //If fields have no errors
-
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        const AddProfileCreationPagePassword()));
+                                            _createProfile();
                                           } else {
                                             null;
                                           }
@@ -629,5 +631,64 @@ class _AddProfileCreationPagePasswordState
                     ))
               ]))
     ]));
+  }
+
+  Future<void> _createProfile() async {
+    encryptPassword = await DataEncryption.encrpyt(passwordText.text);
+    var recievedServerData =
+        await QueryServer.query("https://alleat.cpur.net/query/register.php", {
+      //Send data to login.php on server with email and encrypted password
+      "firstname": widget.firstname,
+      "lastname": widget.lastname,
+      "email": widget.email,
+      "password": encryptPassword
+    });
+    if (recievedServerData["error"] == true) {
+      setState(() {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(recievedServerData["message"] +
+                " : Failed to create profile. Please try again")));
+      });
+      passwordText.text = "";
+      confirmpasswordText.text = "";
+    } else {
+      try {
+        Map importedProfile = (recievedServerData["message"])["profile"];
+        bool trySelect = await SetSelected.selectProfile(importedProfile[0],
+            importedProfile[1], importedProfile[2], importedProfile[3]);
+        if (trySelect == false) {
+          setState(() {
+            ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text("Failed to select profile")));
+          });
+        } else {
+          await SQLiteLocalProfiles.createProfile(
+              importedProfile[0],
+              importedProfile[1],
+              importedProfile[2],
+              importedProfile[3],
+              importedProfile[4]);
+
+          passwordText.text = "";
+          confirmpasswordText.text = "";
+          widget.email = "";
+          widget.confirmemail = "";
+          widget.firstname = "";
+          widget.lastname = "";
+          setState(() {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Successflully created profile.')),
+            );
+            //   Navigator.push(context,
+            //       MaterialPageRoute(builder: (context) => const Navigation()));
+          });
+        }
+      } catch (e) {
+        setState(() {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text("ERROR: $e")));
+        });
+      }
+    }
   }
 }
