@@ -3,6 +3,7 @@ import 'package:alleat/services/localprofiles_service.dart';
 import 'package:alleat/services/queryserver.dart';
 import 'package:alleat/services/setselected.dart';
 import 'package:alleat/widgets/elements/elements.dart';
+import 'package:alleat/widgets/navigationbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:email_validator/email_validator.dart';
@@ -176,16 +177,17 @@ class _AddProfileCreationPageNameState
                                           if (_formKey.currentState!
                                               .validate()) {
                                             //If fields have no errors
-
+                                            Navigator.pop(context);
                                             Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
                                                     builder: (context) =>
                                                         AddProfileCreationPageEmail(
                                                           firstname:
-                                                              firstnameText,
+                                                              firstnameText
+                                                                  .text,
                                                           lastname:
-                                                              lastnameText,
+                                                              lastnameText.text,
                                                         )));
                                           } else {
                                             null;
@@ -379,14 +381,16 @@ class _AddProfileCreationPageEmailState
                                           if (_formKey.currentState!
                                               .validate()) {
                                             //If fields have no errors
+                                            Navigator.pop(context);
                                             Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
                                                     builder: (context) =>
                                                         AddProfileCreationPagePassword(
-                                                          email: emailText,
+                                                          email: emailText.text,
                                                           confirmemail:
-                                                              confirmemailText,
+                                                              confirmemailText
+                                                                  .text,
                                                           firstname:
                                                               widget.firstname,
                                                           lastname:
@@ -405,13 +409,13 @@ class _AddProfileCreationPageEmailState
 }
 
 class AddProfileCreationPagePassword extends StatefulWidget {
-  AddProfileCreationPagePassword(
+  const AddProfileCreationPagePassword(
       {Key? key, this.email, this.confirmemail, this.firstname, this.lastname})
       : super(key: key);
-  dynamic email;
-  dynamic confirmemail;
-  dynamic firstname;
-  dynamic lastname;
+  final dynamic email;
+  final dynamic confirmemail;
+  final dynamic firstname;
+  final dynamic lastname;
 
   @override
   State<AddProfileCreationPagePassword> createState() =>
@@ -653,7 +657,8 @@ class _AddProfileCreationPagePasswordState
       confirmpasswordText.text = "";
     } else {
       try {
-        Map importedProfile = (recievedServerData["message"])["profile"];
+        List importedProfile = (recievedServerData["message"])["profile"];
+
         bool trySelect = await SetSelected.selectProfile(importedProfile[0],
             importedProfile[1], importedProfile[2], importedProfile[3]);
         if (trySelect == false) {
@@ -671,16 +676,15 @@ class _AddProfileCreationPagePasswordState
 
           passwordText.text = "";
           confirmpasswordText.text = "";
-          widget.email = "";
-          widget.confirmemail = "";
-          widget.firstname = "";
-          widget.lastname = "";
+
           setState(() {
+            Navigator.pop(context);
+            Navigator.pop(context);
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('Successflully created profile.')),
             );
-            //   Navigator.push(context,
-            //       MaterialPageRoute(builder: (context) => const Navigation()));
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const Navigation()));
           });
         }
       } catch (e) {

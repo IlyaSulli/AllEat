@@ -31,6 +31,7 @@ class _AddProfileLoginPageState extends State<AddProfileLoginPage> {
       "email": email.text,
       "password": encryptPassword,
     });
+    print(recievedServerData["message"]["profile"]);
     if (recievedServerData["error"] == true) {
       setState(() {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -39,11 +40,11 @@ class _AddProfileLoginPageState extends State<AddProfileLoginPage> {
       });
       password.text = "";
     } else {
-      if ((recievedServerData["message"])["exists"] == true) {
-        Map importedProfile = (recievedServerData["message"])["profile"];
+      if (recievedServerData["exists"] == true) {
+        List importedProfile = recievedServerData["message"]["profile"];
         bool trySelect = await SetSelected.selectProfile(importedProfile[0],
             importedProfile[1], importedProfile[2], importedProfile[3]);
-        if (trySelect == false) {
+        if (recievedServerData["message"]["profile"] == null) {
           setState(() {
             ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text("Failed to select profile")));

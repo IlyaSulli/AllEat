@@ -12,11 +12,11 @@ class QueryServer {
         if (data["error"]) {
           return {"error": true, "message": "Error 500"};
         } else {
-          return {"error": false, "message": data["content"]};
+          return {"error": false, "message": data};
         }
       }
     } catch (e) {
-      return {"error": true, "message": "Error 400"};
+      return {"error": true, "message": "ERROR: $e"};
     }
   }
 }
