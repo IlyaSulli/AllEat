@@ -117,7 +117,9 @@ class ThemeClass {
               const EdgeInsets.only(top: 18, bottom: 18, left: 30, right: 30)),
       elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-              foregroundColor: bgLight, backgroundColor: primaryLight, padding: const EdgeInsets.only(
+              foregroundColor: bgLight,
+              backgroundColor: primaryLight,
+              padding: const EdgeInsets.only(
                   top: 15, bottom: 15, left: 30, right: 30),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(5), // <-- Radius
@@ -129,7 +131,8 @@ class ThemeClass {
                   fontSize: 16))),
       outlinedButtonTheme: OutlinedButtonThemeData(
           style: OutlinedButton.styleFrom(
-              foregroundColor: primaryLight, padding: const EdgeInsets.only(
+              foregroundColor: primaryLight,
+              padding: const EdgeInsets.only(
                   top: 15, bottom: 15, left: 30, right: 30),
               side: BorderSide(color: primaryLight, width: 3),
               shape: RoundedRectangleBorder(
@@ -142,7 +145,8 @@ class ThemeClass {
                   fontSize: 16))),
       textButtonTheme: TextButtonThemeData(
           style: TextButton.styleFrom(
-              foregroundColor: primaryLight, padding: const EdgeInsets.only(
+              foregroundColor: primaryLight,
+              padding: const EdgeInsets.only(
                   top: 18, bottom: 18, left: 30, right: 30),
               textStyle: TextStyle(
                   color: primaryLight,
@@ -244,7 +248,9 @@ class ThemeClass {
               const EdgeInsets.only(top: 18, bottom: 18, left: 30, right: 30)),
       elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-              foregroundColor: bgDark, backgroundColor: primaryDark, padding: const EdgeInsets.only(
+              foregroundColor: bgDark,
+              backgroundColor: primaryDark,
+              padding: const EdgeInsets.only(
                   top: 15, bottom: 15, left: 30, right: 30),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(5), // <-- Radius
@@ -256,7 +262,8 @@ class ThemeClass {
                   fontSize: 16))),
       outlinedButtonTheme: OutlinedButtonThemeData(
           style: OutlinedButton.styleFrom(
-              foregroundColor: primaryDark, padding: const EdgeInsets.only(
+              foregroundColor: primaryDark,
+              padding: const EdgeInsets.only(
                   top: 15, bottom: 15, left: 30, right: 30),
               side: BorderSide(color: primaryDark, width: 3),
               shape: RoundedRectangleBorder(
@@ -271,7 +278,8 @@ class ThemeClass {
                   fontSize: 16))),
       textButtonTheme: TextButtonThemeData(
           style: TextButton.styleFrom(
-              foregroundColor: primaryDark, padding: const EdgeInsets.only(
+              foregroundColor: primaryDark,
+              padding: const EdgeInsets.only(
                   top: 18, bottom: 18, left: 30, right: 30),
               textStyle: TextStyle(
                   color: primaryDark,
