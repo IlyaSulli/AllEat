@@ -1,6 +1,7 @@
 // import 'package:alleat/screens/add_profile/addprofile.dart';
 // import 'package:alleat/screens/fresh_app/fresh_profile.dart';
 // import 'package:alleat/services/sqlite_service.dart';
+import 'package:alleat/screens/profilesetup/profilesetup_existing.dart';
 import 'package:flutter/material.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -204,8 +205,10 @@ class _ProfilePageState extends State<ProfilePage> {
         child: ElevatedButton(
           style: Theme.of(context).elevatedButtonTheme.style,
           onPressed: () {
-            // Navigator.push(context,
-            //     MaterialPageRoute(builder: (context) => const AddProfile()));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const ProfileSetupExisting()));
           },
           child: const Text("Add Profile"),
         ),

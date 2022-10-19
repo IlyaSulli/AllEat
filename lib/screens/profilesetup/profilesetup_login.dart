@@ -3,6 +3,7 @@ import 'package:alleat/services/localprofiles_service.dart';
 import 'package:alleat/services/queryserver.dart';
 import 'package:alleat/services/setselected.dart';
 import 'package:alleat/widgets/elements/elements.dart';
+import 'package:alleat/widgets/navigationbar.dart';
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/services.dart';
@@ -31,7 +32,6 @@ class _AddProfileLoginPageState extends State<AddProfileLoginPage> {
       "email": email.text,
       "password": encryptPassword,
     });
-    print(recievedServerData["message"]["profile"]);
     if (recievedServerData["error"] == true) {
       setState(() {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -40,11 +40,11 @@ class _AddProfileLoginPageState extends State<AddProfileLoginPage> {
       });
       password.text = "";
     } else {
-      if (recievedServerData["exists"] == true) {
+      if (recievedServerData["message"]["exists"] == true) {
         List importedProfile = recievedServerData["message"]["profile"];
         bool trySelect = await SetSelected.selectProfile(importedProfile[0],
             importedProfile[1], importedProfile[2], importedProfile[3]);
-        if (recievedServerData["message"]["profile"] == null) {
+        if (trySelect == false) {
           setState(() {
             ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text("Failed to select profile")));
@@ -63,8 +63,8 @@ class _AddProfileLoginPageState extends State<AddProfileLoginPage> {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('Successflully logged in.')),
             );
-            //   Navigator.push(context,
-            //       MaterialPageRoute(builder: (context) => const Navigation()));
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const Navigation()));
           });
         }
       } else {
@@ -73,6 +73,19 @@ class _AddProfileLoginPageState extends State<AddProfileLoginPage> {
               const SnackBar(content: Text("Incorrect email or password")));
         });
       }
+    }
+  }
+
+  Future<void> _checkDuplicate() async {
+    List profileList = await SQLiteLocalProfiles.getProfiles();
+
+    if (profileList.contains(email.text)) {
+      setState(() {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Profile is already logged in.")));
+      });
+    } else {
+      _loginUser();
     }
   }
 
@@ -222,7 +235,7 @@ class _AddProfileLoginPageState extends State<AddProfileLoginPage> {
                             style: Theme.of(context).elevatedButtonTheme.style,
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
-                                _loginUser();
+                                _checkDuplicate();
                               }
                             },
                             child: const Text('Login to Profile'),
