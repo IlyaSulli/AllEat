@@ -1,5 +1,6 @@
 //import 'package:alleat/widgets/locationbutton.dart';
 //import 'package:alleat/widgets/restaurantlist.dart';
+import 'package:alleat/widgets/topbar.dart';
 import 'package:flutter/material.dart';
 
 class BrowsePage extends StatefulWidget {
@@ -12,12 +13,17 @@ class BrowsePage extends StatefulWidget {
 class _BrowsePageState extends State<BrowsePage> {
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        'Browse',
-        style: Theme.of(context).textTheme.headline1,
+    return Column(children: [
+      const MainAppBar(
+        height: 150,
       ),
-    );
+      Center(
+        child: Text(
+          'Browse',
+          style: Theme.of(context).textTheme.headline1,
+        ),
+      )
+    ]);
     //return SingleChildScrollView(
     //Enable scrollable screen
     //    child: Column(children: const [

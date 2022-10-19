@@ -2,7 +2,6 @@ import 'package:alleat/screens/navigationscreens/browse.dart';
 import 'package:alleat/screens/navigationscreens/foryou.dart';
 import 'package:alleat/screens/navigationscreens/homepage.dart';
 import 'package:alleat/screens/navigationscreens/profiles.dart';
-import 'package:alleat/widgets/topbar.dart';
 import 'package:flutter/material.dart';
 
 class Navigation extends StatefulWidget {
@@ -37,14 +36,7 @@ class _NavigationState extends State<Navigation> {
             title: "All Eat.",
             theme: Theme.of(context),
             home: Scaffold(
-                body: Column(
-                  children: [
-                    const MainAppBar(
-                      height: 150,
-                    ),
-                    _screens[_selectedIndex]["screen"],
-                  ],
-                ),
+                body: _screens[_selectedIndex]["screen"],
                 bottomNavigationBar: Theme(
                   data: Theme.of(context).copyWith(
                       canvasColor: Theme.of(context)
