@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart' as sql;
 
@@ -16,6 +17,7 @@ class SQLiteLocalProfiles {
         email TEXT,
         password TEXT,
         selected TEXT,
+        profilecolor TEXT,
         createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
       )
       """);
@@ -41,6 +43,17 @@ class SQLiteLocalProfiles {
   static Future<void> createProfile(dynamic profileid, String firstname,
       String lastname, String email, String password) async {
     //Create profile using firstname, lastname, email and encrypted password
+    List colors = [
+      "0xff9adedb",
+      "0xffaaf0d1",
+      "0xffb2fba5",
+      "0xffbdb0d0",
+      "0xffff9899",
+      "0xffffb7ce"
+    ];
+    Random random = Random();
+    int randomProfileColor = random.nextInt(colors.length);
+    print(randomProfileColor);
     final db = await SQLiteLocalProfiles.db();
     db.insert("localprofiles", {
       //Insert data into localprofiles table
@@ -48,7 +61,8 @@ class SQLiteLocalProfiles {
       "firstname": firstname,
       "lastname": lastname,
       "email": email,
-      "password": password
+      "password": password,
+      "profilecolor": randomProfileColor.toString(),
     });
   }
 
@@ -68,6 +82,14 @@ class SQLiteLocalProfiles {
   static Future<List<Map<String, dynamic>>> getFirstProfile() async {
     final db = await SQLiteLocalProfiles.db();
     return db.rawQuery('SELECT * FROM localprofiles ORDER BY id ASC LIMIT 1');
+  }
+
+  // Get currently selected profile color from table
+
+  static Future<List<Map<String, Object?>>> getSelectedProfileColor() async {
+    final db = await SQLiteLocalProfiles.db();
+    return db.rawQuery(
+        'SELECT profilecolor FROM localprofiles WHERE selected = true');
   }
 
   //------------------------------------------------------------

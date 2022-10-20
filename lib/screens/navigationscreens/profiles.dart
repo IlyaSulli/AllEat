@@ -9,6 +9,9 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   String edit = "Edit";
+  Future<void> getProfileInfo() async {
+    
+  }
 
   @override
   Widget build(BuildContext context) {

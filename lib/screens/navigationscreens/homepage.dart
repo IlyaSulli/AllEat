@@ -35,7 +35,7 @@ class HomePage extends StatelessWidget {
                     List? name = snapshot.data;
                     if (name![0] != null) {
                       return Text(
-                        ('${name[0]}  ${name[1]}'),
+                        ('${name[0]} ${name[1]}'),
                         style: Theme.of(context).textTheme.headline1,
                       );
                     } else {

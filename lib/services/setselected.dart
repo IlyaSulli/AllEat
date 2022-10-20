@@ -1,8 +1,11 @@
+import 'package:alleat/services/localprofiles_service.dart';
 import 'package:alleat/services/queryserver.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SetSelected {
   static Future<bool> selectProfile(id, firstname, lastname, email) async {
+    dynamic profileColor = await SQLiteLocalProfiles.getSelectedProfileColor();
+    print(profileColor);
     dynamic favReataurantList = await QueryServer.query(
         'https://alleat.cpur.net/query/favouriterestaurantlist.php',
         {"profileemail": email});
@@ -16,6 +19,8 @@ class SetSelected {
       await prefs.setString('email', email);
       await prefs.setString('favrestaurants',
           ((favReataurantList["message"])["restaurantids"]).toString());
+      await prefs.setString('profilecolor', profileColor);
+
       return true;
     }
   }

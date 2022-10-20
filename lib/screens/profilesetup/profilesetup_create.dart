@@ -659,6 +659,13 @@ class _AddProfileCreationPagePasswordState
       try {
         List importedProfile = (recievedServerData["message"])["profile"];
 
+        await SQLiteLocalProfiles.createProfile(
+            importedProfile[0],
+            importedProfile[1],
+            importedProfile[2],
+            importedProfile[3],
+            importedProfile[4]);
+
         bool trySelect = await SetSelected.selectProfile(importedProfile[0],
             importedProfile[1], importedProfile[2], importedProfile[3]);
         if (trySelect == false) {
@@ -667,16 +674,8 @@ class _AddProfileCreationPagePasswordState
                 const SnackBar(content: Text("Failed to select profile")));
           });
         } else {
-          await SQLiteLocalProfiles.createProfile(
-              importedProfile[0],
-              importedProfile[1],
-              importedProfile[2],
-              importedProfile[3],
-              importedProfile[4]);
-
           passwordText.text = "";
           confirmpasswordText.text = "";
-
           setState(() {
             Navigator.pop(context);
             Navigator.pop(context);
