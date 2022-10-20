@@ -19,7 +19,6 @@ class SetSelected {
       await prefs.setString('email', email);
       await prefs.setString('favrestaurants',
           ((favReataurantList["message"])["restaurantids"]).toString());
-      await prefs.setString('profilecolor', profileColor);
 
       return true;
     }

@@ -50,12 +50,22 @@ class _AddProfileLoginPageState extends State<AddProfileLoginPage> {
                 const SnackBar(content: Text("Failed to select profile")));
           });
         } else {
-          await SQLiteLocalProfiles.createProfile(
-              importedProfile[0],
-              importedProfile[1],
-              importedProfile[2],
-              importedProfile[3],
-              importedProfile[4]);
+          print(importedProfile);
+          try {
+            await SQLiteLocalProfiles.createProfile(
+                importedProfile[0],
+                importedProfile[1],
+                importedProfile[2],
+                importedProfile[3],
+                importedProfile[4]);
+          } catch (e) {
+            setState(() {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                    content: Text('Failed to save profile locally.')),
+              );
+            });
+          }
 
           email.text = "";
           password.text = "";

@@ -64,6 +64,10 @@ class SQLiteLocalProfiles {
       "password": password,
       "profilecolor": randomProfileColor.toString(),
     });
+    db.rawUpdate(
+        'UPDATE localprofiles SET selected = false'); //Set all profiles selected status to false
+    db.rawUpdate(
+        'UPDATE localprofiles SET selected = true WHERE email = "$email"');
   }
 
   //------------------------------------------------------------
@@ -88,8 +92,7 @@ class SQLiteLocalProfiles {
 
   static Future<List<Map<String, Object?>>> getSelectedProfileColor() async {
     final db = await SQLiteLocalProfiles.db();
-    return db.rawQuery(
-        'SELECT profilecolor FROM localprofiles WHERE selected = true');
+    return db.rawQuery('SELECT * FROM localprofiles WHERE selected = true');
   }
 
   //------------------------------------------------------------
