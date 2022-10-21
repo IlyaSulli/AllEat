@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class SetSelected {
   static Future<bool> selectProfile(id, firstname, lastname, email) async {
     dynamic profileColor = await SQLiteLocalProfiles.getSelectedProfileColor();
-    print(profileColor);
+    print("profilecolor: $profileColor");
     dynamic favReataurantList = await QueryServer.query(
         'https://alleat.cpur.net/query/favouriterestaurantlist.php',
         {"profileemail": email});

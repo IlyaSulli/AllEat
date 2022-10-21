@@ -52,8 +52,7 @@ class SQLiteLocalProfiles {
       "0xffffb7ce"
     ];
     Random random = Random();
-    int randomProfileColor = random.nextInt(colors.length);
-    print(randomProfileColor);
+    String randomProfileColor = colors[random.nextInt(colors.length)];
     final db = await SQLiteLocalProfiles.db();
     db.insert("localprofiles", {
       //Insert data into localprofiles table
@@ -62,7 +61,7 @@ class SQLiteLocalProfiles {
       "lastname": lastname,
       "email": email,
       "password": password,
-      "profilecolor": randomProfileColor.toString(),
+      "profilecolor": randomProfileColor,
     });
     db.rawUpdate(
         'UPDATE localprofiles SET selected = false'); //Set all profiles selected status to false
@@ -92,7 +91,8 @@ class SQLiteLocalProfiles {
 
   static Future<List<Map<String, Object?>>> getSelectedProfileColor() async {
     final db = await SQLiteLocalProfiles.db();
-    return db.rawQuery('SELECT * FROM localprofiles WHERE selected = true');
+    return db.rawQuery(
+        'SELECT profilecolor FROM localprofiles ORDER BY id ASC LIMIT 1');
   }
 
   //------------------------------------------------------------

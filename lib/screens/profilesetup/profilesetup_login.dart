@@ -50,7 +50,6 @@ class _AddProfileLoginPageState extends State<AddProfileLoginPage> {
                 const SnackBar(content: Text("Failed to select profile")));
           });
         } else {
-          print(importedProfile);
           try {
             await SQLiteLocalProfiles.createProfile(
                 importedProfile[0],
