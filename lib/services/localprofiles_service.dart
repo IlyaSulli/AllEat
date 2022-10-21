@@ -95,6 +95,22 @@ class SQLiteLocalProfiles {
         'SELECT profilecolor FROM localprofiles ORDER BY id ASC LIMIT 1');
   }
 
+  // Get all unselected profiles to be displayed
+
+  static Future<List<Map<String, Object?>>> getDisplayUnselected() async {
+    final db = await SQLiteLocalProfiles.db();
+    return db.rawQuery(
+        'SELECT id, profileid, firstname, lastname, profilecolor FROM localprofiles WHERE selected = false');
+  }
+
+  // Get all unselected profiles to be displayed
+
+  static Future<List<Map<String, Object?>>> getDisplaySelected() async {
+    final db = await SQLiteLocalProfiles.db();
+    return db.rawQuery(
+        'SELECT id, profileid, firstname, lastname, profilecolor FROM localprofiles WHERE selected = true');
+  }
+
   //------------------------------------------------------------
   // Profile Modify
   //------------------------------------------------------------
