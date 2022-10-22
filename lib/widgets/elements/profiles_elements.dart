@@ -1,4 +1,7 @@
+import 'package:alleat/screens/navigationscreens/profiles.dart';
+import 'package:alleat/screens/profilesetup/profilesetup_existing.dart';
 import 'package:alleat/services/localprofiles_service.dart';
+import 'package:alleat/services/setselected.dart';
 import 'package:flutter/material.dart';
 
 class ProfileList extends StatefulWidget {
@@ -12,84 +15,239 @@ class _ProfileListState extends State<ProfileList> {
   bool edit = false;
 
   Future<List> getDisplayableProfiles() async {
-    return await SQLiteLocalProfiles.getDisplayUnselected();
+    return await SQLiteLocalProfiles.getDisplayProfilesList();
   }
 
-  Future<List> getSelectedDisplayableProfile() async {
-    return await SQLiteLocalProfiles.getDisplaySelected();
+  Future<void> selectProfile(id) async {
+    var getToSelect = (await SQLiteLocalProfiles.getProfileFromID(id))[0];
+    bool trySelect = await SetSelected.selectProfile(getToSelect['profileid'], getToSelect['firstname'], getToSelect['lastname'], getToSelect['email']);
+    if (trySelect!= true){
+      setState(() {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                    content: Text('Failed to select profile.')),
+              );
+            });
+    }
+    else{
+      
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-        height: 300,
-        padding: const EdgeInsets.only(left: 10, right: 10),
+        //Create profile selection widget with height 150px
+        height: 150,
+        padding: const EdgeInsets.symmetric(horizontal: 10),
         child: ListView(scrollDirection: Axis.horizontal, children: <Widget>[
-          FutureBuilder<List>(
-              future: getSelectedDisplayableProfile(),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return Column(
-                    children: [
-                      Container(
-                          width: 100,
-                          height: 100,
-                          decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Theme.of(context)
-                                  .navigationBarTheme
-                                  .backgroundColor))
-                    ],
-                  );
-                } else if (snapshot.hasData) {
-                  List? profileInfo = snapshot.data;
-                  if (profileInfo != null && profileInfo.isNotEmpty) {
-                    return SizedBox(
-                        width: (profileInfo.length + 1) * 80,
-                        child: ListView.builder(
-                            itemCount: profileInfo.length,
-                            scrollDirection: Axis.horizontal,
-                            itemBuilder: (context, index) {
-                              Map<String, dynamic> profile = profileInfo[index];
-                              String displayChar = profile['firstname'];
-                              displayChar.substring(0, 1);
-                              return Column(children: [
-                                Container(
-                                    width: 80,
-                                    height: 80,
-                                    decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        border: Border.all(
-                                            color:
-                                                Theme.of(context).primaryColor,
-                                            width: 3,
-                                            style: BorderStyle.solid),
-                                        color: Color(
-                                            profile['profilecolor'].hashCode)),
-                                    child: Align(
-                                        alignment: Alignment.center,
-                                        child: Text(
-                                            '${profile['firstname'][0]}${profile['firstname'][1]}',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .headline3))),
-                                const SizedBox(height: 20),
-                                SizedBox(
-                                    width: 100,
-                                    child: Text(
-                                      "${profile['firstname']}\n${profile['lastname']}",
-                                      textAlign: TextAlign.center,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headline4
-                                          ?.copyWith(
-                                              fontWeight: FontWeight.w600,
-                                              color: Theme.of(context)
-                                                  .primaryColor),
-                                      overflow: TextOverflow.ellipsis,
-                                    ))
-                              ]);
-                            }));
+          Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            FutureBuilder<List>(
+                // Get selected profile
+                future: getDisplayableProfiles(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    //While there is no information sent back
+                    return Column(
+                      //Display empty circle
+                      children: [
+                        Container(
+                            width: 120,
+                            height: 120,
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Theme.of(context)
+                                    .navigationBarTheme
+                                    .backgroundColor))
+                      ],
+                    );
+                  } else if (snapshot.hasData) {
+                    // Once there is information
+                    List? profileInfo = snapshot.data; // Store in profileInfo
+                    if (profileInfo != null && profileInfo.isNotEmpty) {
+                      //If it contains a profile
+                      return SizedBox(
+                          //Set width of data to the number of profiles by 120px
+                          width: (profileInfo.length) * 120,
+                          child: ListView.builder(
+                              //For each profile
+                              itemCount: profileInfo.length,
+                              scrollDirection:
+                                  Axis.horizontal, //Make scrollable list
+                              itemBuilder: (context, index) {
+                                Map<String, dynamic> profile = profileInfo[
+                                    index]; //Store current profile being created in profile
+                                if (index == 0) {
+                                  return InkWell(
+                                      onTap: (() {}),
+                                      child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 10),
+                                          child: Column(children: [
+                                            Stack(
+                                                alignment: Alignment.center,
+                                                children: [
+                                                  Container(
+                                                    width: 100,
+                                                    height: 100,
+                                                    decoration: BoxDecoration(
+                                                        shape: BoxShape.circle,
+                                                        border: Border.all(
+                                                            color: Theme.of(
+                                                                    context)
+                                                                .primaryColor,
+                                                            width: 3,
+                                                            style: BorderStyle
+                                                                .solid)),
+                                                  ),
+                                                  Container(
+                                                      // Create a circle with a purple outline and and the first letter of first and last name
+                                                      width: 88,
+                                                      height: 88,
+                                                      decoration: BoxDecoration(
+                                                          shape:
+                                                              BoxShape.circle,
+                                                          color: Color.fromRGBO(
+                                                              profile[
+                                                                  'profilecolorred'],
+                                                              profile[
+                                                                  'profilecolorgreen'],
+                                                              profile[
+                                                                  'profilecolorblue'],
+                                                              1)),
+                                                      child: Align(
+                                                          alignment:
+                                                              Alignment.center,
+                                                          child: Text(
+                                                              '${profile['firstname'][0]}${profile['lastname'][0]}',
+                                                              style: Theme.of(
+                                                                      context)
+                                                                  .textTheme
+                                                                  .headline3
+                                                                  ?.copyWith(
+                                                                      color: Theme.of(
+                                                                              context)
+                                                                          .backgroundColor))))
+                                                ]),
+                                            const SizedBox(height: 15),
+                                            SizedBox(
+                                                //Display profile name
+                                                width: 100,
+                                                child: Text(
+                                                  "${profile['firstname']}",
+                                                  textAlign: TextAlign.center,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .headline5
+                                                      ?.copyWith(
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          color:
+                                                              Theme.of(context)
+                                                                  .textTheme
+                                                                  .headline1
+                                                                  ?.color),
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ))
+                                          ])));
+                                } else if (index > 0) {
+                                  return InkWell(
+                                      onTap: (() {
+                                        selectProfile(profile['id']);
+                                      }),
+                                      child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 10),
+                                          child: Column(children: [
+                                            Container(
+                                                // Create a circle with a purple outline and and the first letter of first and last name
+                                                width: 88,
+                                                height: 88,
+                                                decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    color: Color.fromRGBO(
+                                                        profile[
+                                                            'profilecolorred'],
+                                                        profile[
+                                                            'profilecolorgreen'],
+                                                        profile[
+                                                            'profilecolorblue'],
+                                                        1)),
+                                                child: Align(
+                                                    alignment: Alignment.center,
+                                                    child: Text(
+                                                        '${profile['firstname'][0]}${profile['lastname'][0]}',
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .headline3
+                                                            ?.copyWith(
+                                                                color: Theme.of(
+                                                                        context)
+                                                                    .backgroundColor)))),
+                                            const SizedBox(height: 15),
+                                            SizedBox(
+                                                //Display profile name
+                                                width: 100,
+                                                child: Text(
+                                                  "${profile['firstname']}",
+                                                  textAlign: TextAlign.center,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .headline5
+                                                      ?.copyWith(
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          color:
+                                                              Theme.of(context)
+                                                                  .textTheme
+                                                                  .headline1
+                                                                  ?.color),
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ))
+                                          ])));
+                                } else {
+                                  return Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 10),
+                                      child: Column(children: [
+                                        Container(
+                                            // Create a circle with a purple outline and and the first letter of first and last name
+                                            width: 100,
+                                            height: 100,
+                                            decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .error),
+                                            child: Align(
+                                              alignment: Alignment.center,
+                                              child: Text(
+                                                "Error",
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .headline5
+                                                    ?.copyWith(
+                                                        color:
+                                                            Color(0xffffffff)),
+                                              ),
+                                            ))
+                                      ]));
+                                }
+                              }));
+                    } else {
+                      return Column(
+                        children: [
+                          Container(
+                              width: 100,
+                              height: 100,
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Theme.of(context).errorColor))
+                        ],
+                      );
+                    }
                   } else {
                     return Column(
                       children: [
@@ -102,133 +260,34 @@ class _ProfileListState extends State<ProfileList> {
                       ],
                     );
                   }
-                } else {
-                  return Column(
-                    children: [
-                      Container(
-                          width: 100,
-                          height: 100,
-                          decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Theme.of(context).errorColor))
-                    ],
-                  );
-                }
-              }),
-          Column(
-            children: [
-              Container(
-                width: 80,
-                height: 80,
-                decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Theme.of(context).primaryColor),
-                child: Icon(
-                  Icons.add,
-                  color: Theme.of(context).backgroundColor,
-                  size: 30,
-                ),
-              )
-            ],
-          )
+                }),
+            Column(
+              children: [
+                Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Column(children: [
+                      ElevatedButton(
+                        onPressed: (() {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const ProfileSetupExisting()));
+                        }),
+                        style: ElevatedButton.styleFrom(
+                            shape: const CircleBorder(),
+                            padding: const EdgeInsets.all(22)),
+                        child: Icon(
+                          Icons.add,
+                          color: Theme.of(context).backgroundColor,
+                          size: 40,
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                    ]))
+              ],
+            )
+          ])
         ]));
   }
-
-  // @override
-  // Widget build(BuildContext context) {
-  //   return Row(children: [
-  //     FutureBuilder<List>(
-  //         future: getSelectedDisplayableProfile(),
-  //         builder: (context, snapshot) {
-  //           if (!snapshot.hasData) {
-  //             return Column(
-  //               children: [
-  //                 Container(
-  //                   width: 80,
-  //                   height: 80,
-  //                   decoration: BoxDecoration(
-  //                       shape: BoxShape.circle,
-  //                       color: Theme.of(context).bottomAppBarColor),
-  //                 )
-  //               ],
-  //             );
-  //           } else if (snapshot.hasData) {
-  //             List? profileinfo = snapshot.data;
-  //             if (profileinfo != null && profileinfo.isNotEmpty) {
-  //               print(profileinfo);
-  //               return Container(
-  //                   width: 100,
-  //                   height: 200.0,
-  //                   child: ListView.builder(
-  //                       itemCount: profileinfo.length,
-  //                       scrollDirection: Axis.horizontal,
-  //                       itemBuilder: (context, index) {
-  //                         Map<String, dynamic> profile = profileinfo[index];
-  //                         String displayChar = profile['firstname'];
-  //                         displayChar.substring(0, 1);
-  //                         return Column(children: [
-  //                           Container(
-  //                               width: 80,
-  //                               height: 80,
-  //                               decoration: BoxDecoration(
-  //                                   shape: BoxShape.circle,
-  //                                   border: Border.all(
-  //                                       color: Theme.of(context).primaryColor,
-  //                                       width: 3,
-  //                                       style: BorderStyle.solid),
-  //                                   color: Color(
-  //                                       profile['profilecolor'].hashCode)),
-  //                               child: Align(
-  //                                   alignment: Alignment.center,
-  //                                   child: Text(
-  //                                       '${profile['firstname'][0]}${profile['firstname'][1]}',
-  //                                       style: Theme.of(context)
-  //                                           .textTheme
-  //                                           .headline3))),
-  //                           const SizedBox(height: 20),
-  //                           SizedBox(
-  //                               width: 100,
-  //                               child: Text(
-  //                                 "${profile['firstname']}\n${profile['lastname']}",
-  //                                 textAlign: TextAlign.center,
-  //                                 style: Theme.of(context)
-  //                                     .textTheme
-  //                                     .headline4
-  //                                     ?.copyWith(
-  //                                         fontWeight: FontWeight.w600,
-  //                                         color:
-  //                                             Theme.of(context).primaryColor),
-  //                                 overflow: TextOverflow.ellipsis,
-  //                               ))
-  //                         ]);
-  //                       }));
-  //             } else {
-  //               return Column(
-  //                 children: [
-  //                   Container(
-  //                     width: 80,
-  //                     height: 80,
-  //                     decoration: BoxDecoration(
-  //                         shape: BoxShape.circle,
-  //                         color: Theme.of(context).errorColor),
-  //                   )
-  //                 ],
-  //               );
-  //             }
-  //           } else {
-  //             return Column(
-  //               children: [
-  //                 Container(
-  //                   width: 80,
-  //                   height: 80,
-  //                   decoration: BoxDecoration(
-  //                       shape: BoxShape.circle,
-  //                       color: Theme.of(context).errorColor),
-  //                 )
-  //               ],
-  //             );
-  //           }
-  //         }),
-  //   ]);
-  // }
 }

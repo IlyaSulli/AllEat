@@ -57,24 +57,23 @@ class _AddProfileLoginPageState extends State<AddProfileLoginPage> {
                 importedProfile[2],
                 importedProfile[3],
                 importedProfile[4]);
+            email.text = "";
+            password.text = "";
+            setState(() {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Successflully logged in.')),
+              );
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const Navigation()));
+            });
           } catch (e) {
             setState(() {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
-                    content: Text('Failed to save profile locally.')),
+                    content: Text('Failed to save profile on device.')),
               );
             });
           }
-
-          email.text = "";
-          password.text = "";
-          setState(() {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Successflully logged in.')),
-            );
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const Navigation()));
-          });
         }
       } else {
         setState(() {

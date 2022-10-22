@@ -17,7 +17,9 @@ class SQLiteLocalProfiles {
         email TEXT,
         password TEXT,
         selected TEXT,
-        profilecolor TEXT,
+        profilecolorred INT,
+        profilecolorgreen INT,
+        profilecolorblue INT,
         createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
       )
       """);
@@ -44,15 +46,15 @@ class SQLiteLocalProfiles {
       String lastname, String email, String password) async {
     //Create profile using firstname, lastname, email and encrypted password
     List colors = [
-      "0xff9adedb",
-      "0xffaaf0d1",
-      "0xffb2fba5",
-      "0xffbdb0d0",
-      "0xffff9899",
-      "0xffffb7ce"
+      [46, 41, 78],
+      [239, 188, 213],
+      [190, 151, 198],
+      [134, 97, 193],
+      [77, 104, 184],
+      [112, 202, 209]
     ];
     Random random = Random();
-    String randomProfileColor = colors[random.nextInt(colors.length)];
+    List randomProfileColor = colors[random.nextInt(colors.length)];
     final db = await SQLiteLocalProfiles.db();
     db.insert("localprofiles", {
       //Insert data into localprofiles table
@@ -61,7 +63,9 @@ class SQLiteLocalProfiles {
       "lastname": lastname,
       "email": email,
       "password": password,
-      "profilecolor": randomProfileColor,
+      "profilecolorred": randomProfileColor[0],
+      "profilecolorgreen": randomProfileColor[1],
+      "profilecolorblue": randomProfileColor[2],
     });
     db.rawUpdate(
         'UPDATE localprofiles SET selected = false'); //Set all profiles selected status to false
@@ -92,23 +96,23 @@ class SQLiteLocalProfiles {
   static Future<List<Map<String, Object?>>> getSelectedProfileColor() async {
     final db = await SQLiteLocalProfiles.db();
     return db.rawQuery(
-        'SELECT profilecolor FROM localprofiles ORDER BY id ASC LIMIT 1');
+        'SELECT profilecolorred, profilecolorgreen, profilecolorblue FROM localprofiles ORDER BY id ASC LIMIT 1');
   }
 
   // Get all unselected profiles to be displayed
 
-  static Future<List<Map<String, Object?>>> getDisplayUnselected() async {
+  static Future<List<Map<String, Object?>>> getDisplayProfilesList() async {
     final db = await SQLiteLocalProfiles.db();
     return db.rawQuery(
-        'SELECT id, profileid, firstname, lastname, profilecolor FROM localprofiles WHERE selected = false');
+        'SELECT id, profileid, firstname, lastname, profilecolorred, profilecolorgreen, profilecolorblue FROM localprofiles ORDER BY selected DESC');
   }
 
-  // Get all unselected profiles to be displayed
+  // Get profile info from ID
 
-  static Future<List<Map<String, Object?>>> getDisplaySelected() async {
+  static Future<List<Map<String, Object?>>> getProfileFromID(id) async {
     final db = await SQLiteLocalProfiles.db();
     return db.rawQuery(
-        'SELECT id, profileid, firstname, lastname, profilecolor FROM localprofiles WHERE selected = true');
+        'SELECT profileid, firstname, lastname, email FROM localprofiles WHERE id = $id');
   }
 
   //------------------------------------------------------------
