@@ -67,6 +67,11 @@ class SQLiteLocalProfiles {
       "profilecolorgreen": randomProfileColor[1],
       "profilecolorblue": randomProfileColor[2],
     });
+    selectProfile(email);
+  }
+
+  static Future<void> selectProfile(dynamic email) async {
+    final db = await SQLiteLocalProfiles.db();
     db.rawUpdate(
         'UPDATE localprofiles SET selected = false'); //Set all profiles selected status to false
     db.rawUpdate(

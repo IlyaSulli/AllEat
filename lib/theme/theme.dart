@@ -52,6 +52,8 @@ class ThemeClass {
       colorScheme: ColorScheme.fromSwatch().copyWith(
         secondary: secondaryLight,
         error: errorLight,
+        onBackground: textLight,
+        onSurface: mono000,
       ),
 
       // MAIN APP
@@ -185,6 +187,8 @@ class ThemeClass {
       colorScheme: ColorScheme.fromSwatch().copyWith(
         secondary: secondaryDark,
         error: errorDark,
+        onBackground: textDark,
+        onSurface: mono700,
       ),
 
       //MAIN APP
