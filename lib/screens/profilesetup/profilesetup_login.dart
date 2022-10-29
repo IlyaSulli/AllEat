@@ -86,7 +86,6 @@ class _AddProfileLoginPageState extends State<AddProfileLoginPage> {
 
   Future<void> _checkDuplicate() async {
     List profileList = await SQLiteLocalProfiles.getProfiles();
-
     if (profileList.contains(email.text)) {
       setState(() {
         ScaffoldMessenger.of(context).showSnackBar(

@@ -85,7 +85,7 @@ class ThemeClass {
               fontWeight: FontWeight.w600,
               fontSize: 24),
           headline4: TextStyle(
-              color: mono700,
+              color: mono800,
               fontFamily: 'Satoshi',
               fontWeight: FontWeight.w500,
               fontSize: 21),
@@ -218,7 +218,7 @@ class ThemeClass {
               fontWeight: FontWeight.w600,
               fontSize: 24),
           headline4: TextStyle(
-              color: mono200,
+              color: mono100,
               fontFamily: 'Satoshi',
               fontWeight: FontWeight.w500,
               fontSize: 21),

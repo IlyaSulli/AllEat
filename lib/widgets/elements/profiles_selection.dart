@@ -28,13 +28,28 @@ class _ProfileListState extends State<ProfileList> {
     if (trySelect == true) {
       setState(() {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Switched profiles successfully')),
+          SnackBar(
+            content: Text(
+              'Switched profiles successfully',
+              style: Theme.of(context).textTheme.headline6,
+            ),
+            backgroundColor: Theme.of(context).colorScheme.onSurface,
+          ),
         );
       });
     } else {
       setState(() {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Failed to switch profiles.')),
+          SnackBar(
+            content: Text(
+              'Failed to switch profiles.',
+              style: Theme.of(context)
+                  .textTheme
+                  .headline6!
+                  .copyWith(color: Color(0xffffffff)),
+            ),
+            backgroundColor: Theme.of(context).colorScheme.error,
+          ),
         );
       });
     }
