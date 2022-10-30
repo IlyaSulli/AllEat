@@ -46,7 +46,7 @@ class _ProfileListState extends State<ProfileList> {
               style: Theme.of(context)
                   .textTheme
                   .headline6!
-                  .copyWith(color: Color(0xffffffff)),
+                  .copyWith(color: const Color(0xffffffff)),
             ),
             backgroundColor: Theme.of(context).colorScheme.error,
           ),

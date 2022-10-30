@@ -1,3 +1,4 @@
+import 'package:alleat/screens/restaurant/restaurant_customise.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as converty;
@@ -100,25 +101,21 @@ class _RestaurantMainState extends State<RestaurantMain> {
       if (res.statusCode == 200) {
         var data = converty.json.decode(res.body); //Decode to array
         if (data["error"]) {
-          print("Temp1");
           List error = [
             {"error": "true", "favouriterestaurants": "[]"}
           ];
           return error;
         } else {
-          print("Temp2");
           List listdata = [data];
           return listdata;
         }
       } else {
-        print("Temp3");
         List error = [
           {"error": "true", "favouriterestaurants": "[]"}
         ];
         return error;
       }
     } catch (e) {
-      print("Temp4");
       List<Map<String, String>> error = [
         {"error": "true", "favouriterestaurants": "[]"}
       ];
@@ -167,309 +164,349 @@ class _RestaurantMainState extends State<RestaurantMain> {
     return Scaffold(
         body: SingleChildScrollView(
             //Make page scrollable
-            child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-          Stack(children: [
-            Container(
-              width: MediaQuery.of(context).size.width,
-              height: 240,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  fit: BoxFit.fitWidth,
-                  image: NetworkImage(widget.resbanner),
-                ),
-              ),
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Stack(children: [
+        Container(
+          width: MediaQuery.of(context).size.width,
+          height: 240,
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              fit: BoxFit.fitWidth,
+              image: NetworkImage(widget.resbanner),
             ),
-            Align(
-                alignment: Alignment.bottomCenter,
+          ),
+        ),
+        Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              margin: const EdgeInsets.only(top: 215),
+              width: double.infinity,
+              height: 30,
+              decoration: BoxDecoration(
+                  color: Theme.of(context).backgroundColor,
+                  borderRadius:
+                      const BorderRadius.vertical(top: Radius.circular(20))),
+            )),
+        Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+                margin: const EdgeInsets.only(top: 180),
+                width: 80,
+                height: 80,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Theme.of(context).backgroundColor,
+                ))),
+        Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+                margin: const EdgeInsets.only(top: 185),
+                width: 70,
+                height: 70,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    fit: BoxFit.cover,
+                    image: NetworkImage(widget.reslogo.toString()),
+                  ),
+                  shape: BoxShape.circle,
+                  color: Theme.of(context).colorScheme.onSurface,
+                ))),
+        SafeArea(
+            child: InkWell(
+                onTap: () => Navigator.of(context).pop(),
                 child: Container(
-                  margin: const EdgeInsets.only(top: 215),
-                  width: double.infinity,
-                  height: 30,
-                  decoration: BoxDecoration(
-                      color: Theme.of(context).backgroundColor,
-                      borderRadius: const BorderRadius.vertical(
-                          top: Radius.circular(20))),
-                )),
-            Align(
-                alignment: Alignment.bottomCenter,
-                child: Container(
-                    margin: const EdgeInsets.only(top: 180),
-                    width: 80,
-                    height: 80,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Theme.of(context).backgroundColor,
-                    ))),
-            Align(
-                alignment: Alignment.bottomCenter,
-                child: Container(
-                    margin: const EdgeInsets.only(top: 185),
-                    width: 70,
-                    height: 70,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: NetworkImage(widget.reslogo.toString()),
-                      ),
-                      shape: BoxShape.circle,
-                      color: Theme.of(context).colorScheme.onSurface,
-                    ))),
-            SafeArea(
-                child: InkWell(
-                    onTap: () => Navigator.of(context).pop(),
-                    child: Container(
-                      margin: const EdgeInsets.only(top: 20, left: 20),
-                      width: 50,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Theme.of(context).colorScheme.onSurface,
-                      ),
-                      child: Icon(
-                        Icons.chevron_left,
-                        color: Theme.of(context).colorScheme.onBackground,
-                        size: 35,
-                      ),
-                    ))),
-            Align(
-                alignment: Alignment.topRight,
-                child: SafeArea(
-                    child: InkWell(
-                        child: Container(
-                  margin: const EdgeInsets.only(top: 20, right: 80),
-                  width: 45,
-                  height: 45,
+                  margin: const EdgeInsets.only(top: 20, left: 20),
+                  width: 50,
+                  height: 50,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Theme.of(context)
-                        .colorScheme
-                        .onSurface
-                        .withOpacity(0.8),
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                   child: Icon(
-                    Icons.info_outline,
+                    Icons.chevron_left,
                     color: Theme.of(context).colorScheme.onBackground,
-                    size: 30,
+                    size: 35,
                   ),
-                )))),
-            FutureBuilder<List>(
-                //Get favourites list from future
-                future: getFavourites(),
-                builder: ((context, snapshot) {
-                  if (!snapshot.hasData) {
-                    //While no data recieved, show loading bar
-                    return SafeArea(
-                        child: Align(
-                            alignment: Alignment.topRight,
-                            child: Container(
-                                margin:
-                                    const EdgeInsets.only(top: 20, right: 20),
-                                width: 45,
-                                height: 45,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onSurface
-                                      .withOpacity(0.8),
-                                ),
-                                child: Icon(
-                                  Icons.cached,
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onBackground,
-                                ))));
-                  } else if (snapshot.hasError) {
-                    return SafeArea(
-                        child: Align(
-                            alignment: Alignment.topRight,
-                            child: Container(
-                                margin:
-                                    const EdgeInsets.only(top: 20, right: 20),
-                                width: 45,
-                                height: 45,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onSurface
-                                      .withOpacity(0.8),
-                                ),
-                                child: Icon(
-                                  Icons.error,
-                                  color: Theme.of(context).colorScheme.error,
-                                ))));
-                  } else {
-                    //If data recieved
-                    List restaurantFavourites = snapshot.data ?? [];
-                    print(restaurantFavourites);
-                    return SafeArea(
-                        child: Align(
-                            alignment: Alignment.topRight,
-                            child: InkWell(
-                                onTap: () {
-                                  if (restaurantFavourites[0]["restaurantids"]
-                                      .contains(widget.resid)) {
-                                    favouriteRestaurant(
-                                        widget.resid.toString(), "unfavourite");
-                                    setState(() {
-                                      getFavourites();
-                                    });
-                                  } else {
-                                    favouriteRestaurant(
-                                        widget.resid.toString(), "favourite");
-                                    setState(() {
-                                      getFavourites();
-                                    });
-                                  }
-                                },
-                                child: Container(
-                                    margin: const EdgeInsets.only(
-                                        top: 20, right: 20),
-                                    width: 45,
-                                    height: 45,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onSurface
-                                          .withOpacity(0.8),
-                                    ),
-                                    child: restaurantFavourites[0]
-                                                ["favouriterestaurants"]
-                                            .contains(widget.resid)
-                                        ? Icon(Icons.favorite,
-                                            size: 30, // ? = favourited
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .secondary)
-                                        : Icon(
-                                            // : = unfavourited
-                                            Icons.favorite_border_outlined,
-                                            size: 30,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .onBackground)))));
-                  }
-                }))
-          ]),
-          Padding(
-              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 30),
-              child: Column(children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Flexible(
+                ))),
+        Align(
+            alignment: Alignment.topRight,
+            child: SafeArea(
+                child: InkWell(
+                    child: Container(
+              margin: const EdgeInsets.only(top: 20, right: 80),
+              width: 45,
+              height: 45,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
+              ),
+              child: Icon(
+                Icons.info_outline,
+                color: Theme.of(context).colorScheme.onBackground,
+                size: 30,
+              ),
+            )))),
+        FutureBuilder<List>(
+            //Get favourites list from future
+            future: getFavourites(),
+            builder: ((context, snapshot) {
+              if (!snapshot.hasData) {
+                //While no data recieved, show loading bar
+                return SafeArea(
+                    child: Align(
+                        alignment: Alignment.topRight,
                         child: Container(
-                            padding: const EdgeInsets.only(right: 13.0),
-                            child: Text(
-                              widget.resname,
-                              overflow: TextOverflow.ellipsis,
-                              style: Theme.of(context).textTheme.headline3,
-                            ))),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.star,
-                          size: 20,
-                          color: Theme.of(context).primaryColor,
-                        ),
-                        const SizedBox(
-                          width: 5,
-                        ),
-                        Text(
-                          "N/A",
-                          style: Theme.of(context).textTheme.bodyText1,
-                        )
-                      ],
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 10),
+                            margin: const EdgeInsets.only(top: 20, right: 20),
+                            width: 45,
+                            height: 45,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurface
+                                  .withOpacity(0.8),
+                            ),
+                            child: Icon(
+                              Icons.cached,
+                              color: Theme.of(context).colorScheme.onBackground,
+                            ))));
+              } else if (snapshot.hasError) {
+                return SafeArea(
+                    child: Align(
+                        alignment: Alignment.topRight,
+                        child: Container(
+                            margin: const EdgeInsets.only(top: 20, right: 20),
+                            width: 45,
+                            height: 45,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurface
+                                  .withOpacity(0.8),
+                            ),
+                            child: Icon(
+                              Icons.error,
+                              color: Theme.of(context).colorScheme.error,
+                            ))));
+              } else {
+                //If data recieved
+                List restaurantFavourites = snapshot.data ?? [];
+                print(restaurantFavourites);
+                if (restaurantFavourites[0]["error"] == true) {
+                  return SafeArea(
+                      child: Align(
+                          alignment: Alignment.topRight,
+                          child: Container(
+                              margin: const EdgeInsets.only(top: 20, right: 20),
+                              width: 45,
+                              height: 45,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onSurface
+                                    .withOpacity(0.8),
+                              ),
+                              child: Icon(
+                                Icons.error,
+                                color: Theme.of(context).colorScheme.error,
+                              ))));
+                } else {
+                  return SafeArea(
+                      child: Align(
+                          alignment: Alignment.topRight,
+                          child: InkWell(
+                              onTap: () {
+                                if (restaurantFavourites[0]["restaurantids"]
+                                    .contains(widget.resid)) {
+                                  favouriteRestaurant(
+                                      widget.resid.toString(), "unfavourite");
+                                  setState(() {
+                                    getFavourites();
+                                  });
+                                } else {
+                                  favouriteRestaurant(
+                                      widget.resid.toString(), "favourite");
+                                  setState(() {
+                                    getFavourites();
+                                  });
+                                }
+                              },
+                              child: Container(
+                                  margin:
+                                      const EdgeInsets.only(top: 20, right: 20),
+                                  width: 45,
+                                  height: 45,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurface
+                                        .withOpacity(0.8),
+                                  ),
+                                  child: restaurantFavourites[0]
+                                              ["restaurantids"]
+                                          .contains(widget.resid)
+                                      ? Icon(Icons.favorite,
+                                          size: 30, // ? = favourited
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .secondary)
+                                      : Icon(
+                                          // : = unfavourited
+                                          Icons.favorite_border_outlined,
+                                          size: 30,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onBackground)))));
+                }
+              }
+            }))
+      ]),
+      Padding(
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 30),
+          child: Column(children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Flexible(
+                    child: Container(
+                        padding: const EdgeInsets.only(right: 13.0),
+                        child: Text(
+                          widget.resname,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.headline3,
+                        ))),
                 Row(
                   children: [
-                    Text("N/A miles away",
-                        style: Theme.of(context).textTheme.bodyText1),
+                    Icon(
+                      Icons.star,
+                      size: 20,
+                      color: Theme.of(context).primaryColor,
+                    ),
                     const SizedBox(
                       width: 5,
                     ),
                     Text(
-                      "·",
+                      "N/A",
                       style: Theme.of(context).textTheme.bodyText1,
-                    ),
-                    const SizedBox(
-                      width: 5,
-                    ),
-                    Text("£N/A Delivery",
-                        style: Theme.of(context).textTheme.bodyText1),
+                    )
                   ],
                 ),
-              ])),
-          FutureBuilder<List>(
-              //Checks for updates in the restaurant menu category
-              future: getMenuCategories(),
-              builder: ((context, snapshot) {
-                if (!snapshot.hasData) {
-                  //If no data has been recieved, show loading bar
-                  return const LinearProgressIndicator(
-                      color: Color(0xff4100C4),
-                      backgroundColor: Color(0xffEBE0FF));
-                }
-                if (snapshot.hasError) {
-                  //If there is an error, grabbing data, show error
-                  return const Text("An Error occured. Please try again");
-                } else {
-                  //If the data has been recieved
-                  List restaurantcategories = snapshot.data ??
-                      []; //Categories data associated with restaurantcategories
-                  return ListView.builder(
-                      //For each category
-                      physics:
-                          const NeverScrollableScrollPhysics(), //Disable scrolling. Scroll with whole page
-                      scrollDirection: Axis.vertical,
-                      shrinkWrap: true,
-                      itemCount: restaurantcategories[0]["restaurantcategories"]
-                          .length, //For each restaurant
-                      itemBuilder: (context, index) {
-                        return LayoutBuilder(builder: (context, constraints) {
-                          if (restaurantcategories[0]["restaurantcategories"]
-                              .isEmpty) {
-                            //If there is no categories, display menu unavailable
-                            return const Text("Menu unavailable");
-                          } else {
-                            //If there are categories
-                            return Column(children: [
-                              //Add text of category name
-                              Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 30, top: 30, right: 10, bottom: 10),
-                                  child: Text(
-                                    restaurantcategories[0]
-                                        ["restaurantcategories"][index][0],
-                                    style: const TextStyle(
-                                        fontSize: 21,
-                                        fontWeight: FontWeight.w500),
-                                  )),
-                              FutureBuilder<List>(
-                                  //For each category, use a future to get the list of items
-                                  future: getMenuItems(restaurantcategories[0]
-                                      ["restaurantcategories"][index][1]),
-                                  builder: (context, snapshot) {
-                                    if (!snapshot.hasData) {
-                                      //While no data recieved, show loading bar
-                                      return const LinearProgressIndicator(
-                                          color: Color(0xff4100C4),
-                                          backgroundColor: Color(0xffEBE0FF));
-                                    }
-                                    if (snapshot.hasError) {
-                                      //If there is an error, show failed to get items
-                                      return const Text("Failed to get items");
+              ],
+            ),
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                Text("N/A miles away",
+                    style: Theme.of(context).textTheme.bodyText1),
+                const SizedBox(
+                  width: 5,
+                ),
+                Text(
+                  "·",
+                  style: Theme.of(context).textTheme.bodyText1,
+                ),
+                const SizedBox(
+                  width: 5,
+                ),
+                Text("£N/A Delivery",
+                    style: Theme.of(context).textTheme.bodyText1),
+              ],
+            ),
+          ])),
+      FutureBuilder<List>(
+          //Checks for updates in the restaurant menu category
+          future: getMenuCategories(),
+          builder: ((context, snapshot) {
+            if (!snapshot.hasData) {
+              //If no data has been recieved, show loading bar
+              return LinearProgressIndicator(
+                  color: Theme.of(context).primaryColor,
+                  backgroundColor: const Color.fromARGB(0, 235, 224, 255));
+            }
+            if (snapshot.hasError) {
+              //If there is an error, grabbing data, show error
+              return const Text("An Error occured. Please try again");
+            } else {
+              //If the data has been recieved
+              List restaurantcategories = snapshot.data ??
+                  []; //Categories data associated with restaurantcategories
+              if (restaurantcategories[0]["error"] == true) {
+                return Text("Temp1");
+              } else {
+                return ListView.builder(
+                    //For each category
+                    physics:
+                        const NeverScrollableScrollPhysics(), //Disable scrolling. Scroll with whole page
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    itemCount: restaurantcategories[0]["restaurantcategories"]
+                        .length, //For each restaurant
+                    itemBuilder: (context, index) {
+                      return LayoutBuilder(builder: (context, constraints) {
+                        if (restaurantcategories[0]["restaurantcategories"]
+                            .isEmpty) {
+                          //If there is no categories, display menu unavailable
+                          return const Text("Menu unavailable");
+                        } else {
+                          //If there are categories
+                          return Column(children: [
+                            //Add text of category name
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 30, top: 50, right: 10, bottom: 10),
+                              child: Text(
+                                  restaurantcategories[0]
+                                      ["restaurantcategories"][index][0],
+                                  style: Theme.of(context).textTheme.headline3),
+                            ),
+                            FutureBuilder<List>(
+                                //For each category, use a future to get the list of items
+                                future: getMenuItems(restaurantcategories[0]
+                                    ["restaurantcategories"][index][1]),
+                                builder: (context, snapshot) {
+                                  if (!snapshot.hasData) {
+                                    //While no data recieved, show loading bar
+                                    return LinearProgressIndicator(
+                                        color: Theme.of(context).primaryColor,
+                                        backgroundColor: const Color.fromARGB(
+                                            0, 235, 224, 255));
+                                  }
+                                  if (snapshot.hasError) {
+                                    //If there is an error, show failed to get items
+                                    return const Text("Failed to get items");
+                                  } else {
+                                    //List of items for category
+                                    List restaurantitems = snapshot.data ??
+                                        []; //Get data from Future
+
+                                    if (restaurantitems[0]["menuitems"]
+                                        .isEmpty) {
+                                      return Container(
+                                        width: double.infinity,
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 30, horizontal: 20),
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                const BorderRadius.all(
+                                                    Radius.circular(10)),
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onSurface),
+                                        margin: const EdgeInsets.symmetric(
+                                            vertical: 5, horizontal: 30),
+                                        child: Text(
+                                          "Oh no! There are no items found under this category.",
+                                          textAlign: TextAlign.center,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline6,
+                                        ),
+                                      );
                                     } else {
-                                      //List of items for category
-                                      List restaurantitems = snapshot.data ??
-                                          []; //Get data from Future
                                       return ListView.builder(
                                           physics:
                                               const NeverScrollableScrollPhysics(),
@@ -482,138 +519,165 @@ class _RestaurantMainState extends State<RestaurantMain> {
                                           itemBuilder: (context, index) {
                                             return LayoutBuilder(builder:
                                                 (context, constraints) {
-                                              if (restaurantitems[0]
-                                                      ["menuitems"]
-                                                  .isEmpty) {
-                                                //If there is no items for a category
-                                                return const Text(
-                                                    "No items found");
-                                              } else {
-                                                // If there is items to display
-                                                return InkWell(
-                                                    //Clickable items
-                                                    onTap: null,
-                                                    //() {
-                                                    // Navigator.push(
-                                                    //     context,
-                                                    //     MaterialPageRoute(
-                                                    //         builder: (context) => RestaurantItemCustomisePage(
-                                                    //             itemid: restaurantitems[0]["menuitems"][index]
-                                                    //                 [0],
-                                                    //             foodcategory: restaurantitems[0]["menuitems"]
-                                                    //                     [index]
-                                                    //                 [1],
-                                                    //             subfoodcategory: restaurantitems[0]
-                                                    //                     ["menuitems"][index]
-                                                    //                 [2],
-                                                    //             itemname: restaurantitems[0]["menuitems"][index]
-                                                    //                 [3],
-                                                    //             description: restaurantitems[0]
-                                                    //                     ["menuitems"][index]
-                                                    //                 [4],
-                                                    //             price: restaurantitems[0]
-                                                    //                     ["menuitems"][index]
-                                                    //                 [5],
-                                                    //             itemimage:
-                                                    //                 restaurantitems[0]["menuitems"][index]
-                                                    //                     [6])));
-                                                    //},
-                                                    child: Container(
-                                                        //Create clickable container
-                                                        width: double.infinity,
-                                                        margin: const EdgeInsets
-                                                                .only(
-                                                            left: 10,
-                                                            right: 10,
-                                                            top: 5,
-                                                            bottom: 5),
-                                                        color: const Color(
-                                                            0xffffffff),
-                                                        child: Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceBetween,
-                                                          //Create a row containing item image, name and price
-                                                          children: [
-                                                            Flexible(
-                                                                flex:
-                                                                    4, // 4/13 of container for item image
-                                                                child: Padding(
-                                                                    //Item Image
-
-                                                                    padding:
-                                                                        const EdgeInsets.all(
-                                                                            10),
-                                                                    child:
-                                                                        Container(
-                                                                      width: 70,
-                                                                      height:
-                                                                          70,
-                                                                      decoration:
-                                                                          BoxDecoration(
-                                                                        borderRadius:
-                                                                            const BorderRadius.all(Radius.circular(10)),
-                                                                        image:
-                                                                            DecorationImage(
-                                                                          fit: BoxFit
-                                                                              .cover,
-                                                                          image:
-                                                                              NetworkImage(restaurantitems[0]["menuitems"][index][6].toString()),
-                                                                        ),
-                                                                      ),
-                                                                    ))),
-                                                            Flexible(
-                                                                flex:
-                                                                    6, // 6/13 of container for item name
-                                                                child: Align(
-                                                                    alignment:
-                                                                        Alignment
-                                                                            .center,
-                                                                    child: Padding(
-                                                                        padding: const EdgeInsets.only(top: 10, bottom: 10, left: 5),
-                                                                        child: Column(children: [
-                                                                          //Item Name
-                                                                          Text(
-                                                                            restaurantitems[0]["menuitems"][index][3].toString(),
-                                                                            textAlign:
-                                                                                TextAlign.center,
-                                                                            style:
-                                                                                const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
-                                                                          ),
-                                                                          const SizedBox(
-                                                                              height: 10),
-                                                                          Text(
-                                                                              overflow: TextOverflow.ellipsis,
-                                                                              restaurantitems[0]["menuitems"][index][4].toString(),
-                                                                              textAlign: TextAlign.center,
-                                                                              style: const TextStyle(fontWeight: FontWeight.w400, fontSize: 12))
-                                                                        ])))),
-                                                            Flexible(
-                                                                flex: 3,
-                                                                child: Align(
-                                                                    alignment:
-                                                                        Alignment
-                                                                            .centerRight,
-                                                                    child: Padding(
-                                                                        padding: const EdgeInsets.only(left: 10, right: 20),
-                                                                        child: Text(
-                                                                          "£${restaurantitems[0]["menuitems"][index][5]}",
-                                                                          textAlign:
-                                                                              TextAlign.end,
-                                                                        ))))
-                                                          ],
-                                                        )));
-                                              }
+                                              // If there is items to display
+                                              return InkWell(
+                                                  //Clickable items
+                                                  onTap: () {
+                                                    Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) => RestaurantItemCustomisePage(
+                                                                reslogo: widget
+                                                                    .reslogo,
+                                                                itemid: restaurantitems[0]["menuitems"]
+                                                                    [index][0],
+                                                                foodcategory: restaurantitems[0]
+                                                                        ["menuitems"]
+                                                                    [index][1],
+                                                                subfoodcategory: restaurantitems[0]
+                                                                        ["menuitems"]
+                                                                    [index][2],
+                                                                itemname: restaurantitems[0]
+                                                                        ["menuitems"]
+                                                                    [index][3],
+                                                                description: restaurantitems[0]
+                                                                    ["menuitems"][index][4],
+                                                                price: restaurantitems[0]["menuitems"][index][5],
+                                                                itemimage: restaurantitems[0]["menuitems"][index][6])));
+                                                  },
+                                                  child: Container(
+                                                      //Create clickable container
+                                                      width: double.infinity,
+                                                      margin:
+                                                          const EdgeInsets.only(
+                                                              left: 10,
+                                                              right: 10,
+                                                              top: 10,
+                                                              bottom: 10),
+                                                      child: Row(
+                                                        //Create a row containing item image, name and price
+                                                        children: [
+                                                          Container(
+                                                            width: 80,
+                                                            height: 80,
+                                                            decoration: BoxDecoration(
+                                                                borderRadius:
+                                                                    const BorderRadius
+                                                                            .all(
+                                                                        Radius.circular(
+                                                                            5)),
+                                                                image: DecorationImage(
+                                                                    fit: BoxFit
+                                                                        .cover,
+                                                                    image: NetworkImage(restaurantitems[0]["menuitems"]
+                                                                            [
+                                                                            index][6]
+                                                                        .toString()))),
+                                                          ),
+                                                          const SizedBox(
+                                                              width: 15),
+                                                          Expanded(
+                                                            child: Column(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .start,
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                Text(
+                                                                  restaurantitems[0]
+                                                                              [
+                                                                              "menuitems"]
+                                                                          [
+                                                                          index][3]
+                                                                      .toString(),
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .start,
+                                                                  style: Theme.of(
+                                                                          context)
+                                                                      .textTheme
+                                                                      .headline6!
+                                                                      .copyWith(
+                                                                          color: Theme.of(context)
+                                                                              .colorScheme
+                                                                              .onBackground),
+                                                                ),
+                                                                Text(
+                                                                  restaurantitems[0]
+                                                                              [
+                                                                              "menuitems"]
+                                                                          [
+                                                                          index][4]
+                                                                      .toString(),
+                                                                  maxLines: 3,
+                                                                  style: Theme.of(
+                                                                          context)
+                                                                      .textTheme
+                                                                      .bodyText2!
+                                                                      .copyWith(
+                                                                          color: Theme.of(context)
+                                                                              .textTheme
+                                                                              .headline5!
+                                                                              .color,
+                                                                          fontSize:
+                                                                              14),
+                                                                  overflow:
+                                                                      TextOverflow
+                                                                          .clip,
+                                                                )
+                                                              ],
+                                                            ),
+                                                          ),
+                                                          const SizedBox(
+                                                              width: 15),
+                                                          Row(
+                                                            children: [
+                                                              Text(
+                                                                "£",
+                                                                style: Theme.of(
+                                                                        context)
+                                                                    .textTheme
+                                                                    .headline6!
+                                                                    .copyWith(
+                                                                        color: Theme.of(context)
+                                                                            .primaryColor),
+                                                              ),
+                                                              const SizedBox(
+                                                                  width: 2),
+                                                              Text(
+                                                                  restaurantitems[0]["menuitems"]
+                                                                              [
+                                                                              index]
+                                                                          [5]
+                                                                      .toString(),
+                                                                  style: Theme.of(
+                                                                          context)
+                                                                      .textTheme
+                                                                      .headline6!
+                                                                      .copyWith(
+                                                                          color: Theme.of(context)
+                                                                              .colorScheme
+                                                                              .onBackground))
+                                                            ],
+                                                          ),
+                                                          const SizedBox(
+                                                              width: 10),
+                                                        ],
+                                                      )));
                                             });
                                           });
                                     }
-                                  })
-                            ]);
-                          }
-                        });
+                                  }
+                                })
+                          ]);
+                        }
                       });
-                }
-              }))
-        ])));
+                    });
+              }
+            }
+          }))
+    ])));
   }
 }
