@@ -65,6 +65,13 @@ class ThemeClass {
       appBarTheme: AppBarTheme(backgroundColor: primaryLight),
       backgroundColor: bgLight,
       scaffoldBackgroundColor: bgLight,
+      snackBarTheme: SnackBarThemeData(
+          contentTextStyle: TextStyle(
+              color: mono900,
+              fontFamily: 'Satoshi',
+              fontWeight: FontWeight.w400,
+              fontSize: 14),
+          backgroundColor: mono100),
 
       // TEXT
 
