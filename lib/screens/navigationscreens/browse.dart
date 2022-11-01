@@ -15,6 +15,7 @@ class _BrowsePageState extends State<BrowsePage> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
+        //Keep within screen area
         child: Scaffold(
             body: SingleChildScrollView(
                 child: Column(children: [
@@ -22,7 +23,7 @@ class _BrowsePageState extends State<BrowsePage> {
         height: 150,
       ),
       const SizedBox(height: 20),
-      const SearchBar(),
+      const SearchBar(), //Search bar
       const SizedBox(height: 40),
       Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30),
@@ -30,6 +31,7 @@ class _BrowsePageState extends State<BrowsePage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              //Display row with the title  popular categories and an arrow pointing right to go to all the categories
               Text(
                 "Popular Categories.",
                 style: Theme.of(context).textTheme.headline2,
@@ -50,7 +52,7 @@ class _BrowsePageState extends State<BrowsePage> {
             ],
           )),
       const SizedBox(height: 40),
-      const Categories(),
+      const Categories(), // Display horizontally scrolling categories
       const SizedBox(height: 40),
       Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30),
@@ -58,6 +60,7 @@ class _BrowsePageState extends State<BrowsePage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              // Display title restaurants with a filter icon to go to filtering options
               Text(
                 "Restaurants.",
                 style: Theme.of(context).textTheme.headline2,

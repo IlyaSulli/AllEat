@@ -21,7 +21,10 @@ class _AddProfileCreationPageNameState
   final _formKey = GlobalKey<FormState>();
   static TextEditingController firstnameText = TextEditingController();
   static TextEditingController lastnameText = TextEditingController();
-  final data = [firstnameText.text = "", lastnameText.text = ""];
+  final data = [
+    firstnameText.text = "",
+    lastnameText.text = ""
+  ]; //Store the data to be reset if back button pressed
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,12 +36,13 @@ class _AddProfileCreationPageNameState
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Flexible(
+                    //Create flexible widgets to be able to resize with keyboard
                     flex: 2,
                     fit: FlexFit.loose,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const ScreenBackButton(),
+                        const ScreenBackButton(), //Back button to go to starting screen
                         Padding(
                             padding: const EdgeInsets.only(
                                 top: 20, left: 20, right: 20, bottom: 5),
@@ -205,7 +209,10 @@ class _AddProfileCreationPageNameState
 }
 
 class AddProfileCreationPageEmail extends StatefulWidget {
-  const AddProfileCreationPageEmail({Key? key, this.firstname, this.lastname})
+  const AddProfileCreationPageEmail(
+      {Key? key,
+      this.firstname,
+      this.lastname}) //Get firstname and lastname from previous screen
       : super(key: key);
   final dynamic firstname;
   final dynamic lastname;
@@ -220,7 +227,10 @@ class _AddProfileCreationPageEmailState
   final _formKey = GlobalKey<FormState>();
   static TextEditingController emailText = TextEditingController();
   static TextEditingController confirmemailText = TextEditingController();
-  dynamic data = [emailText.text = "", confirmemailText.text = ""];
+  dynamic data = [
+    emailText.text = "",
+    confirmemailText.text = ""
+  ]; // Store email and confirm email to be reset if back button pressed
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -237,7 +247,9 @@ class _AddProfileCreationPageEmailState
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        ScreenBackButton(data: data),
+                        ScreenBackButton(
+                            data:
+                                data), //If back button pressed, reset inputted data
                         Padding(
                             padding: const EdgeInsets.only(
                                 top: 20, left: 20, right: 20, bottom: 5),
@@ -383,6 +395,7 @@ class _AddProfileCreationPageEmailState
                                             //If fields have no errors
                                             Navigator.pop(context);
                                             Navigator.push(
+                                                // On continue, export inputted fields to the final screen
                                                 context,
                                                 MaterialPageRoute(
                                                     builder: (context) =>
@@ -428,7 +441,10 @@ class _AddProfileCreationPagePasswordState
   static TextEditingController passwordText = TextEditingController();
   static TextEditingController confirmpasswordText = TextEditingController();
   static dynamic encryptPassword;
-  dynamic data = [passwordText.text = "", confirmpasswordText.text = ""];
+  dynamic data = [
+    passwordText.text = "",
+    confirmpasswordText.text = ""
+  ]; //If back button pressed, reset data
   bool _passwordVisible = false;
   @override
   Widget build(BuildContext context) {
@@ -507,6 +523,7 @@ class _AddProfileCreationPagePasswordState
                                         floatingLabelBehavior:
                                             FloatingLabelBehavior.never,
                                         suffixIcon: IconButton(
+                                          //Button to toggle password visibility
                                           icon: Icon(
                                             _passwordVisible
                                                 ? Icons.visibility_off
@@ -648,6 +665,7 @@ class _AddProfileCreationPagePasswordState
       "password": encryptPassword
     });
     if (recievedServerData["error"] == true) {
+      //If error, display failed to create profile and reset password fields
       setState(() {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text(recievedServerData["message"] +
@@ -656,6 +674,7 @@ class _AddProfileCreationPagePasswordState
       passwordText.text = "";
       confirmpasswordText.text = "";
     } else {
+      //If the email already exists, reset password fields and bring user back to the add user page
       if ((recievedServerData["message"])["exist"] == true) {
         passwordText.text = "";
         confirmpasswordText.text = "";
@@ -667,35 +686,40 @@ class _AddProfileCreationPagePasswordState
         });
       } else {
         try {
-        List importedProfile = (recievedServerData["message"])["profile"];
-        await SQLiteLocalProfiles.createProfile(
-            importedProfile[0],
-            importedProfile[1],
-            importedProfile[2],
-            importedProfile[3],
-            importedProfile[4]);
+          List importedProfile = (recievedServerData["message"])["profile"];
+          await SQLiteLocalProfiles.createProfile(
+              importedProfile[0],
+              importedProfile[1],
+              importedProfile[2],
+              importedProfile[3],
+              importedProfile[4]);
 
-        bool trySelect = await SetSelected.selectProfile(importedProfile[0],
-            importedProfile[1], importedProfile[2], importedProfile[3]);
-        if (trySelect == false) {
-          setState(() {
-            ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text("Failed to select profile")));
-          });
-        } else {
-          passwordText.text = "";
-          confirmpasswordText.text = "";
-          setState(() {
-            Navigator.pop(context);
-            Navigator.pop(context);
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Successflully created profile.')),
-            );
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const Navigation()));
-          });
-        }
+          bool trySelect = await SetSelected.selectProfile(
+              importedProfile[0], //Try to select profile
+              importedProfile[1],
+              importedProfile[2],
+              importedProfile[3]);
+          if (trySelect == false) {
+            setState(() {
+              ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Failed to select profile")));
+            });
+          } else {
+            //If is able to select profile, clear password fields and go to navigation page (defaults to homepage)
+            passwordText.text = "";
+            confirmpasswordText.text = "";
+            setState(() {
+              Navigator.pop(context);
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Successflully created profile.')),
+              );
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const Navigation()));
+            });
+          }
         } catch (e) {
+          // If error, display error
           setState(() {
             ScaffoldMessenger.of(context)
                 .showSnackBar(SnackBar(content: Text("ERROR: $e")));
