@@ -69,7 +69,7 @@ class ThemeClass {
           contentTextStyle: TextStyle(
               color: mono900,
               fontFamily: 'Satoshi',
-              fontWeight: FontWeight.w400,
+              fontWeight: FontWeight.w600,
               fontSize: 14),
           backgroundColor: mono100),
 

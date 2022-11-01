@@ -656,9 +656,18 @@ class _AddProfileCreationPagePasswordState
       passwordText.text = "";
       confirmpasswordText.text = "";
     } else {
-      try {
+      if ((recievedServerData["message"])["exist"] == true) {
+        passwordText.text = "";
+        confirmpasswordText.text = "";
+        setState(() {
+          Navigator.pop(context);
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Profile already exists')),
+          );
+        });
+      } else {
+        try {
         List importedProfile = (recievedServerData["message"])["profile"];
-
         await SQLiteLocalProfiles.createProfile(
             importedProfile[0],
             importedProfile[1],
@@ -686,11 +695,12 @@ class _AddProfileCreationPagePasswordState
                 MaterialPageRoute(builder: (context) => const Navigation()));
           });
         }
-      } catch (e) {
-        setState(() {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text("ERROR: $e")));
-        });
+        } catch (e) {
+          setState(() {
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text("ERROR: $e")));
+          });
+        }
       }
     }
   }

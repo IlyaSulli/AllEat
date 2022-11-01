@@ -293,7 +293,6 @@ class _RestaurantMainState extends State<RestaurantMain> {
               } else {
                 //If data recieved
                 List restaurantFavourites = snapshot.data ?? [];
-                print(restaurantFavourites);
                 if (restaurantFavourites[0]["error"] == true) {
                   return SafeArea(
                       child: Align(
@@ -435,7 +434,10 @@ class _RestaurantMainState extends State<RestaurantMain> {
               List restaurantcategories = snapshot.data ??
                   []; //Categories data associated with restaurantcategories
               if (restaurantcategories[0]["error"] == true) {
-                return Text("Temp1");
+                return Text(
+                  "Failed to get restaurant categories",
+                  style: Theme.of(context).textTheme.headline6,
+                );
               } else {
                 return ListView.builder(
                     //For each category
