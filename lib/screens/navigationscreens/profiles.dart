@@ -10,9 +10,6 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  String edit = "Edit";
-  Future<void> getProfileInfo() async {}
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -26,6 +23,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 Padding(
                     padding: const EdgeInsets.only(left: 40, right: 40),
                     child: Row(
+                      //Display text with title Profiles
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
@@ -37,11 +35,12 @@ class _ProfilePageState extends State<ProfilePage> {
                 const SizedBox(
                   height: 50,
                 ),
-                const ProfileList(),
+                const ProfileList(), //Display slidable row of profiles
                 const SizedBox(
                   height: 35,
                 ),
                 const ProfileButton(
+                  // Display buttons for favourites, orders, settings and profile settings with an icon using the widget ProfileButton
                   icon: (Icons.favorite),
                   name: "Favourites",
                   action: null,

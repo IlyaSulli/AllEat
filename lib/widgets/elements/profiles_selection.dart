@@ -18,39 +18,30 @@ class _ProfileListState extends State<ProfileList> {
   }
 
   Future<void> selectProfile(id) async {
-    var getToSelect = (await SQLiteLocalProfiles.getProfileFromID(id))[0]; //Get profile info from id
+    var getToSelect = (await SQLiteLocalProfiles.getProfileFromID(id))[0];
 
-    bool trySelect = await SetSelected.selectProfile( //Try to select profile
+    bool trySelect = await SetSelected.selectProfile(
         getToSelect['profileid'],
         getToSelect['firstname'],
         getToSelect['lastname'],
         getToSelect['email']);
-    if (trySelect == true) { //if it successfully selects profile
+    if (trySelect == true) {
       setState(() {
-        ScaffoldMessenger.of(context).showSnackBar( // Display that it selected
-          SnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
             content: Text(
               'Switched profiles successfully',
-              style: Theme.of(context).textTheme.headline6,
             ),
-            backgroundColor: Theme.of(context).colorScheme.onSurface,
           ),
         );
       });
-    } else { //If it fails, display that it was not selected
+    } else {
       setState(() {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'Failed to switch profiles.',
-              style: Theme.of(context)
-                  .textTheme
-                  .headline6!
-                  .copyWith(color: const Color(0xffffffff)),
-            ),
-            backgroundColor: Theme.of(context).colorScheme.error,
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text(
+            'Failed to switch profiles.',
           ),
-        );
+        ));
       });
     }
   }
