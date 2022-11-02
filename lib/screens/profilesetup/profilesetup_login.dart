@@ -25,14 +25,16 @@ class _AddProfileLoginPageState extends State<AddProfileLoginPage> {
   late dynamic profileInfoImport;
 
   Future<void> _loginUser() async {
-    encryptPassword = await DataEncryption.encrpyt(password.text);
+    encryptPassword =
+        await DataEncryption.encrpyt(password.text); //Encrypt password
     var recievedServerData =
         await QueryServer.query("https://alleat.cpur.net/query/login.php", {
-      //Send data to login.php on server with email and encrypted password
+      //Send data to login.php on server with email and encrypted password. It checks if the credentials are correct and returns exists if it is valid
       "email": email.text,
       "password": encryptPassword,
     });
     if (recievedServerData["error"] == true) {
+      //If there is an error, clear password and display error from server
       setState(() {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text(recievedServerData["message"] +
@@ -41,32 +43,41 @@ class _AddProfileLoginPageState extends State<AddProfileLoginPage> {
       password.text = "";
     } else {
       if (recievedServerData["message"]["exists"] == true) {
+        //If ther profile is correct and exists
         List importedProfile = recievedServerData["message"]["profile"];
-        bool trySelect = await SetSelected.selectProfile(importedProfile[0],
-            importedProfile[1], importedProfile[2], importedProfile[3]);
+        bool trySelect = await SetSelected.selectProfile(
+            importedProfile[0], //Try select profile
+            importedProfile[1],
+            importedProfile[2],
+            importedProfile[3]);
         if (trySelect == false) {
+          // If the profile fails to select display error
           setState(() {
             ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text("Failed to select profile")));
           });
         } else {
+          // If succeeds to select profile
           try {
             await SQLiteLocalProfiles.createProfile(
+                //Create profile in database
                 importedProfile[0],
                 importedProfile[1],
                 importedProfile[2],
                 importedProfile[3],
                 importedProfile[4]);
-            email.text = "";
+            email.text = ""; //Clear email and password
             password.text = "";
             setState(() {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('Successflully logged in.')),
               );
-              Navigator.push(context,
+              Navigator.push(
+                  context, //Go to main area
                   MaterialPageRoute(builder: (context) => const Navigation()));
             });
           } catch (e) {
+            //If there is an error, display that there was an error
             setState(() {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
@@ -76,6 +87,7 @@ class _AddProfileLoginPageState extends State<AddProfileLoginPage> {
           }
         }
       } else {
+        // If the password or email is incorrect, display incorrect email or password
         setState(() {
           ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text("Incorrect email or password")));

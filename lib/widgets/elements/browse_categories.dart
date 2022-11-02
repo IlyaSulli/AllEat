@@ -2,6 +2,7 @@ import 'package:alleat/widgets/elements/elements.dart';
 import 'package:flutter/material.dart';
 
 List categoriesList = [
+  //List of categories
   [
     "Burgers",
     const Color(0xffFFD8C2),
@@ -131,7 +132,7 @@ class _CategoriesPageState extends State<CategoriesPage> {
           hasScrollBody: false,
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const ScreenBackButton(),
+            const ScreenBackButton(), //Back button
             const SizedBox(height: 20),
             Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
@@ -146,6 +147,7 @@ class _CategoriesPageState extends State<CategoriesPage> {
               child: SizedBox(
                   height: (categoriesList.length * 185) / 2.ceil(),
                   child: GridView.builder(
+                      //Build grid of categories
                       itemCount: categoriesList.length,
                       physics: const NeverScrollableScrollPhysics(),
                       gridDelegate:

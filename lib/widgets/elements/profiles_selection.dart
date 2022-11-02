@@ -18,16 +18,16 @@ class _ProfileListState extends State<ProfileList> {
   }
 
   Future<void> selectProfile(id) async {
-    var getToSelect = (await SQLiteLocalProfiles.getProfileFromID(id))[0];
+    var getToSelect = (await SQLiteLocalProfiles.getProfileFromID(id))[0]; //Get profile info from id
 
-    bool trySelect = await SetSelected.selectProfile(
+    bool trySelect = await SetSelected.selectProfile( //Try to select profile
         getToSelect['profileid'],
         getToSelect['firstname'],
         getToSelect['lastname'],
         getToSelect['email']);
-    if (trySelect == true) {
+    if (trySelect == true) { //if it successfully selects profile
       setState(() {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showSnackBar( // Display that it selected
           SnackBar(
             content: Text(
               'Switched profiles successfully',
@@ -37,7 +37,7 @@ class _ProfileListState extends State<ProfileList> {
           ),
         );
       });
-    } else {
+    } else { //If it fails, display that it was not selected
       setState(() {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

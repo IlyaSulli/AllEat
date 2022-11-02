@@ -83,7 +83,7 @@ class _ProfileSetupWelcome extends State<ProfileSetupWelcome> {
                             child: ElevatedButton(
                                 style:
                                     Theme.of(context).elevatedButtonTheme.style,
-                                onPressed: () => (Navigator.push(
+                                onPressed: () => (Navigator.push( //Button to go to profile creation page
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
@@ -93,7 +93,7 @@ class _ProfileSetupWelcome extends State<ProfileSetupWelcome> {
                             width: 250,
                             child: TextButton(
                                 style: Theme.of(context).textButtonTheme.style,
-                                onPressed: () => (Navigator.push(
+                                onPressed: () => (Navigator.push( //Text button to go to login page
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>

@@ -24,7 +24,7 @@ class SearchBar extends StatelessWidget {
         ],
       ),
       child: Row(children: [
-        Icon(
+        Icon( 
           Icons.search,
           color: Theme.of(context).textTheme.headline1?.color,
         ),

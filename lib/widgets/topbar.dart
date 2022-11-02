@@ -7,6 +7,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+        //Container of height 120px
         height: 120,
         color: Theme.of(context).bottomNavigationBarTheme.backgroundColor,
         child: SafeArea(
@@ -15,10 +16,12 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Icon(
+                  //Location icon
                   Icons.location_on_outlined,
                   color: Theme.of(context).textTheme.headline1?.color,
                 ),
                 Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  //Column that will display the destination the food will be delivered to
                   Text(
                     "Location",
                     style: Theme.of(context)
@@ -38,6 +41,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
                   )
                 ]),
                 Icon(
+                  //Cart icon
                   Icons.shopping_cart_outlined,
                   color: Theme.of(context).textTheme.headline1?.color,
                 ),

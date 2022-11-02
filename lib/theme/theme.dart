@@ -320,5 +320,4 @@ class ThemeClass {
               borderSide: BorderSide(width: 3, color: errorLight)),
           enabledBorder: UnderlineInputBorder(
               borderSide: BorderSide(width: 3, color: mono600))));
-  //If app theme is set to light
 }

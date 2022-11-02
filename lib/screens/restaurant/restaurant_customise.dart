@@ -36,6 +36,7 @@ class _RestaurantItemCustomisePageState
             child: Column(
       children: [
         Stack(children: [
+          //Display item image at bottom of stack
           Container(
             width: MediaQuery.of(context).size.width,
             height: 240,
@@ -47,6 +48,7 @@ class _RestaurantItemCustomisePageState
             ),
           ),
           Align(
+              //Display rounded container at bottom of image to respresent overhanging image
               alignment: Alignment.bottomCenter,
               child: Container(
                 margin: const EdgeInsets.only(top: 215),
@@ -58,6 +60,7 @@ class _RestaurantItemCustomisePageState
                         const BorderRadius.vertical(top: Radius.circular(20))),
               )),
           Align(
+              // Display background color as outline of restaurant logo, overlapping the image background
               alignment: Alignment.bottomCenter,
               child: Container(
                   margin: const EdgeInsets.only(top: 180),
@@ -68,6 +71,7 @@ class _RestaurantItemCustomisePageState
                     color: Theme.of(context).backgroundColor,
                   ))),
           Align(
+              // Display circle restaurant logo
               alignment: Alignment.bottomCenter,
               child: Container(
                   margin: const EdgeInsets.only(top: 185),
@@ -82,6 +86,7 @@ class _RestaurantItemCustomisePageState
                     color: Theme.of(context).colorScheme.onSurface,
                   ))),
           SafeArea(
+              // Display back button in a circle
               child: InkWell(
                   onTap: () => Navigator.of(context).pop(),
                   child: Container(
@@ -100,6 +105,7 @@ class _RestaurantItemCustomisePageState
                   ))),
         ]),
         Padding(
+            // Item name
             padding:
                 const EdgeInsets.only(top: 40, left: 30, right: 30, bottom: 10),
             child: Text(
@@ -108,24 +114,28 @@ class _RestaurantItemCustomisePageState
               style: Theme.of(context).textTheme.headline2,
             )),
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+          //Display restuarant category(ies)
           Text(widget.foodcategory, //Must have food category
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.headline6!.copyWith(
                   color: Theme.of(context).textTheme.headline1!.color)),
           LayoutBuilder(builder: (context, constraints) {
             if (widget.subfoodcategory != "") {
+              //If there is a subcategory, display it with a dot next to it
               //If there is a sub food category, show it
               return Text(" · ${widget.subfoodcategory}",
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.headline6!.copyWith(
                       color: Theme.of(context).textTheme.headline1!.color));
             } else {
+              // If there is no sub-category, dont display anything
               //If there isnt a sub-food category, dont show it
               return const Text("");
             }
           })
         ]),
         Padding(
+          //Display item description
           padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
           child: Text(
             widget.description,

@@ -89,7 +89,7 @@ class _ProfileSetupExisting extends State<ProfileSetupExisting> {
                             child: ElevatedButton(
                                 style:
                                     Theme.of(context).elevatedButtonTheme.style,
-                                onPressed: () => (Navigator.push(
+                                onPressed: () => (Navigator.push( //go to profile creation page
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
@@ -99,7 +99,7 @@ class _ProfileSetupExisting extends State<ProfileSetupExisting> {
                             width: 250,
                             child: TextButton(
                                 style: Theme.of(context).textButtonTheme.style,
-                                onPressed: () => (Navigator.push(
+                                onPressed: () => (Navigator.push( // go to profile login page
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>

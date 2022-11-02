@@ -167,6 +167,7 @@ class _RestaurantMainState extends State<RestaurantMain> {
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Stack(children: [
+        //Display stack, with the restaurant banner at the bottom
         Container(
           width: MediaQuery.of(context).size.width,
           height: 240,
@@ -178,6 +179,7 @@ class _RestaurantMainState extends State<RestaurantMain> {
           ),
         ),
         Align(
+            // Display container at the bottom of the image with rounded edges to represent image overhang
             alignment: Alignment.bottomCenter,
             child: Container(
               margin: const EdgeInsets.only(top: 215),
@@ -189,6 +191,7 @@ class _RestaurantMainState extends State<RestaurantMain> {
                       const BorderRadius.vertical(top: Radius.circular(20))),
             )),
         Align(
+            //Circle outline to represent restaurant logo outline
             alignment: Alignment.bottomCenter,
             child: Container(
                 margin: const EdgeInsets.only(top: 180),
@@ -199,6 +202,7 @@ class _RestaurantMainState extends State<RestaurantMain> {
                   color: Theme.of(context).backgroundColor,
                 ))),
         Align(
+            // Circle restaurant logo
             alignment: Alignment.bottomCenter,
             child: Container(
                 margin: const EdgeInsets.only(top: 185),
@@ -213,6 +217,7 @@ class _RestaurantMainState extends State<RestaurantMain> {
                   color: Theme.of(context).colorScheme.onSurface,
                 ))),
         SafeArea(
+            // Create back button as circle
             child: InkWell(
                 onTap: () => Navigator.of(context).pop(),
                 child: Container(
@@ -230,6 +235,7 @@ class _RestaurantMainState extends State<RestaurantMain> {
                   ),
                 ))),
         Align(
+            // Info icon button
             alignment: Alignment.topRight,
             child: SafeArea(
                 child: InkWell(
@@ -254,6 +260,7 @@ class _RestaurantMainState extends State<RestaurantMain> {
               if (!snapshot.hasData) {
                 //While no data recieved, show loading bar
                 return SafeArea(
+                    // If no data has been recieved, display loading icon instead of favourites icon
                     child: Align(
                         alignment: Alignment.topRight,
                         child: Container(
@@ -272,6 +279,7 @@ class _RestaurantMainState extends State<RestaurantMain> {
                               color: Theme.of(context).colorScheme.onBackground,
                             ))));
               } else if (snapshot.hasError) {
+                // If there is an error, display error icon instead of favourites icon
                 return SafeArea(
                     child: Align(
                         alignment: Alignment.topRight,
@@ -292,8 +300,8 @@ class _RestaurantMainState extends State<RestaurantMain> {
                             ))));
               } else {
                 //If data recieved
-                List restaurantFavourites = snapshot.data ?? [];
-                print(restaurantFavourites);
+                List restaurantFavourites = snapshot.data ??
+                    []; //Set favourites to restaurantfavourites
                 if (restaurantFavourites[0]["error"] == true) {
                   return SafeArea(
                       child: Align(
@@ -372,6 +380,7 @@ class _RestaurantMainState extends State<RestaurantMain> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Flexible(
+                    // Restaurant name
                     child: Container(
                         padding: const EdgeInsets.only(right: 13.0),
                         child: Text(
@@ -380,6 +389,7 @@ class _RestaurantMainState extends State<RestaurantMain> {
                           style: Theme.of(context).textTheme.headline3,
                         ))),
                 Row(
+                  // Star rating
                   children: [
                     Icon(
                       Icons.star,
@@ -399,6 +409,7 @@ class _RestaurantMainState extends State<RestaurantMain> {
             ),
             const SizedBox(height: 10),
             Row(
+              //Restaurant basic info
               children: [
                 Text("N/A miles away",
                     style: Theme.of(context).textTheme.bodyText1),
@@ -435,7 +446,7 @@ class _RestaurantMainState extends State<RestaurantMain> {
               List restaurantcategories = snapshot.data ??
                   []; //Categories data associated with restaurantcategories
               if (restaurantcategories[0]["error"] == true) {
-                return Text("Temp1");
+                return const Text("Error getting restaurant categories");
               } else {
                 return ListView.builder(
                     //For each category
@@ -485,6 +496,7 @@ class _RestaurantMainState extends State<RestaurantMain> {
 
                                     if (restaurantitems[0]["menuitems"]
                                         .isEmpty) {
+                                      //If there are no items under a category, display box with title
                                       return Container(
                                         width: double.infinity,
                                         padding: const EdgeInsets.symmetric(
@@ -507,6 +519,7 @@ class _RestaurantMainState extends State<RestaurantMain> {
                                         ),
                                       );
                                     } else {
+                                      //If there are items under a category
                                       return ListView.builder(
                                           physics:
                                               const NeverScrollableScrollPhysics(),
@@ -524,6 +537,7 @@ class _RestaurantMainState extends State<RestaurantMain> {
                                                   //Clickable items
                                                   onTap: () {
                                                     Navigator.push(
+                                                        //On item click, forward data over to item customisation page
                                                         context,
                                                         MaterialPageRoute(
                                                             builder: (context) => RestaurantItemCustomisePage(
