@@ -1,3 +1,4 @@
+import 'package:alleat/screens/locationselection.dart';
 import 'package:flutter/material.dart';
 
 class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -15,11 +16,19 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Icon(
-                  //Location icon
-                  Icons.location_on_outlined,
-                  color: Theme.of(context).textTheme.headline1?.color,
-                ),
+                InkWell(
+                    onTap: () {
+                      Navigator.push(
+                          //go to profile creation page
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const SelectLocation()));
+                    },
+                    child: Icon(
+                      //Location icon
+                      Icons.location_on_outlined,
+                      color: Theme.of(context).textTheme.headline1?.color,
+                    )),
                 Column(mainAxisAlignment: MainAxisAlignment.center, children: [
                   //Column that will display the destination the food will be delivered to
                   Text(
