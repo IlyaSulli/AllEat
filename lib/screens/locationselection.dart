@@ -99,6 +99,7 @@ class _SelectLocationState extends State<SelectLocation> {
             alignment: Alignment.topCenter,
             children: [
               MapPicker(
+
                   // pass icon widget
                   iconWidget: const Icon(
                     Icons.location_on,
@@ -108,6 +109,7 @@ class _SelectLocationState extends State<SelectLocation> {
                   mapPickerController: mapPickerController,
                   child: GoogleMap(
                     myLocationEnabled: false,
+
                     zoomControlsEnabled: false,
                     // hide location button
                     myLocationButtonEnabled: true,
@@ -118,12 +120,13 @@ class _SelectLocationState extends State<SelectLocation> {
                     //  camera position
                     initialCameraPosition: cameraPosition,
                     onMapCreated: (GoogleMapController controller) {
+                      controller.setMapStyle(Theme);
                       _controller.complete(controller);
                     },
                     onCameraMoveStarted: () {
                       // notify map is moving
                       mapPickerController.mapMoving!();
-                      textController.text = " ...";
+                      textController.text = "...";
                     },
                     onCameraMove: (cameraPosition) {
                       print(cameraPosition.target);
@@ -150,6 +153,51 @@ class _SelectLocationState extends State<SelectLocation> {
                   controller: textController,
                 ),
               ),
+              Positioned(
+                  bottom: 24,
+                  left: 24,
+                  right: 24,
+                  child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Row(
+                        children: [
+                          Expanded(
+                              child: InkWell(
+                                  onTap: null,
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 15, horizontal: 30),
+                                    color: Theme.of(context).primaryColor,
+                                    child: Text(
+                                      "Save Location",
+                                      textAlign: TextAlign.center,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headline6!
+                                          .copyWith(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .onSurface),
+                                    ),
+                                  ))),
+                          const SizedBox(
+                            width: 20,
+                          ),
+                          InkWell(
+                            onTap: null,
+                            child: Container(
+                                padding: const EdgeInsets.all(15),
+                                color: Theme.of(context).primaryColor,
+                                child: Icon(
+                                  Icons.my_location,
+                                  color: Theme.of(context)
+                                      .textTheme
+                                      .headline1!
+                                      .color,
+                                )),
+                          )
+                        ],
+                      )))
               // const Positioned(
               //   bottom: 24,
               //   left: 24,

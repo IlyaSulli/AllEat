@@ -1,5 +1,5 @@
 library globals;
-
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/material.dart';
 
 dynamic appthemepreference = 0;
@@ -45,6 +45,7 @@ class ThemeClass {
   static Color primary050 = const Color(0xffEBE0FF);
 
   static ThemeData lightTheme = ThemeData(
+      
 
       //COLOUR
 
@@ -55,6 +56,7 @@ class ThemeClass {
         onBackground: textLight,
         onSurface: mono000,
       ),
+      
 
       // MAIN APP
 
@@ -72,6 +74,8 @@ class ThemeClass {
               fontWeight: FontWeight.w600,
               fontSize: 14),
           backgroundColor: mono100),
+      
+      
 
       // TEXT
 
