@@ -80,8 +80,6 @@ flutter:
   uses-material-design: true
 
   assets:
-    - lib/theme/mapdark.json
-    - lib/theme/maplight.json
     - lib/assets/images/screens/welcomescreen/welcomescreenfood.jpg
     - lib/assets/images/logo/logodark.png
     - lib/assets/images/screens/profilesetup/login-illustration-light.png

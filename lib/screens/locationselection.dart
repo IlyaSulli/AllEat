@@ -21,51 +21,54 @@ class _SelectLocationState extends State<SelectLocation> {
   late var cameraPosition =
       const CameraPosition(target: LatLng(0, 0), zoom: 20);
 
-  Future<List> getCameraPosition() async {
-    try {
-      //Try to get saved location and current location
+  Future<List> getSavedPosition(getType) async {
+    //Try to get saved location and current location
+    if (getType == 0) {
       final prefs = await SharedPreferences
           .getInstance(); // Get saved location from shared preferences
       final double? savedLocationLat = prefs.getDouble('locationlat');
       final double? savedLocationLng = prefs.getDouble('locationlat');
       if (savedLocationLat != null && savedLocationLng != null) {
         //If not null returned, return the value
-        print("Saved location not null");
         return [savedLocationLat, savedLocationLng];
       } else {
         //If null returned from saved location, get the approximate location
-        print("Getting current location");
-        bool serviceEnabled;
-        LocationPermission permission;
-
-        // Test if location services are enabled.
-        serviceEnabled = await Geolocator.isLocationServiceEnabled();
-        if (!serviceEnabled) {
-          return [51.509865, -0.118092];
-        }
-
-        // Check if the location is denied
-        permission = await Geolocator.checkPermission();
-        if (permission == LocationPermission.denied) {
-          permission = await Geolocator.requestPermission();
-          if (permission == LocationPermission.denied) {
-            return [51.509865, -0.118092];
-          }
-        }
-
-        if (permission == LocationPermission.deniedForever) {
-          // Permissions are denied forever, handle appropriately.
-
-          return [51.509865, -0.118092];
-        }
-
-        // Access the current possition of the device
-        Position locationDevice = await Geolocator.getCurrentPosition();
-        return [locationDevice.latitude, locationDevice.longitude];
+        return getCurrentLocation();
       }
-    } catch (e) {
+    } else if (getType == 1) {
+      return getCurrentLocation();
+    } else {
+      return [0, 0];
+    }
+  }
+
+  Future<List> getCurrentLocation() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Test if location services are enabled.
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
       return [51.509865, -0.118092];
     }
+
+    // Check if the location is denied
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return [51.509865, -0.118092];
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      // Permissions are denied forever, handle appropriately.
+      return [51.509865, -0.118092];
+    }
+
+    // Access the current possition of the device
+    Position locationDevice = await Geolocator.getCurrentPosition();
+    return [locationDevice.latitude, locationDevice.longitude];
   }
 
   Future<void> getPlacemark() async {
@@ -77,7 +80,7 @@ class _SelectLocationState extends State<SelectLocation> {
       textController.text =
           "${placemarks.first.street}, ${placemarks.first.subAdministrativeArea}";
     } catch (e) {
-      textController.text = "Unknown Location";
+      textController.text = "Move the map to select location";
     }
   }
 
@@ -86,20 +89,20 @@ class _SelectLocationState extends State<SelectLocation> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: FutureBuilder<List>(
-      future: getCameraPosition(),
+      future: getSavedPosition(0),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return GenericLoading();
+          return const GenericLoading();
         }
         if (snapshot.hasData) {
           var savedPosition = snapshot.data ?? [];
+
           CameraPosition cameraPosition = CameraPosition(
               target: LatLng(savedPosition[0], savedPosition[1]), zoom: 19);
           return Stack(
             alignment: Alignment.topCenter,
             children: [
               MapPicker(
-
                   // pass icon widget
                   iconWidget: const Icon(
                     Icons.location_on,
@@ -120,7 +123,6 @@ class _SelectLocationState extends State<SelectLocation> {
                     //  camera position
                     initialCameraPosition: cameraPosition,
                     onMapCreated: (GoogleMapController controller) {
-                      controller.setMapStyle(Theme);
                       _controller.complete(controller);
                     },
                     onCameraMoveStarted: () {
@@ -129,30 +131,49 @@ class _SelectLocationState extends State<SelectLocation> {
                       textController.text = "...";
                     },
                     onCameraMove: (cameraPosition) {
-                      print(cameraPosition.target);
-                      this.cameraPosition = cameraPosition;
+                      try {
+                        //If the pointer position is invalid, dont try to move the map.
+                        this.cameraPosition = cameraPosition;
+                      } catch (e) {
+                        cameraPosition = cameraPosition;
+                      }
                     },
                     onCameraIdle: () async {
                       // notify map stopped moving
-                      mapPickerController.mapFinishedMoving!();
-                      //get address name from camera position
-                      getPlacemark();
+                      try {
+                        // if there is an error getting the placemark return null
+                        mapPickerController.mapFinishedMoving!();
+                        //get address name from camera position
+                        getPlacemark();
+                      } catch (e) {
+                        return;
+                      }
                     },
                   )),
               Positioned(
-                top: MediaQuery.of(context).viewPadding.top + 20,
-                width: MediaQuery.of(context).size.width - 50,
-                height: 50,
-                child: TextFormField(
-                  maxLines: 3,
-                  textAlign: TextAlign.center,
-                  readOnly: true,
-                  decoration: const InputDecoration(
-                      contentPadding: EdgeInsets.zero,
-                      border: InputBorder.none),
-                  controller: textController,
-                ),
-              ),
+                  top: MediaQuery.of(context).viewPadding.top + 30,
+                  width: MediaQuery.of(context).size.width - 70,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 30),
+                    decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.onSurface,
+                        borderRadius: BorderRadius.circular(10)),
+                    child: TextFormField(
+                      style: Theme.of(context).textTheme.headline6!.copyWith(
+                          color: Theme.of(context).colorScheme.onBackground),
+                      maxLines: 1,
+                      textAlign: TextAlign.center,
+                      readOnly: true,
+                      decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.zero,
+                          border: InputBorder.none,
+                          disabledBorder: InputBorder.none,
+                          focusedBorder: InputBorder.none,
+                          enabledBorder: InputBorder.none),
+                      controller: textController,
+                    ),
+                  )),
               Positioned(
                   bottom: 24,
                   left: 24,
@@ -165,9 +186,11 @@ class _SelectLocationState extends State<SelectLocation> {
                               child: InkWell(
                                   onTap: null,
                                   child: Container(
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: Theme.of(context).primaryColor),
                                     padding: const EdgeInsets.symmetric(
                                         vertical: 15, horizontal: 30),
-                                    color: Theme.of(context).primaryColor,
                                     child: Text(
                                       "Save Location",
                                       textAlign: TextAlign.center,
@@ -184,10 +207,17 @@ class _SelectLocationState extends State<SelectLocation> {
                             width: 20,
                           ),
                           InkWell(
-                            onTap: null,
+                            onTap: () {
+                              setState(() {
+                                cameraPosition = const CameraPosition(
+                                    target: LatLng(0, 0), zoom: 19);
+                              });
+                            },
                             child: Container(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: Theme.of(context).backgroundColor),
                                 padding: const EdgeInsets.all(15),
-                                color: Theme.of(context).primaryColor,
                                 child: Icon(
                                   Icons.my_location,
                                   color: Theme.of(context)
