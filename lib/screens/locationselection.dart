@@ -7,6 +7,7 @@ import 'package:map_picker/map_picker.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SelectLocation extends StatefulWidget {
   const SelectLocation({super.key});
@@ -30,10 +31,19 @@ class _SelectLocationState extends State<SelectLocation> {
     if (getType == 0) {
       final prefs = await SharedPreferences
           .getInstance(); // Get saved location from shared preferences
-      final double? savedLocationLat = prefs.getDouble('locationlat');
-      final double? savedLocationLng = prefs.getDouble('locationlat');
-      if (savedLocationLat != null && savedLocationLng != null) {
+      final double? savedLocationLat = prefs.getDouble('locationLatitude');
+      final double? savedLocationLng = prefs.getDouble('locationLongitude');
+      final List<String>? savedLocationText =
+          prefs.getStringList('locationPlacemark');
+      print(">> ${savedLocationLng}");
+      if (savedLocationLat != null &&
+          savedLocationLng != null &&
+          savedLocationText != null) {
         //If not null returned, return the value
+        addresslineone = TextEditingController(text: savedLocationText[0]);
+        addresslinetwo = TextEditingController(text: savedLocationText[1]);
+        city = TextEditingController(text: savedLocationText[2]);
+        postcode = TextEditingController(text: savedLocationText[3]);
         return [savedLocationLat, savedLocationLng];
       } else {
         //If null returned from saved location, get the approximate location
@@ -43,6 +53,28 @@ class _SelectLocationState extends State<SelectLocation> {
       return getCurrentLocation();
     } else {
       return [0, 0];
+    }
+  }
+
+  Future<bool> saveLocation() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setDouble('locationLatitude', cameraPosition.target.latitude);
+      await prefs.setDouble(
+          'locationLatitude', cameraPosition.target.longitude);
+      await prefs.setStringList('locationPlacemark', <String>[
+        addresslineone.text,
+        addresslinetwo.text,
+        city.text,
+        postcode.text
+      ]);
+      final prefs2 = await SharedPreferences.getInstance();
+      final double? test = prefs.getDouble('locationLatitude');
+      print(test);
+      print(">>> ${cameraPosition.target.latitude}");
+      return true;
+    } catch (e) {
+      return false;
     }
   }
 
@@ -200,12 +232,26 @@ class _SelectLocationState extends State<SelectLocation> {
                                         children: [
                                           Expanded(
                                               child: InkWell(
-                                                  onTap: (() {
-                                                    print(cameraPosition
-                                                        .target.latitude);
-                                                    print(cameraPosition
-                                                        .target.longitude);
-                                                    print(textController.text);
+                                                  onTap: (() async {
+                                                    bool hasSavedLocation =
+                                                        await saveLocation();
+
+                                                    if (hasSavedLocation ==
+                                                        true) {
+                                                      setState(() {
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                      });
+                                                    } else {
+                                                      setState(() {
+                                                        ScaffoldMessenger.of(
+                                                                context)
+                                                            .showSnackBar(
+                                                                const SnackBar(
+                                                                    content: Text(
+                                                                        'Failed to update location.')));
+                                                      });
+                                                    }
                                                   }),
                                                   child: Container(
                                                     decoration: BoxDecoration(
