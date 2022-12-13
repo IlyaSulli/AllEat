@@ -7,7 +7,6 @@ import 'package:map_picker/map_picker.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class SelectLocation extends StatefulWidget {
   const SelectLocation({super.key});
@@ -26,33 +25,33 @@ class _SelectLocationState extends State<SelectLocation> {
   late var cameraPosition =
       const CameraPosition(target: LatLng(0, 0), zoom: 20);
 
-  Future<List> getSavedPosition(getType) async {
+  Future<List> getSavedPosition() async {
     //Try to get saved location and current location
-    if (getType == 0) {
-      final prefs = await SharedPreferences
-          .getInstance(); // Get saved location from shared preferences
-      final double? savedLocationLat = prefs.getDouble('locationLatitude');
-      final double? savedLocationLng = prefs.getDouble('locationLongitude');
-      final List<String>? savedLocationText =
-          prefs.getStringList('locationPlacemark');
-      print(">> ${savedLocationLng}");
-      if (savedLocationLat != null &&
-          savedLocationLng != null &&
-          savedLocationText != null) {
-        //If not null returned, return the value
-        addresslineone = TextEditingController(text: savedLocationText[0]);
-        addresslinetwo = TextEditingController(text: savedLocationText[1]);
-        city = TextEditingController(text: savedLocationText[2]);
-        postcode = TextEditingController(text: savedLocationText[3]);
-        return [savedLocationLat, savedLocationLng];
-      } else {
-        //If null returned from saved location, get the approximate location
-        return getCurrentLocation();
-      }
-    } else if (getType == 1) {
-      return getCurrentLocation();
+
+    final prefs = await SharedPreferences
+        .getInstance(); // Get saved location from shared preferences
+    final double? savedLocationLat = prefs.getDouble('locationLatitude');
+    final double? savedLocationLng = prefs.getDouble('locationLongitude');
+    final List<String>? savedLocationText =
+        prefs.getStringList('locationPlacemark');
+    print(savedLocationText);
+    print(savedLocationLat);
+    print(savedLocationLng);
+    print(savedLocationText == true);
+    if (savedLocationLat != null &&
+        savedLocationLng != null &&
+        savedLocationText != null) {
+      print("Has been saved");
+      //If not null returned, return the value
+      addresslineone = TextEditingController(text: savedLocationText[0]);
+      addresslinetwo = TextEditingController(text: savedLocationText[1]);
+      city = TextEditingController(text: savedLocationText[2]);
+      postcode = TextEditingController(text: savedLocationText[3]);
+      return [savedLocationLat, savedLocationLng];
     } else {
-      return [0, 0];
+      print("Not been saved");
+      //If null returned from saved location, get the approximate location
+      return getCurrentLocation();
     }
   }
 
@@ -60,18 +59,16 @@ class _SelectLocationState extends State<SelectLocation> {
     try {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setDouble('locationLatitude', cameraPosition.target.latitude);
+
       await prefs.setDouble(
-          'locationLatitude', cameraPosition.target.longitude);
+          'locationLongitude', cameraPosition.target.longitude);
       await prefs.setStringList('locationPlacemark', <String>[
         addresslineone.text,
         addresslinetwo.text,
         city.text,
         postcode.text
       ]);
-      final prefs2 = await SharedPreferences.getInstance();
-      final double? test = prefs.getDouble('locationLatitude');
-      print(test);
-      print(">>> ${cameraPosition.target.latitude}");
+
       return true;
     } catch (e) {
       return false;
@@ -85,6 +82,7 @@ class _SelectLocationState extends State<SelectLocation> {
     // Test if location services are enabled.
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
+      await getPlacemark([false, 51.509865, -0.118092]);
       return [51.509865, -0.118092];
     }
 
@@ -93,34 +91,55 @@ class _SelectLocationState extends State<SelectLocation> {
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
+        await getPlacemark([false, 51.509865, -0.118092]);
         return [51.509865, -0.118092];
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
       // Permissions are denied forever, handle appropriately.
+      await getPlacemark([false, 51.509865, -0.118092]);
       return [51.509865, -0.118092];
     }
 
     // Access the current possition of the device
     Position locationDevice = await Geolocator.getCurrentPosition();
+    await getPlacemark(
+        [false, locationDevice.latitude, locationDevice.longitude]);
     return [locationDevice.latitude, locationDevice.longitude];
   }
 
-  Future<void> getPlacemark() async {
+  Future<void> getPlacemark(placemarkLocation) async {
     try {
-      List<Placemark> placemarks = await placemarkFromCoordinates(
-        cameraPosition.target.latitude,
-        cameraPosition.target.longitude,
-      );
-      addresslineone = TextEditingController(text: placemarks.first.name);
-      addresslinetwo = TextEditingController(text: placemarks.first.street);
-      postcode = TextEditingController(text: placemarks.first.postalCode);
-      if ((placemarks.first.locality) == "") {
-        city =
-            TextEditingController(text: placemarks.first.subAdministrativeArea);
-      } else {
-        city = TextEditingController(text: placemarks.first.locality);
+      switch (placemarkLocation[0]) {
+        case true:
+          List<Placemark> placemarks = await placemarkFromCoordinates(
+            cameraPosition.target.latitude,
+            cameraPosition.target.longitude,
+          );
+          addresslineone = TextEditingController(text: placemarks.first.name);
+          addresslinetwo = TextEditingController(text: placemarks.first.street);
+          postcode = TextEditingController(text: placemarks.first.postalCode);
+          if ((placemarks.first.locality) == "") {
+            city = TextEditingController(
+                text: placemarks.first.subAdministrativeArea);
+          } else {
+            city = TextEditingController(text: placemarks.first.locality);
+          }
+          break;
+        case false:
+          List<Placemark> placemarks = await placemarkFromCoordinates(
+              placemarkLocation[1], placemarkLocation[2]);
+          addresslineone = TextEditingController(text: placemarks.first.name);
+          addresslinetwo = TextEditingController(text: placemarks.first.street);
+          postcode = TextEditingController(text: placemarks.first.postalCode);
+          if ((placemarks.first.locality) == "") {
+            city = TextEditingController(
+                text: placemarks.first.subAdministrativeArea);
+          } else {
+            city = TextEditingController(text: placemarks.first.locality);
+          }
+          break;
       }
     } catch (e) {
       textController.text = "";
@@ -132,7 +151,7 @@ class _SelectLocationState extends State<SelectLocation> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: FutureBuilder<List>(
-      future: getSavedPosition(0),
+      future: getSavedPosition(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return const GenericLoading();
@@ -172,7 +191,11 @@ class _SelectLocationState extends State<SelectLocation> {
                       },
                       onCameraMoveStarted: () {
                         // notify map is moving
-                        mapPickerController.mapMoving!();
+                        try {
+                          mapPickerController.mapMoving!();
+                        } catch (e) {
+                          Navigator.pop(context);
+                        }
                       },
                       onCameraMove: (cameraPosition) {
                         try {
@@ -188,7 +211,7 @@ class _SelectLocationState extends State<SelectLocation> {
                           // if there is an error getting the placemark return null
                           mapPickerController.mapFinishedMoving!();
                           //get address name from camera position
-                          getPlacemark();
+                          getPlacemark([true]);
                         } catch (e) {
                           return;
                         }
@@ -331,7 +354,16 @@ class _SelectLocationState extends State<SelectLocation> {
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .headline3),
-                                            const SizedBox(height: 20),
+                                            Padding(
+                                                padding: const EdgeInsets.only(
+                                                    top: 5,
+                                                    right: 20,
+                                                    bottom: 30),
+                                                child: Text(
+                                                    "Set your exact address on the map and edit it below.",
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .headline6)),
                                             Padding(
                                                 padding:
                                                     const EdgeInsets.symmetric(
