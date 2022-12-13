@@ -34,14 +34,10 @@ class _SelectLocationState extends State<SelectLocation> {
     final double? savedLocationLng = prefs.getDouble('locationLongitude');
     final List<String>? savedLocationText =
         prefs.getStringList('locationPlacemark');
-    print(savedLocationText);
-    print(savedLocationLat);
-    print(savedLocationLng);
-    print(savedLocationText == true);
+
     if (savedLocationLat != null &&
         savedLocationLng != null &&
         savedLocationText != null) {
-      print("Has been saved");
       //If not null returned, return the value
       addresslineone = TextEditingController(text: savedLocationText[0]);
       addresslinetwo = TextEditingController(text: savedLocationText[1]);
@@ -49,7 +45,6 @@ class _SelectLocationState extends State<SelectLocation> {
       postcode = TextEditingController(text: savedLocationText[3]);
       return [savedLocationLat, savedLocationLng];
     } else {
-      print("Not been saved");
       //If null returned from saved location, get the approximate location
       return getCurrentLocation();
     }
@@ -59,7 +54,6 @@ class _SelectLocationState extends State<SelectLocation> {
     try {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setDouble('locationLatitude', cameraPosition.target.latitude);
-
       await prefs.setDouble(
           'locationLongitude', cameraPosition.target.longitude);
       await prefs.setStringList('locationPlacemark', <String>[
@@ -219,12 +213,14 @@ class _SelectLocationState extends State<SelectLocation> {
                     ));
               }),
               DraggableScrollableSheet(
+                  //Dragable bottom bar
                   initialChildSize: 0.2,
                   snap: true,
                   minChildSize: 0.2,
                   maxChildSize: 0.8,
                   builder: ((context, scrollController) {
                     return Container(
+                        //Setting bar attributes
                         decoration: BoxDecoration(
                             borderRadius: const BorderRadius.vertical(
                                 top: Radius.circular(10)),
@@ -255,9 +251,10 @@ class _SelectLocationState extends State<SelectLocation> {
                                         children: [
                                           Expanded(
                                               child: InkWell(
+                                                  //Save Location button
                                                   onTap: (() async {
                                                     bool hasSavedLocation =
-                                                        await saveLocation();
+                                                        await saveLocation(); //Try to save
 
                                                     if (hasSavedLocation ==
                                                         true) {
@@ -267,6 +264,7 @@ class _SelectLocationState extends State<SelectLocation> {
                                                       });
                                                     } else {
                                                       setState(() {
+                                                        //Display failed to update
                                                         ScaffoldMessenger.of(
                                                                 context)
                                                             .showSnackBar(
@@ -305,6 +303,7 @@ class _SelectLocationState extends State<SelectLocation> {
                                             width: 20,
                                           ),
                                           InkWell(
+                                            //Current location button
                                             onTap: () async {
                                               // Get the current location of the device
                                               List currentLocation =

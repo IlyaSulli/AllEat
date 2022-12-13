@@ -1,5 +1,4 @@
 library globals;
-import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/material.dart';
 
 dynamic appthemepreference = 0;
