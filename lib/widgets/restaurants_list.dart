@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as converty;
+import 'dart:math';
 
 class RestaurantList extends StatefulWidget {
   const RestaurantList({Key? key}) : super(key: key);
@@ -45,10 +46,20 @@ class _RestaurantListState extends State<RestaurantList> {
           ];
           return error;
         } else {
-          List listdata = [
-            data
-          ]; //If success, send the list of restaurants back
-          return listdata;
+          List listdata = await getDistance(data);
+          if (listdata[0] == false) {
+            List error = [
+              {
+                "error": "true",
+                "restaurants": "[]"
+              } //Send blank list of restaurants
+            ];
+            return error;
+          } else {
+            print(listdata[1]);
+            return [listdata[1]];
+          }
+          //If success, send the list of restaurants back
         }
       } else {
         List error = [
@@ -61,6 +72,33 @@ class _RestaurantListState extends State<RestaurantList> {
         {"error": "true", "restaurants": "[]"}
       ];
       return error;
+    }
+  }
+
+  Future<List> getDistance(restaurantdata) async {
+    var p = 0.017453292519943295; //Convert constant from degrees to radians
+    final prefs = await SharedPreferences.getInstance();
+    final double? savedLocationLat = prefs.getDouble('locationLatitude'); //lat2
+    final double? savedLocationLng =
+        prefs.getDouble('locationLongitude'); //lng2
+    if (savedLocationLat != null && savedLocationLng != null) {
+      for (var i = 0; i < restaurantdata["restaurants"].length; i++) {
+        double latRestaurant =
+            double.parse(restaurantdata["restaurants"][i][4]); //lat1
+        double lngRestaurant =
+            double.parse(restaurantdata["restaurants"][i][5]); //lng1
+        double distance = 12742 *
+            asin(sqrt(0.5 -
+                cos((savedLocationLat - latRestaurant) * p) / 2 +
+                cos(latRestaurant * p) *
+                    cos(savedLocationLat * p) *
+                    (1 - cos((savedLocationLng - lngRestaurant) * p)) /
+                    2));
+        restaurantdata["restaurants"][i].add(distance);
+      }
+      return [true, restaurantdata];
+    } else {
+      return [false, restaurantdata];
     }
   }
 
@@ -411,7 +449,8 @@ class _RestaurantListState extends State<RestaurantList> {
                                                     const SizedBox(height: 10),
                                                     Row(
                                                       children: [
-                                                        Text("N/A miles away",
+                                                        Text(
+                                                            "${(restaurantsdata[0]["restaurants"][index][6]).toStringAsFixed(1)} km away",
                                                             style: Theme.of(
                                                                     context)
                                                                 .textTheme
@@ -464,7 +503,7 @@ class _RestaurantListState extends State<RestaurantList> {
                     decoration: BoxDecoration(
                         borderRadius:
                             const BorderRadius.all(Radius.circular(20)),
-                        color: const Color(0xffffffff),
+                        color: Theme.of(context).colorScheme.onSurface,
                         boxShadow: [
                           BoxShadow(
                             color: Colors.black.withOpacity(0.1),
@@ -481,7 +520,10 @@ class _RestaurantListState extends State<RestaurantList> {
                             width: double.infinity,
                             child: Center(
                                 child: Column(children: [
-                              const Text("Error 400: Connection failed"),
+                              const Text("Error: Please try again"),
+                              const SizedBox(
+                                height: 20,
+                              ),
                               ElevatedButton(
                                   onPressed: () {
                                     setState(() {
