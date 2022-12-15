@@ -1,3 +1,4 @@
+import 'package:alleat/screens/filtersort.dart';
 import 'package:alleat/widgets/elements/browse_categories.dart';
 import 'package:alleat/widgets/elements/search.dart';
 import 'package:alleat/widgets/restaurants_list.dart';
@@ -73,7 +74,11 @@ class _BrowsePageState extends State<BrowsePage> {
                         size: 30,
                         color: Theme.of(context).colorScheme.onBackground,
                       )),
-                  onTap: () => (null))
+                  onTap: () => (Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const FilterSort()),
+                      )))
             ],
           )),
       const SizedBox(height: 30),

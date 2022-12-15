@@ -9,14 +9,17 @@ class RestaurantMain extends StatefulWidget {
   final String resname;
   final String reslogo;
   final String resbanner;
+  final String resdistance;
 
   const RestaurantMain(
-      //Get restaurant info from the restuarant list widget (passed from the container)
+      //Get restaurant info from the restaurant list widget (passed from the container)
       {Key? key,
       required this.resid,
       required this.resname,
       required this.reslogo,
-      required this.resbanner})
+      required this.resbanner,
+      required this.resdistance
+      })
       : super(key: key);
 
   @override
@@ -399,7 +402,7 @@ class _RestaurantMainState extends State<RestaurantMain> {
             const SizedBox(height: 10),
             Row(
               children: [
-                Text("N/A miles away",
+                Text("${widget.resdistance} km away",
                     style: Theme.of(context).textTheme.bodyText1),
                 const SizedBox(
                   width: 5,

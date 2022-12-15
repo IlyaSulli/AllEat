@@ -40,7 +40,8 @@ class _RestaurantListState extends State<RestaurantList> {
           //If fails to perform query
           List error = [
             {
-              "error": "true",
+              "error": true,
+              "message": "Error: ${data["error"]}",
               "restaurants": "[]"
             } //Send blank list of restaurants
           ];
@@ -50,7 +51,9 @@ class _RestaurantListState extends State<RestaurantList> {
           if (listdata[0] == false) {
             List error = [
               {
-                "error": "true",
+                "error": true,
+                "message":
+                    "Failed to get Location. \nTry changing your destination address",
                 "restaurants": "[]"
               } //Send blank list of restaurants
             ];
@@ -63,13 +66,21 @@ class _RestaurantListState extends State<RestaurantList> {
         }
       } else {
         List error = [
-          {"error": "true", "restaurants": "[]"}
+          {
+            "error": true,
+            "message": "Error ${res.statusCode}: Failed to connect to server.",
+            "restaurants": "[]"
+          }
         ];
         return error;
       }
     } catch (e) {
-      List<Map<String, String>> error = [
-        {"error": "true", "restaurants": "[]"}
+      List error = [
+        {
+          "error": true,
+          "message": "An unexpected error occured.\n Try reopening the app.",
+          "restaurants": "[]"
+        }
       ];
       return error;
     }
@@ -147,7 +158,7 @@ class _RestaurantListState extends State<RestaurantList> {
           //If error querying data
           List error = [
             {
-              "error": "true",
+              "error": true,
               "favouriterestaurants": "[]"
             } //Send empty favourite restaurant ids list
           ];
@@ -159,13 +170,13 @@ class _RestaurantListState extends State<RestaurantList> {
         }
       } else {
         List error = [
-          {"error": "true", "favouriterestaurants": "[]"}
+          {"error": true, "favouriterestaurants": "[]"}
         ];
         return error;
       }
     } catch (e) {
-      List<Map<String, String>> error = [
-        {"error": "true", "favouriterestaurants": "[]"}
+      List error = [
+        {"error": true, "favouriterestaurants": "[]"}
       ];
       return error;
     }
@@ -177,17 +188,56 @@ class _RestaurantListState extends State<RestaurantList> {
       //Get list of restaurants data from future (rebuild on change of data)
       future: getRestaurants(),
       builder: ((context, snapshot) {
-        List restaurantsdata =
-            snapshot.data ?? []; //Data stored in restaurantsdata
-
-        if (!snapshot.hasData) {
-          //While no data recieved, show loading bar
-          return const LinearProgressIndicator(
-              color: Color(0xff4100C4),
-              backgroundColor: Color.fromARGB(0, 235, 224, 255));
-        } else {
+        if (snapshot.hasData) {
           //If recieved data
-          try {
+          List restaurantsdata =
+              snapshot.data ?? []; //Data stored in restaurantsdata
+          if (restaurantsdata[0]["error"] == true) {
+            return Padding(
+                padding: const EdgeInsets.only(
+                    left: 20, right: 20, top: 10, bottom: 10),
+                child: Container(
+                    decoration: BoxDecoration(
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(20)),
+                        color: Theme.of(context).colorScheme.onSurface,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            spreadRadius: 2,
+                            blurRadius: 10,
+                            offset: const Offset(
+                                0, 10), // changes position of shadow
+                          ),
+                        ]),
+                    child: Column(children: [
+                      Padding(
+                        padding: const EdgeInsets.all(30),
+                        child: SizedBox(
+                            width: double.infinity,
+                            child: Center(
+                                child: Column(children: [
+                              Text(
+                                "${restaurantsdata[0]["message"]}",
+                                textAlign: TextAlign.center,
+                                style: Theme.of(context).textTheme.headline6,
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              ElevatedButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      getRestaurants();
+                                    });
+                                  },
+                                  child: const Text("Retry"))
+                            ]))),
+                      )
+                    ])));
+          } else {
+            //try {
+            print(restaurantsdata[0]);
             List restaurants = restaurantsdata[0]["restaurants"];
             return FutureBuilder<List>(
               //Get favourites list from future
@@ -253,9 +303,9 @@ class _RestaurantListState extends State<RestaurantList> {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder:
-                                              (context) => //On tap, send restaurant data associated with container to main page and go to that new screen
-                                                  RestaurantMain(
+                                        builder:
+                                            (context) => //On tap, send restaurant data associated with container to main page and go to that new screen
+                                                RestaurantMain(
                                                     resid:
                                                         restaurantinfodata[0],
                                                     resname:
@@ -264,7 +314,12 @@ class _RestaurantListState extends State<RestaurantList> {
                                                         restaurantinfodata[2],
                                                     resbanner:
                                                         restaurantinfodata[3],
-                                                  )));
+                                                    resdistance: (restaurantsdata[
+                                                                    0]
+                                                                ["restaurants"]
+                                                            [index][6])
+                                                        .toStringAsFixed(1)),
+                                      ));
                                 },
                                 child: Container(
                                     margin: const EdgeInsets.symmetric(
@@ -495,46 +550,55 @@ class _RestaurantListState extends State<RestaurantList> {
                 }
               }),
             );
-          } catch (e) {
-            return Padding(
-                padding: const EdgeInsets.only(
-                    left: 20, right: 20, top: 10, bottom: 10),
-                child: Container(
-                    decoration: BoxDecoration(
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(20)),
-                        color: Theme.of(context).colorScheme.onSurface,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
-                            spreadRadius: 2,
-                            blurRadius: 10,
-                            offset: const Offset(
-                                0, 10), // changes position of shadow
-                          ),
-                        ]),
-                    child: Column(children: [
-                      Padding(
-                        padding: const EdgeInsets.all(30),
-                        child: SizedBox(
-                            width: double.infinity,
-                            child: Center(
-                                child: Column(children: [
-                              const Text("Error: Please try again"),
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              ElevatedButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      getRestaurants();
-                                    });
-                                  },
-                                  child: const Text("Retry"))
-                            ]))),
-                      )
-                    ])));
+            // } catch (e) {
+            //   print(e);
+            //   return Padding(
+            //       padding: const EdgeInsets.only(
+            //           left: 20, right: 20, top: 10, bottom: 10),
+            //       child: Container(
+            //           decoration: BoxDecoration(
+            //               borderRadius:
+            //                   const BorderRadius.all(Radius.circular(20)),
+            //               color: Theme.of(context).colorScheme.onSurface,
+            //               boxShadow: [
+            //                 BoxShadow(
+            //                   color: Colors.black.withOpacity(0.1),
+            //                   spreadRadius: 2,
+            //                   blurRadius: 10,
+            //                   offset: const Offset(
+            //                       0, 10), // changes position of shadow
+            //                 ),
+            //               ]),
+            //           child: Column(children: [
+            //             Padding(
+            //               padding: const EdgeInsets.all(30),
+            //               child: SizedBox(
+            //                   width: double.infinity,
+            //                   child: Center(
+            //                       child: Column(children: [
+            //                     const Text(
+            //                       "An unexpected error occured. \nPlease try again",
+            //                       textAlign: TextAlign.center,
+            //                     ),
+            //                     const SizedBox(
+            //                       height: 20,
+            //                     ),
+            //                     ElevatedButton(
+            //                         onPressed: () {
+            //                           setState(() {
+            //                             getRestaurants();
+            //                           });
+            //                         },
+            //                         child: const Text("Retry"))
+            //                   ]))),
+            //             )
+            //           ])));
+            // }
           }
+        } else {
+          return const LinearProgressIndicator(
+              color: Color(0xff4100C4),
+              backgroundColor: Color.fromARGB(0, 235, 224, 255));
         }
       }),
     );
