@@ -1,4 +1,5 @@
-![banner](https://user-images.githubusercontent.com/81645040/207942811-1187bcbf-4277-4ae6-b8c1-b4589937cd32.png)
+![banner](https://user-images.githubusercontent.com/81645040/207942918-19d81b1d-c89e-4d22-a809-eb79807b3059.png)
+
 # All Eat
 A Food delivery app
 
