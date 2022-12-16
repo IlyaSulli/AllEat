@@ -1,4 +1,5 @@
 library globals;
+
 import 'package:flutter/material.dart';
 
 dynamic appthemepreference = 0;
@@ -44,7 +45,6 @@ class ThemeClass {
   static Color primary050 = const Color(0xffEBE0FF);
 
   static ThemeData lightTheme = ThemeData(
-      
 
       //COLOUR
 
@@ -55,7 +55,6 @@ class ThemeClass {
         onBackground: textLight,
         onSurface: mono000,
       ),
-      
 
       // MAIN APP
 
@@ -73,8 +72,6 @@ class ThemeClass {
               fontWeight: FontWeight.w600,
               fontSize: 14),
           backgroundColor: mono100),
-      
-      
 
       // TEXT
 
@@ -93,7 +90,7 @@ class ThemeClass {
               color: mono800,
               fontFamily: 'Satoshi',
               fontWeight: FontWeight.w600,
-              fontSize: 24),
+              fontSize: 21),
           headline4: TextStyle(
               color: mono800,
               fontFamily: 'Satoshi',
@@ -226,7 +223,7 @@ class ThemeClass {
               color: mono100,
               fontFamily: 'Satoshi',
               fontWeight: FontWeight.w600,
-              fontSize: 24),
+              fontSize: 21),
           headline4: TextStyle(
               color: mono100,
               fontFamily: 'Satoshi',

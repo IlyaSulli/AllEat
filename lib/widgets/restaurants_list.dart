@@ -59,7 +59,6 @@ class _RestaurantListState extends State<RestaurantList> {
             ];
             return error;
           } else {
-            print(listdata[1]);
             return [listdata[1]];
           }
           //If success, send the list of restaurants back
@@ -237,7 +236,6 @@ class _RestaurantListState extends State<RestaurantList> {
                     ])));
           } else {
             try {
-              print(restaurantsdata[0]);
               List restaurants = restaurantsdata[0]["restaurants"];
               return FutureBuilder<List>(
                 //Get favourites list from future
@@ -557,7 +555,6 @@ class _RestaurantListState extends State<RestaurantList> {
                 }),
               );
             } catch (e) {
-              print(e);
               return Padding(
                   padding: const EdgeInsets.only(
                       left: 20, right: 20, top: 10, bottom: 10),
