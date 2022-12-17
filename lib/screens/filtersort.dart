@@ -13,22 +13,26 @@ class _FilterSortState extends State<FilterSort> {
     "sort": "default",
     "favourite": false,
     "price": [1, 2, 3, 4],
-    "maxDelivery": 4,
-    "minOrder": 40
+    "maxDelivery": 4.0,
+    "minOrder": 40.0
   };
   List sortOptions = [
+    //Sort options [Visual button text, icon, option saved in customiseSelected]
     ["Recommended", Icons.assistant_outlined, "default"],
     ["Top Rated", Icons.star_border_outlined, "top"],
     ["Popular", Icons.local_fire_department_outlined, "hot"],
     ["Distance", Icons.straighten_outlined, "distance"]
   ];
   List priceRangeOptions = [
+    //Price range options [Visual Text, Option Saved in customiseSelected]
     ["£", 1],
     ["££", 2],
     ["£££", 3],
-    ["£££", 4]
+    ["££££", 4]
   ];
-  bool isChecked = false;
+  bool isChecked = false; //Favourites selector
+  double _currentMaxDeliveryFeeValue = 4;
+  double _currentMinOrderPriceValue = 40;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +40,77 @@ class _FilterSortState extends State<FilterSort> {
         body: SingleChildScrollView(
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      const ScreenBackButton(),
+      Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const ScreenBackButton(),
+            LayoutBuilder(builder: (context, constraints) {
+              if (customiseSelected["sort"] != "default" ||
+                  customiseSelected["favourite"] != false ||
+                  !customiseSelected["price"].contains(1) ||
+                  !customiseSelected["price"].contains(2) ||
+                  !customiseSelected["price"].contains(3) ||
+                  !customiseSelected["price"].contains(4) ||
+                  customiseSelected["maxDelivery"] != 4.0 ||
+                  customiseSelected["minOrder"] != 40.0) {
+                return InkWell(
+                    onTap: () {
+                      setState(() {
+                        customiseSelected = {
+                          "sort": "default",
+                          "favourite": false,
+                          "price": [1, 2, 3, 4],
+                          "maxDelivery": 4.0,
+                          "minOrder": 40.0
+                        };
+                        _currentMaxDeliveryFeeValue = 4;
+                        _currentMinOrderPriceValue = 40;
+                      });
+                    },
+                    child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 40, vertical: 20),
+                        child: Text(
+                          "Clear all",
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline6!
+                              .copyWith(
+                                  color: Theme.of(context).colorScheme.error),
+                        )));
+              } else {
+                return InkWell(
+                    onTap: () {
+                      setState(() {
+                        customiseSelected = {
+                          "sort": "default",
+                          "favourite": false,
+                          "price": [1, 2, 3, 4],
+                          "maxDelivery": 4.0,
+                          "minOrder": 40.0
+                        };
+                        _currentMaxDeliveryFeeValue = 4;
+                        _currentMinOrderPriceValue = 40;
+                      });
+                    },
+                    child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 40, vertical: 20),
+                        child: Text(
+                          "Clear all",
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline6!
+                              .copyWith(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .error
+                                      .withOpacity(0.1)),
+                        )));
+              }
+            })
+          ]),
       Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30),
           child:
@@ -123,7 +197,7 @@ class _FilterSortState extends State<FilterSort> {
                   ),
                   checkColor: Colors.white,
                   activeColor: Theme.of(context).primaryColor,
-                  contentPadding: EdgeInsets.all(0),
+                  contentPadding: const EdgeInsets.all(0),
                   value: isChecked,
                   controlAffinity: ListTileControlAffinity.leading,
                   onChanged: (newValue) {
@@ -133,7 +207,7 @@ class _FilterSortState extends State<FilterSort> {
                     if (isChecked) {
                       customiseSelected["favourite"] = true;
                     } else {
-                      customiseSelected["filters"] = false;
+                      customiseSelected["favourite"] = false;
                     }
                   },
                 )),
@@ -154,14 +228,128 @@ class _FilterSortState extends State<FilterSort> {
                     shrinkWrap: true,
                     itemCount: priceRangeOptions.length, //For each restaurant
                     itemBuilder: (context, index) {
-                      return ElevatedButton(
-                        child: Text(
-                          priceRangeOptions[index][0],
-                          style: Theme.of(context).textTheme.headline6,
-                        ),
-                        onPressed: null,
-                      );
+                      return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 5),
+                          child: SizedBox(
+                              width: 70,
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    side: customiseSelected["price"].contains(
+                                            priceRangeOptions[index][1])
+                                        ? BorderSide(
+                                            color:
+                                                Theme.of(context).primaryColor,
+                                            width: 2)
+                                        : BorderSide.none,
+                                    backgroundColor:
+                                        Theme.of(context).colorScheme.onSurface,
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 15, horizontal: 10)),
+                                onPressed: () {
+                                  if (customiseSelected["price"]
+                                      .contains(priceRangeOptions[index][1])) {
+                                    setState(() {
+                                      customiseSelected["price"]
+                                          .remove(priceRangeOptions[index][1]);
+                                    });
+                                  } else {
+                                    setState(() {
+                                      customiseSelected["price"]
+                                          .add(priceRangeOptions[index][1]);
+                                    });
+                                  }
+                                },
+                                child: Text(
+                                  priceRangeOptions[index][0],
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline6!
+                                      .copyWith(
+                                        color: customiseSelected["price"]
+                                                .contains(
+                                                    priceRangeOptions[index][1])
+                                            ? Theme.of(context).primaryColor
+                                            : Theme.of(context)
+                                                .textTheme
+                                                .headline6
+                                                ?.color,
+                                      ),
+                                ),
+                              )));
                     })),
+            const SizedBox(
+              height: 40,
+            ),
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+              Text("Max Delivery Fee",
+                  style: Theme.of(context).textTheme.headline3),
+              LayoutBuilder(builder: (context, constraints) {
+                if (_currentMaxDeliveryFeeValue == 0) {
+                  return const Text("FREE");
+                } else if (_currentMaxDeliveryFeeValue == 4) {
+                  return const Text("£4.00+");
+                } else {
+                  return Text("£${_currentMaxDeliveryFeeValue}0");
+                }
+              })
+            ]),
+            const SizedBox(
+              height: 20,
+            ),
+            Slider(
+              value: _currentMaxDeliveryFeeValue,
+              max: 4,
+              min: 0,
+              thumbColor: Theme.of(context).primaryColor,
+              activeColor: Theme.of(context).primaryColor,
+              inactiveColor:
+                  Theme.of(context).colorScheme.onBackground.withOpacity(0.2),
+              divisions: 4,
+              onChanged: (double value) {
+                setState(() {
+                  _currentMaxDeliveryFeeValue = value;
+                });
+                customiseSelected["maxDelivery"] = _currentMaxDeliveryFeeValue;
+              },
+            ),
+            const SizedBox(
+              height: 40,
+            ),
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+              Text("Min Order Price",
+                  style: Theme.of(context).textTheme.headline3),
+              LayoutBuilder(builder: (context, constraints) {
+                if (_currentMinOrderPriceValue == 0) {
+                  return const Text("None");
+                } else if (_currentMinOrderPriceValue == 40) {
+                  return const Text("£40.00+");
+                } else {
+                  return Text("£${_currentMinOrderPriceValue}0");
+                }
+              })
+            ]),
+            const SizedBox(
+              height: 20,
+            ),
+            Slider(
+              value: _currentMinOrderPriceValue,
+              max: 40,
+              min: 0,
+              thumbColor: Theme.of(context).primaryColor,
+              activeColor: Theme.of(context).primaryColor,
+              inactiveColor:
+                  Theme.of(context).colorScheme.onBackground.withOpacity(0.2),
+              divisions: 4,
+              onChanged: (double value) {
+                setState(() {
+                  _currentMinOrderPriceValue = value;
+                });
+                customiseSelected["minOrder"] = _currentMinOrderPriceValue;
+              },
+            ),
+            const SizedBox(
+              height: 40,
+            ),
           ])),
     ])));
   }
