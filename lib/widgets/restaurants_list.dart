@@ -2,7 +2,7 @@ import 'package:alleat/screens/restaurant/restaurant_main.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert' as converty;
+import 'dart:convert';
 import 'dart:math';
 
 class RestaurantList extends StatefulWidget {
@@ -15,6 +15,16 @@ class RestaurantList extends StatefulWidget {
 class _RestaurantListState extends State<RestaurantList> {
   late bool error, sending, success, serverOffline;
   late String msg;
+  Map metadataTemp = {
+    "error": false,
+    "sort": "default",
+    "favourite": false,
+    "price": [1, 2, 3, 4],
+    "maxDelivery": 4.0,
+    "minOrder": 40.0,
+    "latitude": 0.0,
+    "longitude": 0.0
+  };
 
   @override
   void initState() {
@@ -26,7 +36,35 @@ class _RestaurantListState extends State<RestaurantList> {
     super.initState();
   }
 
+  Future<Map> getUserMetadata() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? filterSortEncoded = prefs.getString('filtersort');
+    final double? locationLatitude = prefs.getDouble('locationLatitude');
+    final double? locationLongitude = prefs.getDouble('locationLongitude');
+    if (filterSortEncoded != null) {
+      Map filterSort = json.decode(filterSortEncoded);
+      metadataTemp["sort"] = filterSort["sort"];
+      metadataTemp["favourite"] = filterSort["favourite"];
+      metadataTemp["price"] = filterSort["price"];
+      metadataTemp["maxDelivery"] = filterSort["maxDelivery"];
+      metadataTemp["minOrder"] = filterSort["minOrder"];
+    }
+    if (locationLatitude == null ||
+        locationLatitude == 0 ||
+        locationLongitude == null ||
+        locationLongitude == 0) {
+      metadataTemp["error"] = true;
+      return metadataTemp;
+    } else {
+      metadataTemp["latitude"] = locationLatitude;
+      metadataTemp["longitude"] = locationLongitude;
+      return metadataTemp;
+    }
+  }
+
   Future<List> getRestaurants() async {
+    Map metadata = await getUserMetadata();
+    print(metadata);
     String phpurl =
         "https://alleat.cpur.net/query/restaurantlist.php"; //Get restaurant list
     try {
@@ -35,7 +73,7 @@ class _RestaurantListState extends State<RestaurantList> {
       });
       if (res.statusCode == 200) {
         //If sends successfully
-        var data = converty.json.decode(res.body); //Decode to array
+        var data = json.decode(res.body); //Decode to array
         if (data["error"]) {
           //If fails to perform query
           List error = [
@@ -126,7 +164,7 @@ class _RestaurantListState extends State<RestaurantList> {
       });
       if (res.statusCode == 200) {
         //On successfull send
-        var data = converty.json.decode(res.body); //Decode to array
+        var data = json.decode(res.body); //Decode to array
         if (data["error"]) {
           return "failed";
         } else {
@@ -152,7 +190,7 @@ class _RestaurantListState extends State<RestaurantList> {
       });
       if (res.statusCode == 200) {
         //If successfull send data
-        var data = converty.json.decode(res.body); //Decode to array
+        var data = json.decode(res.body); //Decode to array
         if (data["error"]) {
           //If error querying data
           List error = [

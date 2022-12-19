@@ -1,5 +1,7 @@
-import 'package:alleat/widgets/elements/elements.dart';
+import 'package:alleat/widgets/genericlocading.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
+import 'dart:convert';
 
 class FilterSort extends StatefulWidget {
   const FilterSort({super.key});
@@ -9,13 +11,6 @@ class FilterSort extends StatefulWidget {
 }
 
 class _FilterSortState extends State<FilterSort> {
-  Map customiseSelected = {
-    "sort": "default",
-    "favourite": false,
-    "price": [1, 2, 3, 4],
-    "maxDelivery": 4.0,
-    "minOrder": 40.0
-  };
   List sortOptions = [
     //Sort options [Visual button text, icon, option saved in customiseSelected]
     ["Recommended", Icons.assistant_outlined, "default"],
@@ -33,6 +28,40 @@ class _FilterSortState extends State<FilterSort> {
   bool isChecked = false; //Favourites selector
   double _currentMaxDeliveryFeeValue = 4;
   double _currentMinOrderPriceValue = 40;
+  String? encodedCustomiseSelected;
+  Map customiseSelected = {
+    "sort": "default",
+    "favourite": false,
+    "price": [1, 2, 3, 4],
+    "maxDelivery": 4.0,
+    "minOrder": 40.0
+  };
+
+  @override
+  void initState() {
+    super.initState();
+    _loadFilter();
+  }
+
+  _loadFilter() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      encodedCustomiseSelected = prefs.getString('filtersort');
+    });
+    if (encodedCustomiseSelected != null) {
+      customiseSelected = json.decode(encodedCustomiseSelected.toString());
+    } else {
+      customiseSelected = {
+        "sort": "default",
+        "favourite": false,
+        "price": [1, 2, 3, 4],
+        "maxDelivery": 4.0,
+        "minOrder": 40.0
+      };
+      _currentMaxDeliveryFeeValue = 4;
+      _currentMinOrderPriceValue = 40;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,77 +69,81 @@ class _FilterSortState extends State<FilterSort> {
         body: SingleChildScrollView(
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const ScreenBackButton(),
-            LayoutBuilder(builder: (context, constraints) {
-              if (customiseSelected["sort"] != "default" ||
-                  customiseSelected["favourite"] != false ||
-                  !customiseSelected["price"].contains(1) ||
-                  !customiseSelected["price"].contains(2) ||
-                  !customiseSelected["price"].contains(3) ||
-                  !customiseSelected["price"].contains(4) ||
-                  customiseSelected["maxDelivery"] != 4.0 ||
-                  customiseSelected["minOrder"] != 40.0) {
-                return InkWell(
-                    onTap: () {
-                      setState(() {
-                        customiseSelected = {
-                          "sort": "default",
-                          "favourite": false,
-                          "price": [1, 2, 3, 4],
-                          "maxDelivery": 4.0,
-                          "minOrder": 40.0
-                        };
-                        _currentMaxDeliveryFeeValue = 4;
-                        _currentMinOrderPriceValue = 40;
-                      });
-                    },
-                    child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 40, vertical: 20),
-                        child: Text(
-                          "Clear all",
-                          style: Theme.of(context)
-                              .textTheme
-                              .headline6!
-                              .copyWith(
-                                  color: Theme.of(context).colorScheme.error),
-                        )));
-              } else {
-                return InkWell(
-                    onTap: () {
-                      setState(() {
-                        customiseSelected = {
-                          "sort": "default",
-                          "favourite": false,
-                          "price": [1, 2, 3, 4],
-                          "maxDelivery": 4.0,
-                          "minOrder": 40.0
-                        };
-                        _currentMaxDeliveryFeeValue = 4;
-                        _currentMinOrderPriceValue = 40;
-                      });
-                    },
-                    child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 40, vertical: 20),
-                        child: Text(
-                          "Clear all",
-                          style: Theme.of(context)
-                              .textTheme
-                              .headline6!
-                              .copyWith(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .error
-                                      .withOpacity(0.1)),
-                        )));
-              }
-            })
-          ]),
+      Padding(
+          padding: const EdgeInsets.only(left: 40, right: 20, top: 50),
+          child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text("Sort", style: Theme.of(context).textTheme.headline2),
+                LayoutBuilder(builder: (context, constraints) {
+                  if (customiseSelected["sort"] != "default" ||
+                      customiseSelected["favourite"] != false ||
+                      !customiseSelected["price"].contains(1) ||
+                      !customiseSelected["price"].contains(2) ||
+                      !customiseSelected["price"].contains(3) ||
+                      !customiseSelected["price"].contains(4) ||
+                      customiseSelected["maxDelivery"] != 4.0 ||
+                      customiseSelected["minOrder"] != 40.0) {
+                    return InkWell(
+                        onTap: () {
+                          setState(() {
+                            customiseSelected = {
+                              "sort": "default",
+                              "favourite": false,
+                              "price": [1, 2, 3, 4],
+                              "maxDelivery": 4.0,
+                              "minOrder": 40.0
+                            };
+                            _currentMaxDeliveryFeeValue = 4;
+                            _currentMinOrderPriceValue = 40;
+                            isChecked = false;
+                          });
+                        },
+                        child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 40, vertical: 20),
+                            child: Text(
+                              "Clear all",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline6!
+                                  .copyWith(
+                                      color:
+                                          Theme.of(context).colorScheme.error),
+                            )));
+                  } else {
+                    return InkWell(
+                        onTap: () {
+                          setState(() {
+                            customiseSelected = {
+                              "sort": "default",
+                              "favourite": false,
+                              "price": [1, 2, 3, 4],
+                              "maxDelivery": 4.0,
+                              "minOrder": 40.0
+                            };
+                            _currentMaxDeliveryFeeValue = 4;
+                            _currentMinOrderPriceValue = 40;
+                          });
+                        },
+                        child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 40, vertical: 20),
+                            child: Text(
+                              "Clear all",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline6!
+                                  .copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .error
+                                          .withOpacity(0.1)),
+                            )));
+                  }
+                })
+              ])),
       Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30),
           child:
@@ -118,7 +151,6 @@ class _FilterSortState extends State<FilterSort> {
             const SizedBox(
               height: 20,
             ),
-            Text("Sort", style: Theme.of(context).textTheme.headline2),
             ListView.builder(
                 physics: const NeverScrollableScrollPhysics(),
                 scrollDirection: Axis.vertical,
@@ -183,9 +215,12 @@ class _FilterSortState extends State<FilterSort> {
                           )));
                 }),
             const SizedBox(
-              height: 20,
+              height: 40,
             ),
             Text("Filter", style: Theme.of(context).textTheme.headline2),
+            const SizedBox(
+              height: 20,
+            ),
             Row(
               children: [
                 Flexible(
@@ -221,15 +256,17 @@ class _FilterSortState extends State<FilterSort> {
               height: 20,
             ),
             Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
                 color: Theme.of(context).colorScheme.onSurface,
-                height: 50,
+                height: 70,
                 child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     shrinkWrap: true,
                     itemCount: priceRangeOptions.length, //For each restaurant
                     itemBuilder: (context, index) {
                       return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 5),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 5, vertical: 10),
                           child: SizedBox(
                               width: 70,
                               child: ElevatedButton(
@@ -350,7 +387,23 @@ class _FilterSortState extends State<FilterSort> {
             const SizedBox(
               height: 40,
             ),
+            ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    minimumSize: const Size.fromHeight(50)),
+                onPressed: () async {
+                  final prefs = await SharedPreferences.getInstance();
+                  String encodedCustomiseSelected =
+                      json.encode(customiseSelected);
+                  await prefs.setString('filtersort', encodedCustomiseSelected);
+                  setState(() {
+                    Navigator.of(context).pop();
+                  });
+                },
+                child: const Text("Save"))
           ])),
+      const SizedBox(
+        height: 40,
+      ),
     ])));
   }
 }
