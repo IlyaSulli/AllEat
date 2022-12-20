@@ -50,6 +50,9 @@ class _FilterSortState extends State<FilterSort> {
     });
     if (encodedCustomiseSelected != null) {
       customiseSelected = json.decode(encodedCustomiseSelected.toString());
+      _currentMaxDeliveryFeeValue = customiseSelected["maxDelivery"];
+      _currentMinOrderPriceValue = customiseSelected["minOrder"];
+      isChecked = customiseSelected["favourite"];
     } else {
       customiseSelected = {
         "sort": "default",

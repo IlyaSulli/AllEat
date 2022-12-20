@@ -41,6 +41,8 @@ class _RestaurantListState extends State<RestaurantList> {
     final String? filterSortEncoded = prefs.getString('filtersort');
     final double? locationLatitude = prefs.getDouble('locationLatitude');
     final double? locationLongitude = prefs.getDouble('locationLongitude');
+    final String? profileid = prefs.getString("serverprofileid");
+    metadataTemp["profileid"] = profileid;
     if (filterSortEncoded != null) {
       Map filterSort = json.decode(filterSortEncoded);
       metadataTemp["sort"] = filterSort["sort"];
@@ -64,60 +66,91 @@ class _RestaurantListState extends State<RestaurantList> {
 
   Future<List> getRestaurants() async {
     Map metadata = await getUserMetadata();
-    print(metadata);
-    String phpurl =
-        "https://alleat.cpur.net/query/restaurantlist.php"; //Get restaurant list
-    try {
-      var res = await http.post(Uri.parse(phpurl), body: {
-        "sort": "id", //Send sort type (Currently permanently by id)
-      });
-      if (res.statusCode == 200) {
-        //If sends successfully
-        var data = json.decode(res.body); //Decode to array
-        if (data["error"]) {
-          //If fails to perform query
-          List error = [
-            {
-              "error": true,
-              "message": "Error: ${data["error"]}",
-              "restaurants": "[]"
-            } //Send blank list of restaurants
-          ];
-          return error;
-        } else {
-          List listdata = await getDistance(data);
-          if (listdata[0] == false) {
+
+    if (metadata["error"] != true) {
+      metadata.remove("error");
+      switch (metadata["favourite"]) {
+        case (true):
+          metadata.remove("favourite");
+          metadata["favourite"] = "true";
+          break;
+        case (false):
+          metadata.remove("favourite");
+          metadata["favourite"] = "false";
+          break;
+      }
+
+      metadata["price"] = metadata["price"].join(",");
+      metadata["maxDelivery"] = metadata["maxDelivery"].toString();
+      metadata["profileid"] = metadata["profileid"].toString();
+      metadata["minOrder"] = metadata["minOrder"].toString();
+      metadata["latitude"] = metadata["latitude"].toString();
+      metadata["longitude"] = metadata["longitude"].toString();
+      String phpurl =
+          "https://alleat.cpur.net/query/restaurantlist.php"; //Get restaurant list
+      try {
+        var res = await http.post(Uri.parse(phpurl), body: metadata);
+        if (res.statusCode == 200) {
+          //If sends successfully
+          var data = json.decode(res.body); //Decode to array
+          print(data);
+          if (data["error"]) {
+            //If fails to perform query
             List error = [
               {
                 "error": true,
-                "message":
-                    "Failed to get Location. \nTry changing your destination address",
+                "message": "Server Response: ${data["message"]}",
                 "restaurants": "[]"
               } //Send blank list of restaurants
             ];
             return error;
           } else {
-            return [listdata[1]];
+            List listdata = await getDistance(data);
+            if (listdata[0] == false) {
+              List error = [
+                {
+                  "error": true,
+                  "message":
+                      "Failed to get Location. \nTry changing your destination address",
+                  "restaurants": "[]"
+                } //Send blank list of restaurants
+              ];
+              return error;
+            } else {
+              return [listdata[1]];
+            }
+            //If success, send the list of restaurants back
           }
-          //If success, send the list of restaurants back
+        } else {
+          List error = [
+            {
+              "error": true,
+              "message":
+                  "Error ${res.statusCode}: Failed to connect to server.",
+              "restaurants": "[]"
+            }
+          ];
+          return error;
         }
-      } else {
+      } catch (e) {
         List error = [
           {
             "error": true,
-            "message": "Error ${res.statusCode}: Failed to connect to server.",
+            "message":
+                "An unexpected error occured.\n Try reopening the app. \n\n ERROR: $e",
             "restaurants": "[]"
           }
         ];
         return error;
       }
-    } catch (e) {
+    } else {
       List error = [
         {
           "error": true,
-          "message": "An unexpected error occured.\n Try reopening the app.",
+          "message":
+              "Failed to get Location. \nTry changing your destination address",
           "restaurants": "[]"
-        }
+        } //Send blank list of restaurants
       ];
       return error;
     }
