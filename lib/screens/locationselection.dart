@@ -78,7 +78,7 @@ class _SelectLocationState extends State<SelectLocation> {
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       await getPlacemark([false, 51.509865, -0.118092]);
-      return [51.509865, -0.118092];
+      return [51.509865, -0.118092]; //London lat long
     }
 
     // Check if the location is denied
@@ -86,15 +86,15 @@ class _SelectLocationState extends State<SelectLocation> {
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        await getPlacemark([false, 51.509865, -0.118092]);
-        return [51.509865, -0.118092];
+        await getPlacemark([false, 51.509865, -0.118092]); 
+        return [51.509865, -0.118092]; //London lat long
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
       // Permissions are denied forever, handle appropriately.
       await getPlacemark([false, 51.509865, -0.118092]);
-      return [51.509865, -0.118092];
+      return [51.509865, -0.118092]; //London lat long
     }
 
     // Access the current possition of the device

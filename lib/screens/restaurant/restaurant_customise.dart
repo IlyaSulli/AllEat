@@ -33,21 +33,22 @@ class RestaurantItemCustomisePage extends StatefulWidget {
 
 class _RestaurantItemCustomisePageState
     extends State<RestaurantItemCustomisePage> {
-  int quantity = 1;
-  Map customisedOptions = {};
-  bool beenMade = false;
-  double changingPrice = 0;
-  List requiredFields = [];
-  late double quantityPrice = double.parse(widget.price);
+  int quantity = 1; //default quantity 1
+  Map customisedOptions = {}; //changes to the item go in here in a dictionary
+  bool beenMade = false; //Used to only build customisedOptions once
+  double changingPrice = 0; //How much is the original price affected by customised options
+  List requiredFields = []; //Which customsie options are required to be filled
+  late double quantityPrice = double.parse(widget.price);  
   late double finalSinglePrice = double.parse(widget.price);
-  Future<bool> addToCart() async {
+
+  Future<bool> addToCart() async { //Add item with cutomsie options to db
     try {
-      String customisedOptionsEncoded = json.encode(customisedOptions);
+      String customisedOptionsEncoded = json.encode(customisedOptions); //Encode Dictionary into a string
       await SQLiteCartItems.addToCart(
           int.parse(widget.itemid), customisedOptionsEncoded, quantity);
-      return true;
+      return true; //If no error, return true
     } catch (e) {
-      return false;
+      return false; //If error, return false
     }
   }
 
@@ -214,8 +215,8 @@ class _RestaurantItemCustomisePageState
               fontWeight: FontWeight.w400),
         ),
       ),
-      FutureBuilder<Map>(
-          future: getCustomiseOptions(),
+      FutureBuilder<Map>( 
+          future: getCustomiseOptions(), //Get customise options from server
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               Map customiseData = snapshot.data ?? [] as Map;
@@ -237,11 +238,11 @@ class _RestaurantItemCustomisePageState
                   ),
                 );
               } else {
-                if (beenMade == false) {
-                  for (int i = 0; i < customiseData["customise"].length; i++) {
+                if (beenMade == false) { //If the customised dictionary has not been made
+                  for (int i = 0; i < customiseData["customise"].length; i++) { // For each customise option, add it as key with an empty list as the value
                     customisedOptions[customiseData["customise"][i][0]] = [];
                   }
-                  beenMade = true;
+                  beenMade = true; //Set has been built to true
                 }
 
                 //If there was not an error getting the data
@@ -258,18 +259,18 @@ class _RestaurantItemCustomisePageState
                       scrollDirection: Axis.vertical,
                       shrinkWrap: true,
                       itemCount: (customiseData[
-                              "customise"] //For each item, create a container
+                              "customise"] //For each customise section, build
                           .length),
                       itemBuilder: ((context, index) {
                         if (customiseData["customise"][index][4] == "1" &&
                             !requiredFields.contains(
-                                customiseData["customise"][index][0])) {
+                                customiseData["customise"][index][0])) { //For each section marked as 1 (required), add customise id to required list. Check if it has not been added before.
                           requiredFields
                               .add(customiseData["customise"][index][0]);
                         }
-                        return Column(
+                        return Column( //Customise section
                           children: [
-                            Container(
+                            Container( //Thick border above each section to separate each section.
                               width: double.infinity,
                               height: 10,
                               color: Theme.of(context)
@@ -277,9 +278,9 @@ class _RestaurantItemCustomisePageState
                                   .onBackground
                                   .withOpacity(0.1),
                             ),
-                            LayoutBuilder(builder: ((context, constraints) {
-                              if (customiseData["customise"][index][3] ==
-                                  "SELECT") {
+                            LayoutBuilder(builder: ((context, constraints) { 
+                              if (customiseData["customise"][index][3] == 
+                                  "SELECT") { //If the section is marked as a select widget
                                 return Column(
                                   children: [
                                     Padding(
@@ -288,17 +289,17 @@ class _RestaurantItemCustomisePageState
                                           right: 20,
                                           top: 30,
                                           bottom: 10),
-                                      child: Row(
+                                      child: Row( //Top row containing the title, description and container indicating if it is required or optional
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            Expanded(
+                                            Expanded( //Go to next line if too long
                                                 child: Column(
                                                     crossAxisAlignment:
                                                         CrossAxisAlignment
                                                             .start,
                                                     children: [
-                                                  Text(
+                                                  Text( //Customise section title
                                                     customiseData["customise"]
                                                             [index][1]
                                                         .toString(),
@@ -310,7 +311,7 @@ class _RestaurantItemCustomisePageState
                                                   ),
                                                   const SizedBox(
                                                     height: 10,
-                                                  ),
+                                                  ), //Customise section description
                                                   Text(
                                                     customiseData["customise"]
                                                         [index][2],
@@ -326,7 +327,7 @@ class _RestaurantItemCustomisePageState
                                                 ((context, constraints) {
                                               if (customiseData["customise"]
                                                       [index][4] ==
-                                                  "0") {
+                                                  "0") { //If the customise section is not required, display container in green with text "optional"
                                                 return Container(
                                                   decoration: BoxDecoration(
                                                       color: Theme.of(context)
@@ -354,7 +355,7 @@ class _RestaurantItemCustomisePageState
                                                 );
                                               } else if (customiseData[
                                                       "customise"][index][4] ==
-                                                  "1") {
+                                                  "1") { //If the customise section is marked as required, display container in primary colour (purple) with text "required"
                                                 return Container(
                                                   decoration: BoxDecoration(
                                                       color: Theme.of(context)
@@ -378,7 +379,7 @@ class _RestaurantItemCustomisePageState
                                                                 .primaryColor),
                                                   ),
                                                 );
-                                              } else {
+                                              } else { //If the section is not marked as 0 or 1, display it as and error with a red container and text "ERROR"
                                                 return Container(
                                                   decoration: BoxDecoration(
                                                       color: Theme.of(context)
@@ -408,7 +409,7 @@ class _RestaurantItemCustomisePageState
                                             }))
                                           ]),
                                     ),
-                                    ListView.builder(
+                                    ListView.builder( //For each option on the customise section
                                         physics:
                                             const NeverScrollableScrollPhysics(), //Disable scrolling. Scroll with whole page
                                         scrollDirection: Axis.vertical,
@@ -420,12 +421,12 @@ class _RestaurantItemCustomisePageState
                                           return Padding(
                                               padding: const EdgeInsets.symmetric(
                                                   horizontal: 20, vertical: 5),
-                                              child: ElevatedButton(
+                                              child: ElevatedButton( //Create a button for the option
                                                   style: ButtonStyle(
                                                       side: (customisedOptions[customiseData["customise"][index][0]].contains(
                                                               customiseData["customise"]
                                                                       [index][7]
-                                                                  [index2][0]))
+                                                                  [index2][0])) //If the option is in the customisedOptions (selected) then display with purple border otherwise don't have a border
                                                           ? MaterialStateProperty.all(BorderSide(
                                                               width: 2,
                                                               color: Theme.of(context)
@@ -434,7 +435,9 @@ class _RestaurantItemCustomisePageState
                                                       alignment:
                                                           Alignment.centerLeft,
                                                       padding: MaterialStateProperty.all(const EdgeInsets.symmetric(horizontal: 30, vertical: 20)),
-                                                      textStyle: (customisedOptions[customiseData["customise"][index][0]].contains(customiseData["customise"][index][7][index2][0])) ? MaterialStateProperty.all(Theme.of(context).textTheme.headline6?.copyWith(color: Theme.of(context).textTheme.headline1?.color)) : MaterialStateProperty.all(Theme.of(context).textTheme.headline6),
+                                                      textStyle: (customisedOptions[customiseData["customise"][index][0]].contains(customiseData["customise"][index][7][index2][0])) //If the option is in the customisedOptions (selected), display with brighter text
+                                                      ? MaterialStateProperty.all(Theme.of(context).textTheme.headline6?.copyWith(color: Theme.of(context).textTheme.headline1?.color)) 
+                                                      : MaterialStateProperty.all(Theme.of(context).textTheme.headline6),
                                                       backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.onSurface)),
                                                   onPressed: () {
                                                     if (customisedOptions[customiseData["customise"][index][0]]
@@ -449,7 +452,7 @@ class _RestaurantItemCustomisePageState
                                                             .contains(
                                                                 customiseData["customise"]
                                                                         [index][7]
-                                                                    [index2][0])) {
+                                                                    [index2][0])) { //If the length is less than the max amount selected and it is not in the customisedoptions list add it to the list and add to the changed price
                                                       setState(() {
                                                         customisedOptions[
                                                                 customiseData[
@@ -472,7 +475,7 @@ class _RestaurantItemCustomisePageState
                                                         .contains(customiseData[
                                                                     "customise"]
                                                                 [index][7]
-                                                            [index2][0])) {
+                                                            [index2][0])) { //If the option is in the customisedoptions list, remove from the list and remove to the changed price
                                                       setState(() {
                                                         customisedOptions[
                                                                 customiseData[
@@ -491,7 +494,7 @@ class _RestaurantItemCustomisePageState
                                                       });
                                                     }
                                                   },
-                                                  child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                                                  child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [ //Within button, display a row containing the option text and the price change
                                                     Expanded(
                                                         child: Text(
                                                       customiseData["customise"]
@@ -502,7 +505,7 @@ class _RestaurantItemCustomisePageState
                                                                       [0]]
                                                               .contains(customiseData["customise"]
                                                                       [index][7]
-                                                                  [index2][0]))
+                                                                  [index2][0])) //If the option is in the customisedOptions (selected), display with brighter text
                                                           ? Theme.of(context)
                                                               .textTheme
                                                               .headline6
@@ -516,14 +519,14 @@ class _RestaurantItemCustomisePageState
                                                               .headline6,
                                                     )),
                                                     LayoutBuilder(
-                                                        builder: ((p0, p1) {
+                                                        builder: ((context, constraints) {
                                                       if (customiseData[
                                                                       "customise"]
                                                                   [index][7]
                                                               [index2][3] !=
-                                                          "0.00") {
+                                                          "0.00") { //If the price change is not nothing, display the price change in red
                                                         return Text(
-                                                          "+${customiseData["customise"][index][7][index2][3]}",
+                                                          "+£${customiseData["customise"][index][7][index2][3]}",
                                                           style: Theme.of(
                                                                   context)
                                                               .textTheme
@@ -534,7 +537,7 @@ class _RestaurantItemCustomisePageState
                                                                       .colorScheme
                                                                       .error),
                                                         );
-                                                      } else {
+                                                      } else { //If the price change in nothing, display dash in grey
                                                         return Text(
                                                           "-",
                                                           style: Theme.of(
@@ -566,17 +569,17 @@ class _RestaurantItemCustomisePageState
                                           right: 20,
                                           top: 30,
                                           bottom: 10),
-                                      child: Row(
+                                      child: Row( //Top row containing the title, description and container indicating if it is required or optional
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            Expanded(
+                                            Expanded( //Go to next line if too long
                                                 child: Column(
                                                     crossAxisAlignment:
                                                         CrossAxisAlignment
                                                             .start,
                                                     children: [
-                                                  Text(
+                                                  Text( //Customise section title
                                                     customiseData["customise"]
                                                             [index][1]
                                                         .toString(),
@@ -588,8 +591,8 @@ class _RestaurantItemCustomisePageState
                                                   ),
                                                   const SizedBox(
                                                     height: 10,
-                                                  ),
-                                                  Text(
+                                                  ), //Customise section description
+                                                  Text( 
                                                     customiseData["customise"]
                                                         [index][2],
                                                     style: Theme.of(context)
@@ -607,7 +610,7 @@ class _RestaurantItemCustomisePageState
                                                 ((context, constraints) {
                                               if (customiseData["customise"]
                                                       [index][4] ==
-                                                  "0") {
+                                                  "0") {  //If the customise section is not required, display container in green with text "optional"
                                                 return Container(
                                                   decoration: BoxDecoration(
                                                       color: Theme.of(context)
@@ -635,7 +638,7 @@ class _RestaurantItemCustomisePageState
                                                 );
                                               } else if (customiseData[
                                                       "customise"][index][4] ==
-                                                  "1") {
+                                                  "1") { //If the customise section is marked as required, display container in primary colour (purple) with text "required"
                                                 return Container(
                                                   decoration: BoxDecoration(
                                                       color: Theme.of(context)
@@ -659,7 +662,7 @@ class _RestaurantItemCustomisePageState
                                                                 .primaryColor),
                                                   ),
                                                 );
-                                              } else {
+                                              } else { //If the section is not marked as 0 or 1, display it as and error with a red container and text "ERROR"
                                                 return Container(
                                                   decoration: BoxDecoration(
                                                       color: Theme.of(context)
@@ -689,7 +692,7 @@ class _RestaurantItemCustomisePageState
                                             }))
                                           ]),
                                     ),
-                                    ListView.builder(
+                                    ListView.builder( //For each option on the customise section
                                         physics:
                                             const NeverScrollableScrollPhysics(), //Disable scrolling. Scroll with whole page
                                         scrollDirection: Axis.vertical,
@@ -703,9 +706,9 @@ class _RestaurantItemCustomisePageState
                                                   const EdgeInsets.symmetric(
                                                       horizontal: 20,
                                                       vertical: 5),
-                                              child: ElevatedButton(
+                                              child: ElevatedButton( //Create a button for the option
                                                 style: ButtonStyle(
-                                                    side: (customisedOptions[customiseData["customise"][index][0]].contains(customiseData["customise"][index][7][index2][0]))
+                                                    side: (customisedOptions[customiseData["customise"][index][0]].contains(customiseData["customise"][index][7][index2][0])) //If the option is in the customisedOptions (selected) then display with purple border otherwise don't have a border
                                                         ? MaterialStateProperty.all(BorderSide(
                                                             width: 2,
                                                             color: Theme.of(context)
@@ -717,7 +720,9 @@ class _RestaurantItemCustomisePageState
                                                         const EdgeInsets.symmetric(
                                                             horizontal: 30,
                                                             vertical: 20)),
-                                                    textStyle: (customisedOptions[customiseData["customise"][index][0]].contains(customiseData["customise"][index][7][index2][0])) ? MaterialStateProperty.all(Theme.of(context).textTheme.headline6?.copyWith(color: Theme.of(context).textTheme.headline1?.color)) : MaterialStateProperty.all(Theme.of(context).textTheme.headline6),
+                                                    textStyle: (customisedOptions[customiseData["customise"][index][0]].contains(customiseData["customise"][index][7][index2][0])) //If the option is in the customisedOptions (selected), display with brighter text
+                                                    ? MaterialStateProperty.all(Theme.of(context).textTheme.headline6?.copyWith(color: Theme.of(context).textTheme.headline1?.color)) 
+                                                    : MaterialStateProperty.all(Theme.of(context).textTheme.headline6),
                                                     backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.onSurface)),
                                                 onPressed: () {
                                                   if (customisedOptions[customiseData["customise"][index][0]]
@@ -731,7 +736,7 @@ class _RestaurantItemCustomisePageState
                                                           .contains(
                                                               customiseData["customise"]
                                                                       [index][7]
-                                                                  [index2])) {
+                                                                  [index2])) {  //If the length is less than the max amount selected and it is not in the customisedoptions list add it to the list and add to the changed price
                                                     setState(() {
                                                       customisedOptions[
                                                               customiseData[
@@ -760,7 +765,7 @@ class _RestaurantItemCustomisePageState
                                                                       [
                                                                       index][0]]
                                                               .length;
-                                                      i++) {
+                                                      i++) { //Count the number of times, the customise option is mentioned in the customised list. This will get the quantity.
                                                     if (customisedOptions[
                                                             customiseData[
                                                                     "customise"]
@@ -773,12 +778,12 @@ class _RestaurantItemCustomisePageState
                                                       count += 1;
                                                     }
                                                   }
-                                                  if (count == 0) {
+                                                  if (count == 0) { //If the option is not in the list (not selected)
                                                     return Row(
                                                         mainAxisAlignment:
                                                             MainAxisAlignment
                                                                 .spaceBetween,
-                                                        children: [
+                                                        children: [ //Display row with icon, customise option text and price
                                                           Icon(
                                                             Icons
                                                                 .add_box_outlined,
@@ -800,7 +805,7 @@ class _RestaurantItemCustomisePageState
                                                                             [0]]
                                                                     .contains(customiseData["customise"][index][7]
                                                                             [index2]
-                                                                        [0]))
+                                                                        [0])) //If the option is in the list, display it in a brighter text
                                                                 ? Theme.of(context)
                                                                     .textTheme
                                                                     .headline6
@@ -816,14 +821,14 @@ class _RestaurantItemCustomisePageState
                                                           const SizedBox(
                                                               width: 20),
                                                           LayoutBuilder(builder:
-                                                              ((p0, p1) {
+                                                              ((context, constraints) {
                                                             if (customiseData[
                                                                             "customise"]
                                                                         [
                                                                         index][7]
                                                                     [
                                                                     index2][3] !=
-                                                                "0.00") {
+                                                                "0.00") { //If the price change is not nothing, display the price change in red
                                                               return Text(
                                                                 "+${customiseData["customise"][index][7][index2][3]}",
                                                                 style: Theme.of(
@@ -835,7 +840,7 @@ class _RestaurantItemCustomisePageState
                                                                             .colorScheme
                                                                             .error),
                                                               );
-                                                            } else {
+                                                            } else { //If the price change in nothing, display dash in grey
                                                               return Text(
                                                                 "-",
                                                                 style: Theme.of(
@@ -851,8 +856,8 @@ class _RestaurantItemCustomisePageState
                                                             }
                                                           }))
                                                         ]);
-                                                  } else {
-                                                    return Row(
+                                                  } else { //If the option is in the list
+                                                    return Row( //Display row with the quantity, text and a delete button
                                                         mainAxisAlignment:
                                                             MainAxisAlignment
                                                                 .spaceBetween,
@@ -893,7 +898,7 @@ class _RestaurantItemCustomisePageState
                                                                             [0]]
                                                                     .contains(customiseData["customise"][index][7]
                                                                             [index2]
-                                                                        [0]))
+                                                                        [0])) //If the option is in the customisedOptions list, display the text brighter
                                                                 ? Theme.of(context)
                                                                     .textTheme
                                                                     .headline6
@@ -908,7 +913,7 @@ class _RestaurantItemCustomisePageState
                                                           )),
                                                           const SizedBox(
                                                               width: 20),
-                                                          IconButton(
+                                                          IconButton( //Delete button
                                                             icon: const Icon(
                                                                 Icons.delete),
                                                             splashRadius: 15,
@@ -916,7 +921,7 @@ class _RestaurantItemCustomisePageState
                                                                     context)
                                                                 .colorScheme
                                                                 .error,
-                                                            onPressed: () {
+                                                            onPressed: () { //On remove button pressed, remove from the list and remove from changed price.
                                                               setState(() {
                                                                 customisedOptions[
                                                                         customiseData["customise"][index]
@@ -952,17 +957,17 @@ class _RestaurantItemCustomisePageState
                                           right: 20,
                                           top: 30,
                                           bottom: 10),
-                                      child: Row(
+                                      child: Row( //Top row containing the title, description and container indicating if it is required or optional
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            Expanded(
+                                            Expanded( //Go to next line if too long
                                                 child: Column(
                                                     crossAxisAlignment:
                                                         CrossAxisAlignment
                                                             .start,
                                                     children: [
-                                                  Text(
+                                                  Text( //Customise section title
                                                     customiseData["customise"]
                                                             [index][1]
                                                         .toString(),
@@ -971,10 +976,10 @@ class _RestaurantItemCustomisePageState
                                                         .headline5,
                                                     overflow:
                                                         TextOverflow.visible,
-                                                  ),
+                                                  ), 
                                                   const SizedBox(
                                                     height: 10,
-                                                  ),
+                                                  ), //Customise section description
                                                   Text(
                                                     customiseData["customise"]
                                                         [index][2],
@@ -993,7 +998,7 @@ class _RestaurantItemCustomisePageState
                                                 ((context, constraints) {
                                               if (customiseData["customise"]
                                                       [index][4] ==
-                                                  "0") {
+                                                  "0") { //If the customise section is not required, display container in green with text "optional"
                                                 return Container(
                                                   decoration: BoxDecoration(
                                                       color: Theme.of(context)
@@ -1021,7 +1026,7 @@ class _RestaurantItemCustomisePageState
                                                 );
                                               } else if (customiseData[
                                                       "customise"][index][4] ==
-                                                  "1") {
+                                                  "1") { //If the customise section is marked as required, display container in primary colour (purple) with text "required"
                                                 return Container(
                                                   decoration: BoxDecoration(
                                                       color: Theme.of(context)
@@ -1045,7 +1050,7 @@ class _RestaurantItemCustomisePageState
                                                                 .primaryColor),
                                                   ),
                                                 );
-                                              } else {
+                                              } else { //If the section is not marked as 0 or 1, display it as and error with a red container and text "ERROR"
                                                 return Container(
                                                   decoration: BoxDecoration(
                                                       color: Theme.of(context)
@@ -1075,7 +1080,7 @@ class _RestaurantItemCustomisePageState
                                             }))
                                           ]),
                                     ),
-                                    ListView.builder(
+                                    ListView.builder( //For each option on the customise section
                                         physics:
                                             const NeverScrollableScrollPhysics(), //Disable scrolling. Scroll with whole page
                                         scrollDirection: Axis.vertical,
@@ -1089,9 +1094,9 @@ class _RestaurantItemCustomisePageState
                                                   const EdgeInsets.symmetric(
                                                       horizontal: 20,
                                                       vertical: 5),
-                                              child: ElevatedButton(
+                                              child: ElevatedButton( //Create a button for the option
                                                 style: ButtonStyle(
-                                                    side: (customisedOptions[customiseData["customise"][index][0]].contains(customiseData["customise"][index][7][index2][0]))
+                                                    side: (customisedOptions[customiseData["customise"][index][0]].contains(customiseData["customise"][index][7][index2][0])) //If the option is in the customisedOptions (selected) then display with purple border otherwise don't have a border
                                                         ? MaterialStateProperty.all(BorderSide(
                                                             width: 2,
                                                             color: Theme.of(context)
@@ -1103,7 +1108,9 @@ class _RestaurantItemCustomisePageState
                                                         const EdgeInsets.symmetric(
                                                             horizontal: 30,
                                                             vertical: 20)),
-                                                    textStyle: (customisedOptions[customiseData["customise"][index][0]].contains(customiseData["customise"][index][7][index2][0])) ? MaterialStateProperty.all(Theme.of(context).textTheme.headline6?.copyWith(color: Theme.of(context).textTheme.headline1?.color)) : MaterialStateProperty.all(Theme.of(context).textTheme.headline6),
+                                                    textStyle: (customisedOptions[customiseData["customise"][index][0]].contains(customiseData["customise"][index][7][index2][0])) //If the option is in the customisedOptions (selected), display with brighter text
+                                                    ? MaterialStateProperty.all(Theme.of(context).textTheme.headline6?.copyWith(color: Theme.of(context).textTheme.headline1?.color)) 
+                                                    : MaterialStateProperty.all(Theme.of(context).textTheme.headline6),
                                                     backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.onSurface)),
                                                 onPressed: () {
                                                   if (customisedOptions[customiseData["customise"][index][0]]
@@ -1117,7 +1124,7 @@ class _RestaurantItemCustomisePageState
                                                           .contains(
                                                               customiseData["customise"]
                                                                       [index][7]
-                                                                  [index2])) {
+                                                                  [index2])) { //If the length is less than the max amount selected and it is not in the customisedoptions list add it to the list and add to the changed price
                                                     setState(() {
                                                       customisedOptions[
                                                               customiseData[
@@ -1146,7 +1153,7 @@ class _RestaurantItemCustomisePageState
                                                                       [
                                                                       index][0]]
                                                               .length;
-                                                      i++) {
+                                                      i++) { //Count the number of times, the customise option is mentioned in the customised list. This will get the quantity.
                                                     if (customisedOptions[
                                                             customiseData[
                                                                     "customise"]
@@ -1159,12 +1166,12 @@ class _RestaurantItemCustomisePageState
                                                       count += 1;
                                                     }
                                                   }
-                                                  if (count == 0) {
+                                                  if (count == 0) { //If the option is not in the list (not selected)
                                                     return Row(
                                                         mainAxisAlignment:
                                                             MainAxisAlignment
                                                                 .spaceBetween,
-                                                        children: [
+                                                        children: [ //Display row with icon, customise option text and price
                                                           Icon(
                                                             Icons
                                                                 .disabled_by_default_outlined,
@@ -1186,7 +1193,7 @@ class _RestaurantItemCustomisePageState
                                                                             [0]]
                                                                     .contains(customiseData["customise"][index][7]
                                                                             [index2]
-                                                                        [0]))
+                                                                        [0])) //If the option is in the list, display it in a brighter text
                                                                 ? Theme.of(context)
                                                                     .textTheme
                                                                     .headline6
@@ -1209,7 +1216,7 @@ class _RestaurantItemCustomisePageState
                                                                         index][7]
                                                                     [
                                                                     index2][3] !=
-                                                                "0.00") {
+                                                                "0.00") { //If the price change is not nothing, display the price change in red
                                                               return Text(
                                                                 "-${customiseData["customise"][index][7][index2][3]}",
                                                                 style: Theme.of(
@@ -1221,7 +1228,7 @@ class _RestaurantItemCustomisePageState
                                                                             .colorScheme
                                                                             .tertiary),
                                                               );
-                                                            } else {
+                                                            } else { //If the price change in nothing, display dash in grey
                                                               return Text(
                                                                 "-",
                                                                 style: Theme.of(
@@ -1237,8 +1244,8 @@ class _RestaurantItemCustomisePageState
                                                             }
                                                           }))
                                                         ]);
-                                                  } else {
-                                                    return Row(
+                                                  } else { //If the option is in the list
+                                                    return Row( //Display row with the quantity, text and a delete button
                                                         mainAxisAlignment:
                                                             MainAxisAlignment
                                                                 .spaceBetween,
@@ -1279,7 +1286,7 @@ class _RestaurantItemCustomisePageState
                                                                             [0]]
                                                                     .contains(customiseData["customise"][index][7]
                                                                             [index2]
-                                                                        [0]))
+                                                                        [0])) //If the option is in the customisedOptions list, display the text brighter
                                                                 ? Theme.of(context)
                                                                     .textTheme
                                                                     .headline6
@@ -1302,7 +1309,7 @@ class _RestaurantItemCustomisePageState
                                                                     context)
                                                                 .colorScheme
                                                                 .error,
-                                                            onPressed: () {
+                                                            onPressed: () { //On remove button pressed, remove from the list and add from changed price.
                                                               setState(() {
                                                                 customisedOptions[
                                                                         customiseData["customise"][index]
@@ -1328,7 +1335,7 @@ class _RestaurantItemCustomisePageState
                                     const SizedBox(height: 50)
                                   ],
                                 );
-                              } else {
+                              } else { //If there is an unknown customise type (not SELECT, ADD or REMOVE) dispaly container with the text "Unknown Customise Option"
                                 return Container(
                                   width: double.infinity,
                                   padding: const EdgeInsets.symmetric(
@@ -1365,28 +1372,28 @@ class _RestaurantItemCustomisePageState
       //Add to cart and quantity
       LayoutBuilder(builder: ((context, constraints) {
         finalSinglePrice =
-            ((double.parse(widget.price) * 100) + (changingPrice * 100)) / 100;
-        quantityPrice = finalSinglePrice * quantity;
+            ((double.parse(widget.price) * 100) + (changingPrice * 100)) / 100; //In order to do correct calculations with a double type, multiply all by 100 to get integer and divide back to get it in pence and pounds
+        quantityPrice = finalSinglePrice * quantity; //To get the quantity price multiply by quantity
 
         return Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-          Text("£${finalSinglePrice.toStringAsFixed(2)}",
+          Text("£${finalSinglePrice.toStringAsFixed(2)}", //Display individual price by 2dp.
               style: Theme.of(context).textTheme.headline4),
           Padding(
               padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
-              child: Row(
+              child: Row( //Display row with the quantity and add and subtract buttons
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  CircleAvatar(
+                  CircleAvatar( //Remove from quantity
                       radius: 30,
                       backgroundColor: Theme.of(context).colorScheme.onSurface,
                       child: IconButton(
                         icon: const Icon(Icons.remove),
                         iconSize: 25,
-                        color: (quantity == 1)
+                        color: (quantity == 1) //if the quantity is 1 (unable to subtract from quantity), display at 0.1 opacity
                             ? Theme.of(context).primaryColor.withOpacity(0.1)
                             : Theme.of(context).primaryColor,
                         onPressed: () {
-                          if (quantity != 1) {
+                          if (quantity > 1) { //If the quantity is greater than 1, allow for removing 1 from quantity
                             setState(() {
                               quantity -= 1;
                             });
@@ -1396,7 +1403,7 @@ class _RestaurantItemCustomisePageState
                   const SizedBox(
                     width: 30,
                   ),
-                  SizedBox(
+                  SizedBox( //Quanity text with fixed width
                       width: 30,
                       child: Text(
                         quantity.toString(),
@@ -1406,17 +1413,17 @@ class _RestaurantItemCustomisePageState
                   const SizedBox(
                     width: 30,
                   ),
-                  CircleAvatar(
+                  CircleAvatar( //Add from quantity
                       radius: 30,
                       backgroundColor: Theme.of(context).colorScheme.onSurface,
                       child: IconButton(
                         icon: const Icon(Icons.add),
                         iconSize: 25,
-                        color: (quantity == 99)
+                        color: (quantity == 99)//if the quantity is 99 (unable to add to quantity), display at 0.1 opacity
                             ? Theme.of(context).primaryColor.withOpacity(0.1)
                             : Theme.of(context).primaryColor,
                         onPressed: () {
-                          if (quantity != 99) {
+                          if (quantity < 99) {//If the quantity is less than 99, allow for adding 1 to quantity. Max 99 to stop overloading restaurants.
                             setState(() {
                               quantity += 1;
                             });
@@ -1428,25 +1435,26 @@ class _RestaurantItemCustomisePageState
           Padding(
               padding: const EdgeInsets.all(20),
               child: Row(children: [
-                Expanded(child: LayoutBuilder(builder: ((context, constraints) {
-                  bool tempCheckRequiredFilled = true;
-                  for (int i = 0; i < requiredFields.length; i++) {
+                Expanded(child: 
+                LayoutBuilder(builder: ((context, constraints) { //Cart
+                  bool tempCheckRequiredFilled = true; //Check if required is fullfilled
+                  for (int i = 0; i < requiredFields.length; i++) { //For each customise section that is marked as required, check if each customisedOption are not empty. If it is empty, change tempCheckRequiredFilled to false. Disables add to cart button
                     if (customisedOptions[requiredFields[i]].isEmpty) {
                       tempCheckRequiredFilled = false;
                     }
                   }
-                  if (tempCheckRequiredFilled == true) {
+                  if (tempCheckRequiredFilled == true) { //if required fields are filled
                     return ElevatedButton(
-                        onPressed: () async {
+                        onPressed: () async { //On press add to cart (add to database)
                           bool isAddedToCart = await addToCart();
-                          if (isAddedToCart == true) {
+                          if (isAddedToCart == true) { //If is successfully adds to cart, display success
                             setState(() {
                               ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                       content:
                                           Text("Successfully added to Cart")));
                             });
-                          } else {
+                          } else { //If is fails to add to cart, display failed
                             setState(() {
                               ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
@@ -1454,14 +1462,14 @@ class _RestaurantItemCustomisePageState
                             });
                           }
                         },
-                        child: Row(
+                        child: Row( //Display row with text "add to cart" and the price for the quantity
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               const Text("Add to Cart"),
                               Text("£${quantityPrice.toStringAsFixed(2)}")
                             ]));
                   } else {
-                    return Opacity(
+                    return Opacity( //Display add to cart button with low opacity and disable onPressed
                         opacity: 0.2,
                         child: ElevatedButton(
                             style: ButtonStyle(

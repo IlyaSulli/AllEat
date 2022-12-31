@@ -30,6 +30,7 @@ class _FilterSortState extends State<FilterSort> {
   double _currentMinOrderPriceValue = 40;
   String? encodedCustomiseSelected;
   Map customiseSelected = {
+    //initial filters and sort method
     "sort": "distance",
     "favourite": false,
     "price": [1, 2, 3, 4],
@@ -39,29 +40,35 @@ class _FilterSortState extends State<FilterSort> {
 
   @override
   void initState() {
+    //On initiation, load filters from shared preferences
     super.initState();
     _loadFilter();
   }
 
   _loadFilter() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    SharedPreferences prefs =
+        await SharedPreferences.getInstance(); //get from shared preferences
     setState(() {
       encodedCustomiseSelected = prefs.getString('filtersort');
     });
     if (encodedCustomiseSelected != null) {
-      customiseSelected = json.decode(encodedCustomiseSelected.toString());
+      //If the filter and sort methods have been previously saved
+      customiseSelected = json.decode(encodedCustomiseSelected
+          .toString()); //Decode customise and split and replace default values
       _currentMaxDeliveryFeeValue = customiseSelected["maxDelivery"];
       _currentMinOrderPriceValue = customiseSelected["minOrder"];
       isChecked = customiseSelected["favourite"];
     } else {
+      //If the filter and sort methods have not been previously saved
       customiseSelected = {
+        //Set default values
         "sort": "default",
         "favourite": false,
         "price": [1, 2, 3, 4],
         "maxDelivery": 4.0,
         "minOrder": 40.0
       };
-      _currentMaxDeliveryFeeValue = 4;
+      _currentMaxDeliveryFeeValue = 4; //Change sliders to default values
       _currentMinOrderPriceValue = 40;
     }
   }
@@ -75,11 +82,13 @@ class _FilterSortState extends State<FilterSort> {
       Padding(
           padding: const EdgeInsets.only(left: 40, right: 20, top: 50),
           child: Row(
+              //Row with the text sort and a button to clear filters and reset sort
               crossAxisAlignment: CrossAxisAlignment.end,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text("Sort", style: Theme.of(context).textTheme.headline2),
                 LayoutBuilder(builder: (context, constraints) {
+                  //If there have been any changes to the filters and sort methods, highlight clear all text
                   if (customiseSelected["sort"] != "default" ||
                       customiseSelected["favourite"] != false ||
                       !customiseSelected["price"].contains(1) ||
@@ -90,6 +99,7 @@ class _FilterSortState extends State<FilterSort> {
                       customiseSelected["minOrder"] != 40.0) {
                     return InkWell(
                         onTap: () {
+                          //On tap, reset to defaults
                           setState(() {
                             customiseSelected = {
                               "sort": "default",
@@ -155,17 +165,19 @@ class _FilterSortState extends State<FilterSort> {
               height: 20,
             ),
             ListView.builder(
+                //For each sort method
                 physics: const NeverScrollableScrollPhysics(),
                 scrollDirection: Axis.vertical,
                 shrinkWrap: true,
-                itemCount: sortOptions.length, //For each restaurant
+                itemCount: sortOptions.length,
                 itemBuilder: (context, index) {
                   return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 7),
                       child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                              side: customiseSelected["sort"] ==
-                                      sortOptions[index][2]
+                              side: (customiseSelected["sort"] ==
+                                      sortOptions[index][
+                                          2]) //If the sort method is the same as the button, display with border
                                   ? BorderSide(
                                       color: Theme.of(context).primaryColor,
                                       width: 2)
@@ -175,11 +187,13 @@ class _FilterSortState extends State<FilterSort> {
                               padding: const EdgeInsets.symmetric(
                                   vertical: 15, horizontal: 25)),
                           onPressed: () {
+                            //On press, overwrite sort method with new sort method
                             setState(() {
                               customiseSelected["sort"] = sortOptions[index][2];
                             });
                           },
                           child: Row(
+                            //Row with the icon and text for sort method grabbed from the list
                             children: [
                               Icon(
                                 sortOptions[index][1],
@@ -259,6 +273,7 @@ class _FilterSortState extends State<FilterSort> {
               height: 20,
             ),
             Container(
+                //Container with a list of price brackets
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 color: Theme.of(context).colorScheme.onSurface,
                 height: 70,
@@ -267,6 +282,7 @@ class _FilterSortState extends State<FilterSort> {
                     shrinkWrap: true,
                     itemCount: priceRangeOptions.length, //For each restaurant
                     itemBuilder: (context, index) {
+                      //For each price bracket
                       return Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 5, vertical: 10),
@@ -275,7 +291,8 @@ class _FilterSortState extends State<FilterSort> {
                               child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
                                     side: customiseSelected["price"].contains(
-                                            priceRangeOptions[index][1])
+                                            priceRangeOptions[index][
+                                                1]) //If customiseSelected has the price bracket, display with border
                                         ? BorderSide(
                                             color:
                                                 Theme.of(context).primaryColor,
@@ -286,6 +303,7 @@ class _FilterSortState extends State<FilterSort> {
                                     padding: const EdgeInsets.symmetric(
                                         vertical: 15, horizontal: 10)),
                                 onPressed: () {
+                                  // If customiseSelected has the price bracket, remove otherwise add it.
                                   if (customiseSelected["price"]
                                       .contains(priceRangeOptions[index][1])) {
                                     setState(() {
@@ -300,6 +318,7 @@ class _FilterSortState extends State<FilterSort> {
                                   }
                                 },
                                 child: Text(
+                                  //Display text with price bracket text (£, ££, £££, ££££)
                                   priceRangeOptions[index][0],
                                   style: Theme.of(context)
                                       .textTheme
@@ -321,13 +340,12 @@ class _FilterSortState extends State<FilterSort> {
               height: 40,
             ),
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+              //Row with title and the current sldier status. If price is 0, display as free
               Text("Max Delivery Fee",
                   style: Theme.of(context).textTheme.headline3),
               LayoutBuilder(builder: (context, constraints) {
                 if (_currentMaxDeliveryFeeValue == 0) {
                   return const Text("FREE");
-                } else if (_currentMaxDeliveryFeeValue == 4) {
-                  return const Text("£4.00+");
                 } else {
                   return Text("£${_currentMaxDeliveryFeeValue}0");
                 }
@@ -346,6 +364,7 @@ class _FilterSortState extends State<FilterSort> {
                   Theme.of(context).colorScheme.onBackground.withOpacity(0.2),
               divisions: 4,
               onChanged: (double value) {
+                //On change, update filter and the slider with new value
                 setState(() {
                   _currentMaxDeliveryFeeValue = value;
                 });
@@ -356,13 +375,12 @@ class _FilterSortState extends State<FilterSort> {
               height: 40,
             ),
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+              //Row with title and the current sldier status. If price is 0, display as None
               Text("Min Order Price",
                   style: Theme.of(context).textTheme.headline3),
               LayoutBuilder(builder: (context, constraints) {
                 if (_currentMinOrderPriceValue == 0) {
                   return const Text("None");
-                } else if (_currentMinOrderPriceValue == 40) {
-                  return const Text("£40.00+");
                 } else {
                   return Text("£${_currentMinOrderPriceValue}0");
                 }
@@ -391,6 +409,7 @@ class _FilterSortState extends State<FilterSort> {
               height: 40,
             ),
             ElevatedButton(
+                //Save button encodes the filter and sort dictionary and replaces the sharedpreference with the new value then closes the filter screen
                 style: ElevatedButton.styleFrom(
                     minimumSize: const Size.fromHeight(50)),
                 onPressed: () async {

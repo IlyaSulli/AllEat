@@ -45,7 +45,7 @@ class _BrowsePageState extends State<BrowsePage> {
                         size: 30,
                         color: Theme.of(context).colorScheme.onBackground,
                       )),
-                  onTap: () => (Navigator.push(
+                  onTap: () => (Navigator.push( //Go to Categories Page
                       context,
                       MaterialPageRoute(
                         builder: (context) => const CategoriesPage(),
