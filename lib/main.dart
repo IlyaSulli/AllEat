@@ -7,7 +7,9 @@ import 'package:alleat/theme/theme.dart' as globals;
 
 void main() {
   //Start App
-  runApp(const MyApp());
+  runApp(
+    const MyApp(),
+  );
 }
 
 class MyApp extends StatelessWidget {

@@ -1,4 +1,4 @@
-import 'package:alleat/widgets/genericlocading.dart';
+import 'package:alleat/screens/navigationscreens/browse.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
@@ -30,7 +30,7 @@ class _FilterSortState extends State<FilterSort> {
   double _currentMinOrderPriceValue = 40;
   String? encodedCustomiseSelected;
   Map customiseSelected = {
-    "sort": "default",
+    "sort": "distance",
     "favourite": false,
     "price": [1, 2, 3, 4],
     "maxDelivery": 4.0,
@@ -399,7 +399,9 @@ class _FilterSortState extends State<FilterSort> {
                       json.encode(customiseSelected);
                   await prefs.setString('filtersort', encodedCustomiseSelected);
                   setState(() {
-                    Navigator.of(context).pop();
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => const BrowsePage()),
+                    );
                   });
                 },
                 child: const Text("Save"))

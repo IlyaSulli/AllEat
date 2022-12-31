@@ -10,17 +10,21 @@ class RestaurantMain extends StatefulWidget {
   final String reslogo;
   final String resbanner;
   final String resdistance;
+  final String resdelivery;
+  final String resordermin;
 
   const RestaurantMain(
       //Get restaurant info from the restaurant list widget (passed from the container)
-      {Key? key,
-      required this.resid,
-      required this.resname,
-      required this.reslogo,
-      required this.resbanner,
-      required this.resdistance
-      })
-      : super(key: key);
+      {
+    Key? key,
+    required this.resid,
+    required this.resname,
+    required this.reslogo,
+    required this.resbanner,
+    required this.resdistance,
+    required this.resdelivery,
+    required this.resordermin,
+  }) : super(key: key);
 
   @override
   State<RestaurantMain> createState() => _RestaurantMainState();
@@ -400,24 +404,41 @@ class _RestaurantMainState extends State<RestaurantMain> {
               ],
             ),
             const SizedBox(height: 10),
-            Row(
-              children: [
-                Text("${widget.resdistance} km away",
-                    style: Theme.of(context).textTheme.bodyText1),
-                const SizedBox(
-                  width: 5,
-                ),
-                Text(
-                  "·",
-                  style: Theme.of(context).textTheme.bodyText1,
-                ),
-                const SizedBox(
-                  width: 5,
-                ),
-                Text("£N/A Delivery",
-                    style: Theme.of(context).textTheme.bodyText1),
-              ],
-            ),
+            Align(
+                alignment: Alignment.topLeft,
+                child: Wrap(
+                  children: [
+                    Text("${widget.resdistance} km away",
+                        style: Theme.of(context).textTheme.bodyText1),
+                    const SizedBox(
+                      width: 5,
+                    ),
+                    Text(
+                      "·",
+                      style: Theme.of(context).textTheme.bodyText1,
+                    ),
+                    const SizedBox(
+                      width: 5,
+                    ),
+                    Text(
+                        (widget.resdelivery == "0.00")
+                            ? "Free Delivery"
+                            : "£${widget.resdelivery} Delivery",
+                        style: Theme.of(context).textTheme.bodyText1),
+                    Text(
+                      "·",
+                      style: Theme.of(context).textTheme.bodyText1,
+                    ),
+                    const SizedBox(
+                      width: 5,
+                    ),
+                    Text(
+                        (widget.resordermin == "0")
+                            ? "No Mimimum Order"
+                            : "£${widget.resordermin} Order Minimum",
+                        style: Theme.of(context).textTheme.bodyText1),
+                  ],
+                )),
           ])),
       FutureBuilder<List>(
           //Checks for updates in the restaurant menu category

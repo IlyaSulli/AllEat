@@ -79,7 +79,7 @@ class _RestaurantListState extends State<RestaurantList> {
           metadata["favourite"] = "false";
           break;
       }
-
+      
       metadata["price"] = metadata["price"].join(",");
       metadata["maxDelivery"] = metadata["maxDelivery"].toString();
       metadata["profileid"] = metadata["profileid"].toString();
@@ -93,7 +93,6 @@ class _RestaurantListState extends State<RestaurantList> {
         if (res.statusCode == 200) {
           //If sends successfully
           var data = json.decode(res.body); //Decode to array
-          print(data);
           if (data["error"]) {
             //If fails to perform query
             List error = [
@@ -383,12 +382,16 @@ class _RestaurantListState extends State<RestaurantList> {
                                                           restaurantinfodata[2],
                                                       resbanner:
                                                           restaurantinfodata[3],
-                                                      resdistance:
-                                                          (restaurantsdata[0][
-                                                                      "restaurants"]
-                                                                  [index][6])
-                                                              .toStringAsFixed(
-                                                                  1)),
+                                                      resdistance: (restaurantsdata[
+                                                                      0][
+                                                                  "restaurants"]
+                                                              [index][8])
+                                                          .toStringAsFixed(1),
+                                                      resordermin:
+                                                          restaurantinfodata[6],
+                                                      resdelivery:
+                                                          restaurantinfodata[
+                                                              7]),
                                         ));
                                   },
                                   child: Container(
@@ -579,7 +582,7 @@ class _RestaurantListState extends State<RestaurantList> {
                                                       Row(
                                                         children: [
                                                           Text(
-                                                              "${(restaurantsdata[0]["restaurants"][index][6]).toStringAsFixed(1)} km away",
+                                                              "${(restaurantsdata[0]["restaurants"][index][8]).toStringAsFixed(1)} km away",
                                                               style: Theme.of(
                                                                       context)
                                                                   .textTheme
@@ -603,7 +606,15 @@ class _RestaurantListState extends State<RestaurantList> {
                                                           const SizedBox(
                                                             width: 5,
                                                           ),
-                                                          Text("£N/A Delivery",
+                                                          Text(
+                                                              (double.parse(restaurantsdata[0]["restaurants"]
+                                                                              [
+                                                                              index]
+                                                                          [
+                                                                          7]) ==
+                                                                      0)
+                                                                  ? "Free Delivery"
+                                                                  : "£${(restaurantsdata[0]["restaurants"][index][7])} Delivery",
                                                               style: Theme.of(
                                                                       context)
                                                                   .textTheme

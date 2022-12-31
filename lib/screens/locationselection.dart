@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:alleat/widgets/genericlocading.dart';
+import 'package:alleat/widgets/navigationbar.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/material.dart';
@@ -260,7 +261,11 @@ class _SelectLocationState extends State<SelectLocation> {
                                                         true) {
                                                       setState(() {
                                                         Navigator.of(context)
-                                                            .pop();
+                                                            .push(
+                                                          MaterialPageRoute(
+                                                              builder: (_) =>
+                                                                  const Navigation()),
+                                                        );
                                                       });
                                                     } else {
                                                       setState(() {

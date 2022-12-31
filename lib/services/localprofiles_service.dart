@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:alleat/services/cart_service.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart' as sql;
 
@@ -32,6 +33,7 @@ class SQLiteLocalProfiles {
       version: 1,
       onCreate: (sql.Database database, int version) async {
         await createTableProfile(database);
+        await SQLiteCartItems.createTableCartItems(database);
       },
     );
   }
