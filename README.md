@@ -19,4 +19,6 @@ Prototype 2: https://docs.google.com/document/d/1hzStvex3392VNqWgk1splfH5_jMYp9-
 
 Prototype 3: https://docs.google.com/document/d/1qbCiSld-ubUC7P6fJnEctjfQqLSKKBqsXGeqrCcA8-4/edit
 
+Full Documentation (High RAM Usage): https://docs.google.com/document/d/1wun9TdRfYYltGHttDIxoz-vosU8fFa4ZYgLKlzhVLSc/edit
+
 Final Code: *COMING SOON*
