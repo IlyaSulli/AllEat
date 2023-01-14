@@ -1,3 +1,4 @@
+import 'package:alleat/screens/checkout/cart.dart';
 import 'package:alleat/screens/locationselection.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -31,7 +32,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
                 InkWell(
                     onTap: () {
                       Navigator.push(
-                          //go to profile creation page
+                          //go to location page
                           context,
                           MaterialPageRoute(
                               builder: (context) => const SelectLocation()));
@@ -69,11 +70,19 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
                         }
                       })
                 ]),
-                Icon(
+                InkWell(child: Padding(padding: const EdgeInsets.all(10),child: Icon(
                   //Cart icon
                   Icons.shopping_cart_outlined,
                   color: Theme.of(context).textTheme.headline1?.color,
-                ),
+                )),
+                onTap: () {
+                  Navigator.push(
+                          //go to cart page
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const Cart()));
+                },
+                )
               ]),
         ));
   }

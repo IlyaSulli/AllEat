@@ -44,9 +44,14 @@ class _RestaurantItemCustomisePageState
   Future<bool> addToCart() async { //Add item with cutomsie options to db
     try {
       String customisedOptionsEncoded = json.encode(customisedOptions); //Encode Dictionary into a string
-      await SQLiteCartItems.addToCart(
+      bool isAdded = await SQLiteCartItems.addToCart(
           int.parse(widget.itemid), customisedOptionsEncoded, quantity);
+      if (isAdded){
+        return true;
+      }
+      else{
       return true; //If no error, return true
+      }
     } catch (e) {
       return false; //If error, return false
     }

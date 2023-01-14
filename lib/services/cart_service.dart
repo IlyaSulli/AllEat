@@ -1,4 +1,5 @@
 import 'package:alleat/services/localprofiles_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart' as sql;
 
 class SQLiteCartItems {
@@ -10,9 +11,11 @@ class SQLiteCartItems {
     //Create cart table (Used to store items and their customised details)
     await database.execute("""CREATE TABLE cartItems(
         cartid INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+        profileid INTEGER,
         itemid INT,
         customised TEXT,
-        quantity INT
+        quantity INT,
+        FOREIGN KEY (profileid) REFERENCES localprofiles(profileid)
       )
       """);
   }
@@ -35,13 +38,40 @@ class SQLiteCartItems {
 
   // Add to Cart
 
-  static Future<void> addToCart(
+  static Future<bool> addToCart(
       int itemid, dynamic customised, int quantity) async {
+    try {
+      final db = await SQLiteCartItems.cartdb();
+      final prefs = await SharedPreferences.getInstance();
+      final String? profileid = prefs.getString(
+          'serverprofileid'); //Try to get profileid of current user and convert
+      if (profileid == null) {
+        //If there is no current user selected
+        return false;
+      }
+      int profileidInt = int.parse(profileid);
+      await db.insert("cartItems", {
+        "profileid": profileidInt,
+        "itemid": itemid,
+        "customised": customised,
+        "quantity": quantity,
+      });
+      return true;
+    } catch (e) {
+      //If fails to add to cart
+      return false;
+    }
+  }
+
+  static Future<List> getProfilesInCart() async {
     final db = await SQLiteCartItems.cartdb();
-    db.insert("cartItems", {
-      "itemid": itemid,
-      "customised": customised,
-      "quantity": quantity,
-    });
+    List profilesInCart = await db.rawQuery("SELECT profileid FROM cartItems");
+    List singleProfilesInCart = [];
+    for (int i = 0; i < profilesInCart.length; i++) {
+      if (!singleProfilesInCart.contains(profilesInCart[i]["profileid"])) {
+        singleProfilesInCart.add(profilesInCart[i]["profileid"]);
+      }
+    }
+    return singleProfilesInCart;
   }
 }
