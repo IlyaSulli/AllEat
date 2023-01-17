@@ -63,6 +63,8 @@ class SQLiteCartItems {
     }
   }
 
+  // Get a list of profiles which are in the cart
+
   static Future<List> getProfilesInCart() async {
     final db = await SQLiteCartItems.cartdb();
     List profilesInCart = await db.rawQuery("SELECT profileid FROM cartItems");
@@ -73,5 +75,14 @@ class SQLiteCartItems {
       }
     }
     return singleProfilesInCart;
+  }
+
+  // Get a list of items that are under a profile ID
+
+  static Future<List> getProfileCart(profileID) async { 
+    final db = await SQLiteCartItems.cartdb();
+    List itemsInCart = await db.rawQuery(
+        "SELECT itemid, customised, quantity FROM cartItems WHERE profileid = $profileID");
+    return itemsInCart;
   }
 }

@@ -1,5 +1,6 @@
 import 'package:alleat/services/cart_service.dart';
 import 'package:alleat/services/localprofiles_service.dart';
+import 'package:alleat/services/queryserver.dart';
 import 'package:alleat/widgets/elements/elements.dart';
 import 'package:alleat/widgets/genericlocading.dart';
 import 'package:flutter/material.dart';
@@ -17,9 +18,10 @@ class _CartState extends State<Cart> {
     List cartProfileIDs = await SQLiteCartItems
         .getProfilesInCart(); //Get profile ids that are in the cart
     List profileInfo = await SQLiteLocalProfiles.getProfiles();
+
     //Got profiles
     for (int i = 0; i < cartProfileIDs.length; i++) {
-      if (profileInfo[i]["profileid"] == cartProfileIDs[i]) {
+      if (cartProfileIDs.contains(profileInfo[i]["profileid"])) {
         availableProfiles.add([
           profileInfo[i]["profileid"],
           profileInfo[i]["firstname"],
@@ -31,6 +33,18 @@ class _CartState extends State<Cart> {
       }
     }
     return availableProfiles;
+  }
+
+  Future<void> getProfileCart(profileID) async {
+    Map itemInfo = {};
+    List profileCart = await SQLiteCartItems.getProfileCart(profileID);
+    print(profileCart);
+    for (int i = 0; i < profileCart.length; i++) {
+      Map basicItemInfo = await QueryServer.query(
+          "https://alleat.cpur.net/query/cartiteminfo.php",
+          {"type": "item", "term": profileCart[i]["itemid"].toString()});
+      print(basicItemInfo);
+    }
   }
 
   @override
@@ -116,6 +130,17 @@ class _CartState extends State<Cart> {
                                 indent: 40,
                                 endIndent: 40,
                               ),
+                              FutureBuilder<void>(
+                                  future: getProfileCart(
+                                      availableProfiles[index][0]),
+                                  builder: (context, snapshot) {
+                                    return Text(
+                                        "Hey"); // if (snapshot.hasData) {
+
+                                    //   //List profileCart = snapshot.data ?? [];
+                                    //   //return Text(profileCart.toString());
+                                    // }
+                                  }),
                               const SizedBox(
                                 height: 30,
                               )
