@@ -96,9 +96,27 @@ class _CartState extends State<Cart> {
           }
         }
         print(updatedCustomised);
-        // Map CustomisedTitlesInfo = await QueryServer.query(
-        //     "https://alleat.cpur.net/query/cartiteminfo.php",
-        //     {"type": "title", "term": customisedtitleids});
+        Map CustomisedTitlesInfo = await QueryServer.query(
+            "https://alleat.cpur.net/query/cartiteminfo.php",
+            {"type": "title", "term": json.encode(customisedtitleids)});
+        if (CustomisedTitlesInfo["error"] == true) {
+          returnItemList["error"] = true;
+          returnItemList["message"] = CustomisedTitlesInfo["message"];
+          return returnItemList;
+        } else {
+          print(CustomisedTitlesInfo);
+          Map CustomisedOptionInfo = await QueryServer.query(
+              "https://alleat.cpur.net/query/cartiteminfo.php",
+              {"type": "option", "term": customisedOptions.toString()});
+          if (CustomisedOptionInfo["error"] == true) {
+            returnItemList["error"] = true;
+            returnItemList["message"] = CustomisedOptionInfo["message"];
+            return returnItemList;
+          } else {
+            print(CustomisedOptionInfo);
+            return returnItemList;
+          }
+        }
       }
     }
     returnItemList["iteminfo"] = tempItemInfo;
