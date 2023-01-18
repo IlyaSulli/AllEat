@@ -4,6 +4,7 @@ import 'package:alleat/services/queryserver.dart';
 import 'package:alleat/widgets/elements/elements.dart';
 import 'package:alleat/widgets/genericlocading.dart';
 import 'package:flutter/material.dart';
+import 'dart:convert';
 
 class Cart extends StatefulWidget {
   const Cart({super.key});
@@ -35,16 +36,40 @@ class _CartState extends State<Cart> {
     return availableProfiles;
   }
 
-  Future<void> getProfileCart(profileID) async {
-    Map itemInfo = {};
-    List profileCart = await SQLiteCartItems.getProfileCart(profileID);
-    print(profileCart);
+  Future<Map> getProfileCart(profileID) async {
+    Map returnItemList = {"error": false, "message": "", "iteminfo": {}};
+    Map tempItemInfo = {};
+
+    List profileCart = await SQLiteCartItems.getProfileCart(
+        profileID); //{itemid, customised, quantity}
+
+    for (int i = 0; i < profileCart.length; i++) {
+      tempItemInfo[profileCart[i]["itemid"]] = [[], {}];
+    }
     for (int i = 0; i < profileCart.length; i++) {
       Map basicItemInfo = await QueryServer.query(
           "https://alleat.cpur.net/query/cartiteminfo.php",
           {"type": "item", "term": profileCart[i]["itemid"].toString()});
-      print(basicItemInfo);
+      if (basicItemInfo["error"] == true) {
+        returnItemList["error"] = true;
+        returnItemList["message"] = basicItemInfo["message"];
+        return returnItemList;
+      } else {
+        tempItemInfo[profileCart[i]["itemid"]][0].addAll([
+          basicItemInfo["message"]["message"][1],
+          basicItemInfo["message"]["message"][3],
+          basicItemInfo["message"]["message"][2],
+          basicItemInfo["message"]["message"][5],
+          basicItemInfo["message"]["message"][4],
+          basicItemInfo["message"]["message"][6]
+        ]);
+        Map customised = json.decode(profileCart[i]["customised"]);
+        List customisedtitleids = customised.keys.toList();
+        print(customisedtitleids);
+      }
     }
+    returnItemList["iteminfo"] = tempItemInfo;
+    return returnItemList;
   }
 
   @override
@@ -130,16 +155,31 @@ class _CartState extends State<Cart> {
                                 indent: 40,
                                 endIndent: 40,
                               ),
-                              FutureBuilder<void>(
+                              FutureBuilder<Map>(
                                   future: getProfileCart(
                                       availableProfiles[index][0]),
                                   builder: (context, snapshot) {
-                                    return Text(
-                                        "Hey"); // if (snapshot.hasData) {
-
-                                    //   //List profileCart = snapshot.data ?? [];
-                                    //   //return Text(profileCart.toString());
-                                    // }
+                                    if (snapshot.hasData) {
+                                      List profileCart = [snapshot.data ?? []];
+                                      if (profileCart[0]["error"] == true) {
+                                        return Column(children: [
+                                          Text("ERROR"),
+                                          Text(profileCart[0]["message"]
+                                              .toString())
+                                        ]);
+                                      } else {
+                                        return Column(children: [
+                                          Text("SUCCESS"),
+                                          Text(profileCart[0]["iteminfo"]
+                                              .toString())
+                                        ]);
+                                      }
+                                    } else {
+                                      return LinearProgressIndicator(
+                                          color: Theme.of(context).primaryColor,
+                                          backgroundColor: const Color.fromARGB(
+                                              0, 235, 224, 255));
+                                    }
                                   }),
                               const SizedBox(
                                 height: 30,
