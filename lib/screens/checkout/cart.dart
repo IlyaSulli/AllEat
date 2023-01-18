@@ -64,8 +64,41 @@ class _CartState extends State<Cart> {
           basicItemInfo["message"]["message"][6]
         ]);
         Map customised = json.decode(profileCart[i]["customised"]);
-        List customisedtitleids = customised.keys.toList();
+        List customisedtitleids =
+            customised.keys.toList(); //Each customise title is stored here
         print(customisedtitleids);
+        List customisedOptions = []; //Each unique option stored here
+        Map updatedCustomised = {};
+        for (int i = 0; i < customisedtitleids.length; i++) {
+          //For each customise title
+          updatedCustomised[customisedtitleids[i]] = [
+            [],
+            []
+          ]; //Add customised key to new Map
+          for (int j = 0; j < customised[customisedtitleids[i]].length; j++) {
+            //For each item in list of customised options for customise title
+            if (!customisedOptions
+                .contains(customised[customisedtitleids[i]][j])) {
+              //If the option is not in the list of options, add it to the list
+              updatedCustomised[customisedtitleids[i]][1]
+                  .add([customised[customisedtitleids[i]][j], 1]);
+              customisedOptions.add(customised[customisedtitleids[i]][j]);
+            } else {
+              for (int k = 0;
+                  k < updatedCustomised[customisedtitleids[i]][1].length;
+                  k++) {
+                if (updatedCustomised[customisedtitleids[i]][1][k][0] ==
+                    customised[customisedtitleids[i]][j]) {
+                  updatedCustomised[customisedtitleids[i]][1][k][1] += 1;
+                }
+              }
+            }
+          }
+        }
+        print(updatedCustomised);
+        // Map CustomisedTitlesInfo = await QueryServer.query(
+        //     "https://alleat.cpur.net/query/cartiteminfo.php",
+        //     {"type": "title", "term": customisedtitleids});
       }
     }
     returnItemList["iteminfo"] = tempItemInfo;
