@@ -63,6 +63,7 @@ class _CartState extends State<Cart> {
           basicItemInfo["message"]["message"][4],
           basicItemInfo["message"]["message"][6]
         ]);
+
         Map customised = json.decode(profileCart[i]["customised"]);
         List customisedtitleids =
             customised.keys.toList(); //Each customise title is stored here
@@ -94,68 +95,71 @@ class _CartState extends State<Cart> {
             }
           }
         }
-        try{
-        Map customisedTitlesInfo = await QueryServer.query(
-            "https://alleat.cpur.net/query/cartiteminfo.php",
-            {"type": "title", "term": json.encode(customisedtitleids)});
-        if (customisedTitlesInfo["error"] == true) {
-          returnItemList["error"] = true;
-          returnItemList["message"] = customisedTitlesInfo["message"];
-          return returnItemList;
-        } else {
-          List customisedTitlesInfoFormatted =
-              customisedTitlesInfo["message"]["message"];
-          Map customisedOptionInfo = await QueryServer.query(
+        try {
+          Map customisedTitlesInfo = await QueryServer.query(
               "https://alleat.cpur.net/query/cartiteminfo.php",
-              {"type": "option", "term": customisedOptions.toString()});
-          if (customisedOptionInfo["error"] == true) {
+              {"type": "title", "term": json.encode(customisedtitleids)});
+          if (customisedTitlesInfo["error"] == true) {
             returnItemList["error"] = true;
-            returnItemList["message"] = customisedOptionInfo["message"];
+            returnItemList["message"] = customisedTitlesInfo["message"];
             return returnItemList;
           } else {
-            List customisedOptionInfoFormatted =
-                customisedOptionInfo["message"]["message"];
+            List customisedTitlesInfoFormatted =
+                customisedTitlesInfo["message"]["message"];
+            Map customisedOptionInfo = await QueryServer.query(
+                "https://alleat.cpur.net/query/cartiteminfo.php",
+                {"type": "option", "term": customisedOptions.toString()});
+            if (customisedOptionInfo["error"] == true) {
+              returnItemList["error"] = true;
+              returnItemList["message"] = customisedOptionInfo["message"];
+              return returnItemList;
+            } else {
+              List customisedOptionInfoFormatted =
+                  customisedOptionInfo["message"]["message"];
 
-            for (int i = 0; i < customisedtitleids.length; i++) {
-              // For each customise title
-              for (int j = 0; j < customisedTitlesInfoFormatted.length; j++) {
-                //For each item in list of returned from server info about each title
-                if (customisedTitlesInfoFormatted[j][0] ==
-                    customisedtitleids[i]) {
-                  // If it has the id of the title in the first index, add the info to the composite info
-                  updatedCustomised[customisedtitleids[i]][0].addAll([
-                    customisedTitlesInfoFormatted[j][1],
-                    customisedTitlesInfoFormatted[j][2]
-                  ]);
-                }
-              }
-              for (int j = 0;
-                  j < updatedCustomised[customisedtitleids[i]][1].length;
-                  j++) {
-                //For each option in the list of options for each title
-                for (int k = 0; k < customisedOptionInfoFormatted.length; k++) {
-                  //For each item in list of returned from server about option info
-                  if (customisedOptionInfoFormatted[k][0] ==
-                      updatedCustomised[customisedtitleids[i]][1][j][0]) {
-                    // If it has the id of the option in the first index, add the info to the list
-                    updatedCustomised[customisedtitleids[i]][1][j].addAll([
-                      customisedOptionInfoFormatted[k][1],
-                      customisedOptionInfoFormatted[k][2]
+              for (int i = 0; i < customisedtitleids.length; i++) {
+                // For each customise title
+                for (int j = 0; j < customisedTitlesInfoFormatted.length; j++) {
+                  //For each item in list of returned from server info about each title
+                  if (customisedTitlesInfoFormatted[j][0] ==
+                      customisedtitleids[i]) {
+                    // If it has the id of the title in the first index, add the info to the composite info
+                    updatedCustomised[customisedtitleids[i]][0].addAll([
+                      customisedTitlesInfoFormatted[j][1],
+                      customisedTitlesInfoFormatted[j][2]
                     ]);
                   }
                 }
+                for (int j = 0;
+                    j < updatedCustomised[customisedtitleids[i]][1].length;
+                    j++) {
+                  //For each option in the list of options for each title
+                  for (int k = 0;
+                      k < customisedOptionInfoFormatted.length;
+                      k++) {
+                    //For each item in list of returned from server about option info
+                    if (customisedOptionInfoFormatted[k][0] ==
+                        updatedCustomised[customisedtitleids[i]][1][j][0]) {
+                      // If it has the id of the option in the first index, add the info to the list
+                      updatedCustomised[customisedtitleids[i]][1][j].addAll([
+                        customisedOptionInfoFormatted[k][1],
+                        customisedOptionInfoFormatted[k][2]
+                      ]);
+                    }
+                  }
+                }
               }
+              tempItemInfo[profileCart[i]["itemid"]][1] = updatedCustomised;
+              returnItemList["iteminfo"] = tempItemInfo;
+              return returnItemList;
             }
-            returnItemList["iteminfo"] = updatedCustomised;
-
-            return returnItemList;
           }
+        } catch (e) {
+          returnItemList["error"] = true;
+          returnItemList["message"] =
+              "An error occurred while attempting to process the item information.";
         }
-      } catch(e){
-        returnItemList["error"] = true;
-            returnItemList["message"] = "An error occurred while attempting to process the item information.";
       }
-    }
     }
     returnItemList["iteminfo"] = tempItemInfo;
     return returnItemList;
@@ -251,17 +255,99 @@ class _CartState extends State<Cart> {
                                     if (snapshot.hasData) {
                                       List profileCart = [snapshot.data ?? []];
                                       if (profileCart[0]["error"] == true) {
-                                        return Column(children: [
-                                          Text("ERROR"),
-                                          Text(profileCart[0]["message"]
-                                              .toString())
-                                        ]);
+                                        return Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 20,
+                                                right: 20,
+                                                top: 10,
+                                                bottom: 10),
+                                            child: Container(
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        const BorderRadius.all(
+                                                            Radius.circular(
+                                                                20)),
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .onSurface,
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        color: Colors.black
+                                                            .withOpacity(0.1),
+                                                        spreadRadius: 2,
+                                                        blurRadius: 10,
+                                                        offset: const Offset(0,
+                                                            10), // changes position of shadow
+                                                      ),
+                                                    ]),
+                                                child: Column(children: [
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            30),
+                                                    child: SizedBox(
+                                                        width: double.infinity,
+                                                        child: Center(
+                                                            child: Column(
+                                                                children: [
+                                                              const Text(
+                                                                "An error has occurred.",
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .center,
+                                                              ),
+                                                              const SizedBox(
+                                                                height: 20,
+                                                              ),
+                                                              Text(
+                                                                profileCart[0]
+                                                                    ["message"],
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .center,
+                                                              ),
+                                                            ]))),
+                                                  )
+                                                ])));
                                       } else {
-                                        return Column(children: [
-                                          Text("SUCCESS"),
-                                          Text(profileCart[0]["iteminfo"]
-                                              .toString())
-                                        ]);
+                                        List itemKeyValues = profileCart[0]
+                                                ["iteminfo"]
+                                            .keys
+                                            .toList();
+                                        return ListView.builder(
+                                            physics:
+                                                const NeverScrollableScrollPhysics(), //Dont allow scrolling (Done by main page)
+                                            scrollDirection: Axis.vertical,
+                                            shrinkWrap: true,
+                                            itemCount: itemKeyValues
+                                                .length, //For each item
+                                            itemBuilder: (context, index) {
+                                              List currentItem = profileCart[0]
+                                                      ["iteminfo"]
+                                                  [itemKeyValues[index]];
+                                              return Dismissible(
+                                                  key: Key(itemKeyValues[index]
+                                                      .toString()),
+                                                  onDismissed: (direction) {
+                                                    print("Dismissed");
+                                                  },
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                        color: Theme.of(context)
+                                                            .colorScheme
+                                                            .onSurface),
+                                                    margin: const EdgeInsets
+                                                            .symmetric(
+                                                        horizontal: 15,
+                                                        vertical: 20),
+                                                    padding: const EdgeInsets
+                                                            .symmetric(
+                                                        vertical: 30,
+                                                        horizontal: 30),
+                                                    child:
+                                                        Text(currentItem[0][0]),
+                                                  ));
+                                            });
                                       }
                                     } else {
                                       return LinearProgressIndicator(
