@@ -66,7 +66,6 @@ class _CartState extends State<Cart> {
         Map customised = json.decode(profileCart[i]["customised"]);
         List customisedtitleids =
             customised.keys.toList(); //Each customise title is stored here
-        print(customisedtitleids);
         List customisedOptions = []; //Each unique option stored here
         Map updatedCustomised = {};
         for (int i = 0; i < customisedtitleids.length; i++) {
@@ -95,29 +94,68 @@ class _CartState extends State<Cart> {
             }
           }
         }
-        print(updatedCustomised);
-        Map CustomisedTitlesInfo = await QueryServer.query(
+        try{
+        Map customisedTitlesInfo = await QueryServer.query(
             "https://alleat.cpur.net/query/cartiteminfo.php",
             {"type": "title", "term": json.encode(customisedtitleids)});
-        if (CustomisedTitlesInfo["error"] == true) {
+        if (customisedTitlesInfo["error"] == true) {
           returnItemList["error"] = true;
-          returnItemList["message"] = CustomisedTitlesInfo["message"];
+          returnItemList["message"] = customisedTitlesInfo["message"];
           return returnItemList;
         } else {
-          print(CustomisedTitlesInfo);
-          Map CustomisedOptionInfo = await QueryServer.query(
+          List customisedTitlesInfoFormatted =
+              customisedTitlesInfo["message"]["message"];
+          Map customisedOptionInfo = await QueryServer.query(
               "https://alleat.cpur.net/query/cartiteminfo.php",
               {"type": "option", "term": customisedOptions.toString()});
-          if (CustomisedOptionInfo["error"] == true) {
+          if (customisedOptionInfo["error"] == true) {
             returnItemList["error"] = true;
-            returnItemList["message"] = CustomisedOptionInfo["message"];
+            returnItemList["message"] = customisedOptionInfo["message"];
             return returnItemList;
           } else {
-            print(CustomisedOptionInfo);
+            List customisedOptionInfoFormatted =
+                customisedOptionInfo["message"]["message"];
+
+            for (int i = 0; i < customisedtitleids.length; i++) {
+              // For each customise title
+              for (int j = 0; j < customisedTitlesInfoFormatted.length; j++) {
+                //For each item in list of returned from server info about each title
+                if (customisedTitlesInfoFormatted[j][0] ==
+                    customisedtitleids[i]) {
+                  // If it has the id of the title in the first index, add the info to the composite info
+                  updatedCustomised[customisedtitleids[i]][0].addAll([
+                    customisedTitlesInfoFormatted[j][1],
+                    customisedTitlesInfoFormatted[j][2]
+                  ]);
+                }
+              }
+              for (int j = 0;
+                  j < updatedCustomised[customisedtitleids[i]][1].length;
+                  j++) {
+                //For each option in the list of options for each title
+                for (int k = 0; k < customisedOptionInfoFormatted.length; k++) {
+                  //For each item in list of returned from server about option info
+                  if (customisedOptionInfoFormatted[k][0] ==
+                      updatedCustomised[customisedtitleids[i]][1][j][0]) {
+                    // If it has the id of the option in the first index, add the info to the list
+                    updatedCustomised[customisedtitleids[i]][1][j].addAll([
+                      customisedOptionInfoFormatted[k][1],
+                      customisedOptionInfoFormatted[k][2]
+                    ]);
+                  }
+                }
+              }
+            }
+            returnItemList["iteminfo"] = updatedCustomised;
+
             return returnItemList;
           }
         }
+      } catch(e){
+        returnItemList["error"] = true;
+            returnItemList["message"] = "An error occurred while attempting to process the item information.";
       }
+    }
     }
     returnItemList["iteminfo"] = tempItemInfo;
     return returnItemList;
