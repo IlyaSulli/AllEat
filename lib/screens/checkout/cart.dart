@@ -258,7 +258,7 @@ class _CartState extends State<Cart> {
                                           List currentItem = profileCart[0]["iteminfo"][itemKeyValues[index]];
 
                                           return Padding(
-                                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                                              padding: const EdgeInsets.symmetric(vertical: 5),
                                               child: Dismissible(
                                                   key: Key(itemKeyValues[index].toString()),
                                                   onDismissed: (direction) {},
@@ -342,16 +342,165 @@ class _CartState extends State<Cart> {
                                                             ))
                                                           ],
                                                         ),
-                                                        LayoutBuilder(builder: ((p0, p1) {
-                                                          //   //Customise view (displays the options that have been changed)
-                                                          List CustomiseIDs = Map.from(currentItem[1]).keys.toList();
-                                                          print(CustomiseIDs);
-                                                          //   //print(currentItem[1].keys.toList());
-                                                          //   // for (int i = 0; i < customiseID.length; i++) {
-                                                          //   //   print(currentItem[1][customiseID]);
-                                                          //   // }
-                                                          return Text("Hello");
-                                                        }))
+                                                        const SizedBox(
+                                                          height: 10,
+                                                        ),
+                                                        LayoutBuilder(
+                                                          builder: (BuildContext context, BoxConstraints constraints) {
+                                                            List customiseIDs = Map.from(currentItem[1]).keys.toList();
+                                                            return ListView.builder(
+                                                                physics: const NeverScrollableScrollPhysics(),
+                                                                shrinkWrap: true,
+                                                                itemCount: customiseIDs.length,
+                                                                itemBuilder: (context, i) {
+                                                                  if (currentItem[1][customiseIDs[i]][0][1] == "SELECT" &&
+                                                                      currentItem[1][customiseIDs[i]][1].isNotEmpty) {
+                                                                    return Container(
+                                                                        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                                                                        margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
+                                                                        decoration: BoxDecoration(
+                                                                            color: Theme.of(context).backgroundColor.withOpacity(0.5),
+                                                                            border: Border.all(
+                                                                                color: Theme.of(context).colorScheme.onBackground.withOpacity(0.3),
+                                                                                width: 1),
+                                                                            borderRadius: BorderRadius.circular(10)),
+                                                                        child: Column(
+                                                                            mainAxisAlignment: MainAxisAlignment.start,
+                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                            children: [
+                                                                              Text(currentItem[1][customiseIDs[i]][0][0],
+                                                                                  textAlign: TextAlign.start,
+                                                                                  style: Theme.of(context).textTheme.headline6?.copyWith(
+                                                                                      color: Theme.of(context).textTheme.headline1?.color)),
+                                                                              const SizedBox(height: 15),
+                                                                              ListView.builder(
+                                                                                  physics: const NeverScrollableScrollPhysics(),
+                                                                                  shrinkWrap: true,
+                                                                                  itemCount: currentItem[1][customiseIDs[i]][1].length,
+                                                                                  itemBuilder: (context, index) {
+                                                                                    return Padding(
+                                                                                      padding: const EdgeInsets.only(left: 10, bottom: 10),
+                                                                                      child: Row(children: [
+                                                                                        CircleAvatar(
+                                                                                          backgroundColor:
+                                                                                              Theme.of(context).primaryColor.withOpacity(0.5),
+                                                                                          radius: 10,
+                                                                                          child: Text(
+                                                                                              currentItem[1][customiseIDs[i]][1][index][1].toString(),
+                                                                                              style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                                                                                                  color: Theme.of(context).backgroundColor)),
+                                                                                        ),
+                                                                                        const SizedBox(
+                                                                                          width: 20,
+                                                                                        ),
+                                                                                        Text(currentItem[1][customiseIDs[i]][1][index][2].toString(),
+                                                                                            style: Theme.of(context).textTheme.bodyText1)
+                                                                                      ]),
+                                                                                    );
+                                                                                  }),
+                                                                            ]));
+                                                                  } else if (currentItem[1][customiseIDs[i]][0][1] == "ADD" &&
+                                                                      currentItem[1][customiseIDs[i]][1].isNotEmpty) {
+                                                                    return Container(
+                                                                        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                                                                        margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
+                                                                        decoration: BoxDecoration(
+                                                                            color: Theme.of(context).backgroundColor.withOpacity(0.5),
+                                                                            border: Border.all(
+                                                                                color: Theme.of(context).colorScheme.onBackground.withOpacity(0.3),
+                                                                                width: 1),
+                                                                            borderRadius: BorderRadius.circular(10)),
+                                                                        child: Column(
+                                                                            mainAxisAlignment: MainAxisAlignment.start,
+                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                            children: [
+                                                                              Text(currentItem[1][customiseIDs[i]][0][0],
+                                                                                  textAlign: TextAlign.start,
+                                                                                  style: Theme.of(context).textTheme.headline6?.copyWith(
+                                                                                      color: Theme.of(context).textTheme.headline1?.color)),
+                                                                              const SizedBox(height: 15),
+                                                                              ListView.builder(
+                                                                                  physics: const NeverScrollableScrollPhysics(),
+                                                                                  shrinkWrap: true,
+                                                                                  itemCount: currentItem[1][customiseIDs[i]][1].length,
+                                                                                  itemBuilder: (context, index) {
+                                                                                    return Padding(
+                                                                                      padding: const EdgeInsets.only(left: 10, bottom: 10),
+                                                                                      child: Row(children: [
+                                                                                        CircleAvatar(
+                                                                                          backgroundColor:
+                                                                                              Theme.of(context).primaryColor.withOpacity(0.5),
+                                                                                          radius: 10,
+                                                                                          child: Text(
+                                                                                              currentItem[1][customiseIDs[i]][1][index][1].toString(),
+                                                                                              style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                                                                                                  color: Theme.of(context).backgroundColor)),
+                                                                                        ),
+                                                                                        const SizedBox(
+                                                                                          width: 20,
+                                                                                        ),
+                                                                                        Text(currentItem[1][customiseIDs[i]][1][index][2].toString(),
+                                                                                            style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                                                                                                color: Theme.of(context).colorScheme.tertiary))
+                                                                                      ]),
+                                                                                    );
+                                                                                  }),
+                                                                            ]));
+                                                                  } else if (currentItem[1][customiseIDs[i]][0][1] == "REMOVE" &&
+                                                                      currentItem[1][customiseIDs[i]][1].isNotEmpty) {
+                                                                    return Container(
+                                                                        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                                                                        margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
+                                                                        decoration: BoxDecoration(
+                                                                            color: Theme.of(context).backgroundColor.withOpacity(0.5),
+                                                                            border: Border.all(
+                                                                                color: Theme.of(context).colorScheme.onBackground.withOpacity(0.3),
+                                                                                width: 1),
+                                                                            borderRadius: BorderRadius.circular(10)),
+                                                                        child: Column(
+                                                                            mainAxisAlignment: MainAxisAlignment.start,
+                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                            children: [
+                                                                              Text(currentItem[1][customiseIDs[i]][0][0],
+                                                                                  textAlign: TextAlign.start,
+                                                                                  style: Theme.of(context).textTheme.headline6?.copyWith(
+                                                                                      color: Theme.of(context).textTheme.headline1?.color)),
+                                                                              const SizedBox(height: 15),
+                                                                              ListView.builder(
+                                                                                  physics: const NeverScrollableScrollPhysics(),
+                                                                                  shrinkWrap: true,
+                                                                                  itemCount: currentItem[1][customiseIDs[i]][1].length,
+                                                                                  itemBuilder: (context, index) {
+                                                                                    return Padding(
+                                                                                      padding: const EdgeInsets.only(left: 10, bottom: 10),
+                                                                                      child: Row(children: [
+                                                                                        CircleAvatar(
+                                                                                          backgroundColor:
+                                                                                              Theme.of(context).primaryColor.withOpacity(0.5),
+                                                                                          radius: 10,
+                                                                                          child: Text(
+                                                                                              currentItem[1][customiseIDs[i]][1][index][1].toString(),
+                                                                                              style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                                                                                                  color: Theme.of(context).backgroundColor)),
+                                                                                        ),
+                                                                                        const SizedBox(
+                                                                                          width: 20,
+                                                                                        ),
+                                                                                        Text(currentItem[1][customiseIDs[i]][1][index][2].toString(),
+                                                                                            style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                                                                                                color: Theme.of(context).colorScheme.error))
+                                                                                      ]),
+                                                                                    );
+                                                                                  }),
+                                                                            ]));
+                                                                  } else {
+                                                                    return const SizedBox(
+                                                                      height: 0,
+                                                                    );
+                                                                  }
+                                                                });
+                                                          },
+                                                        )
                                                       ]))));
                                         });
                                   }
