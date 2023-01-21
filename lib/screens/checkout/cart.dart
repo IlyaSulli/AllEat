@@ -500,7 +500,18 @@ class _CartState extends State<Cart> {
                                                                   }
                                                                 });
                                                           },
-                                                        )
+                                                        ),
+                                                        Padding(
+                                                            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                                                            child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                                                              Text(
+                                                                "Price: ",
+                                                                style: Theme.of(context).textTheme.headline5,
+                                                              ),
+                                                              LayoutBuilder(builder: ((p0, p1) {
+                                                                return Text("£99.99");
+                                                              }))
+                                                            ]))
                                                       ]))));
                                         });
                                   }
