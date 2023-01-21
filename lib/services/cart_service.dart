@@ -38,13 +38,11 @@ class SQLiteCartItems {
 
   // Add to Cart
 
-  static Future<bool> addToCart(
-      int itemid, dynamic customised, int quantity) async {
+  static Future<bool> addToCart(int itemid, dynamic customised, int quantity) async {
     try {
       final db = await SQLiteCartItems.cartdb();
       final prefs = await SharedPreferences.getInstance();
-      final String? profileid = prefs.getString(
-          'serverprofileid'); //Try to get profileid of current user and convert
+      final String? profileid = prefs.getString('serverprofileid'); //Try to get profileid of current user and convert
       if (profileid == null) {
         //If there is no current user selected
         return false;
@@ -79,10 +77,16 @@ class SQLiteCartItems {
 
   // Get a list of items that are under a profile ID
 
-  static Future<List> getProfileCart(profileID) async { 
+  static Future<List> getProfileCart(profileID) async {
     final db = await SQLiteCartItems.cartdb();
-    List itemsInCart = await db.rawQuery(
-        "SELECT itemid, customised, quantity FROM cartItems WHERE profileid = $profileID");
+    List itemsInCart = await db.rawQuery("SELECT cartid, itemid, customised, quantity FROM cartItems WHERE profileid = $profileID");
     return itemsInCart;
+  }
+
+  //Remove item from cart
+
+  static Future<void> removeItem(cartID) async {
+    final db = await SQLiteCartItems.cartdb();
+    await db.rawDelete("DELETE FROM cartItems WHERE cartid = $cartID");
   }
 }

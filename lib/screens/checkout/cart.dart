@@ -35,11 +35,21 @@ class _CartState extends State<Cart> {
     return availableProfiles;
   }
 
+  //Remove Item
+  Future<bool> removeItem(cartID) async {
+    try {
+      await SQLiteCartItems.removeItem(cartID);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   Future<Map> getProfileCart(profileID) async {
     Map returnItemList = {"error": false, "message": "", "iteminfo": {}};
     Map tempItemInfo = {};
 
-    List profileCart = await SQLiteCartItems.getProfileCart(profileID); //{itemid, customised, quantity}
+    List profileCart = await SQLiteCartItems.getProfileCart(profileID); //{cartid, itemid, customised, quantity}
     for (int i = 0; i < profileCart.length; i++) {
       // For each item, add it as an index i
       tempItemInfo[profileCart[i]["itemid"]] = [[], {}];
@@ -61,7 +71,8 @@ class _CartState extends State<Cart> {
           basicItemInfo["message"]["message"][5],
           basicItemInfo["message"]["message"][4],
           basicItemInfo["message"]["message"][6],
-          profileCart[i]["quantity"]
+          profileCart[i]["quantity"],
+          profileCart[i]["cartid"],
         ]);
 
         Map customised = json.decode(profileCart[i]["customised"]);
@@ -211,6 +222,7 @@ class _CartState extends State<Cart> {
                               builder: (context, snapshot) {
                                 if (snapshot.hasData) {
                                   List profileCart = [snapshot.data ?? []];
+
                                   if (profileCart[0]["error"] == true) {
                                     return Padding(
                                         padding: const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
@@ -256,12 +268,23 @@ class _CartState extends State<Cart> {
                                         itemCount: itemKeyValues.length, //For each item
                                         itemBuilder: (context, index) {
                                           List currentItem = profileCart[0]["iteminfo"][itemKeyValues[index]];
-
                                           return Padding(
                                               padding: const EdgeInsets.symmetric(vertical: 5),
                                               child: Dismissible(
-                                                  key: Key(itemKeyValues[index].toString()),
-                                                  onDismissed: (direction) {},
+                                                  key: Key(currentItem[0][7].toString()),
+                                                  onDismissed: (direction) async {
+                                                    bool hasDeleted = await removeItem(currentItem[0][7]);
+                                                    setState(() {
+                                                      profileCart[0]["iteminfo"].remove(itemKeyValues[index]);
+                                                      if (hasDeleted) {
+                                                        ScaffoldMessenger.of(context)
+                                                            .showSnackBar(const SnackBar(content: Text("Successfully deleted item.")));
+                                                      } else {
+                                                        ScaffoldMessenger.of(context).showSnackBar(
+                                                            const SnackBar(content: Text("Failed to remove. Reopen cart and try again.")));
+                                                      }
+                                                    });
+                                                  },
                                                   background: Container(
                                                       color: Theme.of(context).colorScheme.error,
                                                       child: Row(
@@ -501,17 +524,6 @@ class _CartState extends State<Cart> {
                                                                 });
                                                           },
                                                         ),
-                                                        Padding(
-                                                            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-                                                            child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                                                              Text(
-                                                                "Price: ",
-                                                                style: Theme.of(context).textTheme.headline5,
-                                                              ),
-                                                              LayoutBuilder(builder: ((p0, p1) {
-                                                                return Text("£99.99");
-                                                              }))
-                                                            ]))
                                                       ]))));
                                         });
                                   }
