@@ -77,7 +77,8 @@ class _RestaurantListState extends State<RestaurantList> {
           break;
       }
 
-      metadata["price"] = metadata["price"].join(",");
+      metadata["price"] = metadata["price"].join(",").toString();
+
       metadata["maxDelivery"] = metadata["maxDelivery"].toString();
       metadata["profileid"] = metadata["profileid"].toString();
       metadata["minOrder"] = metadata["minOrder"].toString();

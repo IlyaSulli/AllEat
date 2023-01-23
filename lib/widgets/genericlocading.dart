@@ -18,7 +18,6 @@ class _GenericLoadingState extends State<GenericLoading> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: const [CircularProgressIndicator()])),
-        theme:
-            Theme.of(context)); //Show blank page with circular loading circle
+        theme: Theme.of(context)); //Show blank page with circular loading circle
   }
 }
