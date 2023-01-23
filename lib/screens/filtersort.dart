@@ -46,15 +46,13 @@ class _FilterSortState extends State<FilterSort> {
   }
 
   _loadFilter() async {
-    SharedPreferences prefs =
-        await SharedPreferences.getInstance(); //get from shared preferences
+    SharedPreferences prefs = await SharedPreferences.getInstance(); //get from shared preferences
     setState(() {
       encodedCustomiseSelected = prefs.getString('filtersort');
     });
     if (encodedCustomiseSelected != null) {
       //If the filter and sort methods have been previously saved
-      customiseSelected = json.decode(encodedCustomiseSelected
-          .toString()); //Decode customise and split and replace default values
+      customiseSelected = json.decode(encodedCustomiseSelected.toString()); //Decode customise and split and replace default values
       _currentMaxDeliveryFeeValue = customiseSelected["maxDelivery"];
       _currentMinOrderPriceValue = customiseSelected["minOrder"];
       isChecked = customiseSelected["favourite"];
@@ -62,7 +60,7 @@ class _FilterSortState extends State<FilterSort> {
       //If the filter and sort methods have not been previously saved
       customiseSelected = {
         //Set default values
-        "sort": "default",
+        "sort": "distance",
         "favourite": false,
         "price": [1, 2, 3, 4],
         "maxDelivery": 4.0,
@@ -77,8 +75,7 @@ class _FilterSortState extends State<FilterSort> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: SingleChildScrollView(
-            child:
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Padding(
           padding: const EdgeInsets.only(left: 40, right: 20, top: 50),
           child: Row(
@@ -102,7 +99,7 @@ class _FilterSortState extends State<FilterSort> {
                           //On tap, reset to defaults
                           setState(() {
                             customiseSelected = {
-                              "sort": "default",
+                              "sort": "distance",
                               "favourite": false,
                               "price": [1, 2, 3, 4],
                               "maxDelivery": 4.0,
@@ -114,23 +111,17 @@ class _FilterSortState extends State<FilterSort> {
                           });
                         },
                         child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 40, vertical: 20),
+                            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
                             child: Text(
                               "Clear all",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline6!
-                                  .copyWith(
-                                      color:
-                                          Theme.of(context).colorScheme.error),
+                              style: Theme.of(context).textTheme.headline6!.copyWith(color: Theme.of(context).colorScheme.error),
                             )));
                   } else {
                     return InkWell(
                         onTap: () {
                           setState(() {
                             customiseSelected = {
-                              "sort": "default",
+                              "sort": "distance",
                               "favourite": false,
                               "price": [1, 2, 3, 4],
                               "maxDelivery": 4.0,
@@ -141,26 +132,17 @@ class _FilterSortState extends State<FilterSort> {
                           });
                         },
                         child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 40, vertical: 20),
+                            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
                             child: Text(
                               "Clear all",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline6!
-                                  .copyWith(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .error
-                                          .withOpacity(0.1)),
+                              style: Theme.of(context).textTheme.headline6!.copyWith(color: Theme.of(context).colorScheme.error.withOpacity(0.1)),
                             )));
                   }
                 })
               ])),
       Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30),
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             const SizedBox(
               height: 20,
             ),
@@ -176,16 +158,11 @@ class _FilterSortState extends State<FilterSort> {
                       child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                               side: (customiseSelected["sort"] ==
-                                      sortOptions[index][
-                                          2]) //If the sort method is the same as the button, display with border
-                                  ? BorderSide(
-                                      color: Theme.of(context).primaryColor,
-                                      width: 2)
+                                      sortOptions[index][2]) //If the sort method is the same as the button, display with border
+                                  ? BorderSide(color: Theme.of(context).primaryColor, width: 2)
                                   : BorderSide.none,
-                              backgroundColor:
-                                  Theme.of(context).colorScheme.onSurface,
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 15, horizontal: 25)),
+                              backgroundColor: Theme.of(context).colorScheme.onSurface,
+                              padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 25)),
                           onPressed: () {
                             //On press, overwrite sort method with new sort method
                             setState(() {
@@ -197,35 +174,18 @@ class _FilterSortState extends State<FilterSort> {
                             children: [
                               Icon(
                                 sortOptions[index][1],
-                                color: customiseSelected["sort"] ==
-                                        sortOptions[index][2]
-                                    ? Theme.of(context)
-                                        .textTheme
-                                        .headline1
-                                        ?.color
-                                    : Theme.of(context)
-                                        .textTheme
-                                        .headline5
-                                        ?.color,
+                                color: customiseSelected["sort"] == sortOptions[index][2]
+                                    ? Theme.of(context).textTheme.headline1?.color
+                                    : Theme.of(context).textTheme.headline5?.color,
                               ),
                               const SizedBox(width: 20),
                               Flexible(
                                   child: Text(
                                 sortOptions[index][0],
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline5!
-                                    .copyWith(
-                                      color: customiseSelected["sort"] ==
-                                              sortOptions[index][2]
-                                          ? Theme.of(context)
-                                              .textTheme
-                                              .headline1
-                                              ?.color
-                                          : Theme.of(context)
-                                              .textTheme
-                                              .headline5
-                                              ?.color,
+                                style: Theme.of(context).textTheme.headline5!.copyWith(
+                                      color: customiseSelected["sort"] == sortOptions[index][2]
+                                          ? Theme.of(context).textTheme.headline1?.color
+                                          : Theme.of(context).textTheme.headline5?.color,
                                     ),
                               ))
                             ],
@@ -284,54 +244,36 @@ class _FilterSortState extends State<FilterSort> {
                     itemBuilder: (context, index) {
                       //For each price bracket
                       return Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 5, vertical: 10),
+                          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
                           child: SizedBox(
                               width: 70,
                               child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                    side: customiseSelected["price"].contains(
-                                            priceRangeOptions[index][
-                                                1]) //If customiseSelected has the price bracket, display with border
-                                        ? BorderSide(
-                                            color:
-                                                Theme.of(context).primaryColor,
-                                            width: 2)
+                                    side: customiseSelected["price"]
+                                            .contains(priceRangeOptions[index][1]) //If customiseSelected has the price bracket, display with border
+                                        ? BorderSide(color: Theme.of(context).primaryColor, width: 2)
                                         : BorderSide.none,
-                                    backgroundColor:
-                                        Theme.of(context).colorScheme.onSurface,
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 15, horizontal: 10)),
+                                    backgroundColor: Theme.of(context).colorScheme.onSurface,
+                                    padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10)),
                                 onPressed: () {
                                   // If customiseSelected has the price bracket, remove otherwise add it.
-                                  if (customiseSelected["price"]
-                                      .contains(priceRangeOptions[index][1])) {
+                                  if (customiseSelected["price"].contains(priceRangeOptions[index][1])) {
                                     setState(() {
-                                      customiseSelected["price"]
-                                          .remove(priceRangeOptions[index][1]);
+                                      customiseSelected["price"].remove(priceRangeOptions[index][1]);
                                     });
                                   } else {
                                     setState(() {
-                                      customiseSelected["price"]
-                                          .add(priceRangeOptions[index][1]);
+                                      customiseSelected["price"].add(priceRangeOptions[index][1]);
                                     });
                                   }
                                 },
                                 child: Text(
                                   //Display text with price bracket text (£, ££, £££, ££££)
                                   priceRangeOptions[index][0],
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline6!
-                                      .copyWith(
-                                        color: customiseSelected["price"]
-                                                .contains(
-                                                    priceRangeOptions[index][1])
+                                  style: Theme.of(context).textTheme.headline6!.copyWith(
+                                        color: customiseSelected["price"].contains(priceRangeOptions[index][1])
                                             ? Theme.of(context).primaryColor
-                                            : Theme.of(context)
-                                                .textTheme
-                                                .headline6
-                                                ?.color,
+                                            : Theme.of(context).textTheme.headline6?.color,
                                       ),
                                 ),
                               )));
@@ -341,8 +283,7 @@ class _FilterSortState extends State<FilterSort> {
             ),
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
               //Row with title and the current sldier status. If price is 0, display as free
-              Text("Max Delivery Fee",
-                  style: Theme.of(context).textTheme.headline3),
+              Text("Max Delivery Fee", style: Theme.of(context).textTheme.headline3),
               LayoutBuilder(builder: (context, constraints) {
                 if (_currentMaxDeliveryFeeValue == 0) {
                   return const Text("FREE");
@@ -360,8 +301,7 @@ class _FilterSortState extends State<FilterSort> {
               min: 0,
               thumbColor: Theme.of(context).primaryColor,
               activeColor: Theme.of(context).primaryColor,
-              inactiveColor:
-                  Theme.of(context).colorScheme.onBackground.withOpacity(0.2),
+              inactiveColor: Theme.of(context).colorScheme.onBackground.withOpacity(0.2),
               divisions: 4,
               onChanged: (double value) {
                 //On change, update filter and the slider with new value
@@ -376,8 +316,7 @@ class _FilterSortState extends State<FilterSort> {
             ),
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
               //Row with title and the current sldier status. If price is 0, display as None
-              Text("Min Order Price",
-                  style: Theme.of(context).textTheme.headline3),
+              Text("Min Order Price", style: Theme.of(context).textTheme.headline3),
               LayoutBuilder(builder: (context, constraints) {
                 if (_currentMinOrderPriceValue == 0) {
                   return const Text("None");
@@ -395,8 +334,7 @@ class _FilterSortState extends State<FilterSort> {
               min: 0,
               thumbColor: Theme.of(context).primaryColor,
               activeColor: Theme.of(context).primaryColor,
-              inactiveColor:
-                  Theme.of(context).colorScheme.onBackground.withOpacity(0.2),
+              inactiveColor: Theme.of(context).colorScheme.onBackground.withOpacity(0.2),
               divisions: 4,
               onChanged: (double value) {
                 setState(() {
@@ -410,12 +348,10 @@ class _FilterSortState extends State<FilterSort> {
             ),
             ElevatedButton(
                 //Save button encodes the filter and sort dictionary and replaces the sharedpreference with the new value then closes the filter screen
-                style: ElevatedButton.styleFrom(
-                    minimumSize: const Size.fromHeight(50)),
+                style: ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(50)),
                 onPressed: () async {
                   final prefs = await SharedPreferences.getInstance();
-                  String encodedCustomiseSelected =
-                      json.encode(customiseSelected);
+                  String encodedCustomiseSelected = json.encode(customiseSelected);
                   await prefs.setString('filtersort', encodedCustomiseSelected);
                   setState(() {
                     Navigator.of(context).push(

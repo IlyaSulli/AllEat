@@ -17,7 +17,7 @@ class _RestaurantListState extends State<RestaurantList> {
   late String msg;
   Map metadataTemp = {
     "error": false,
-    "sort": "default",
+    "sort": "distance",
     "favourite": false,
     "price": [1, 2, 3, 4],
     "maxDelivery": 4.0,
@@ -51,10 +51,7 @@ class _RestaurantListState extends State<RestaurantList> {
       metadataTemp["maxDelivery"] = filterSort["maxDelivery"];
       metadataTemp["minOrder"] = filterSort["minOrder"];
     }
-    if (locationLatitude == null ||
-        locationLatitude == 0 ||
-        locationLongitude == null ||
-        locationLongitude == 0) {
+    if (locationLatitude == null || locationLatitude == 0 || locationLongitude == null || locationLongitude == 0) {
       metadataTemp["error"] = true;
       return metadataTemp;
     } else {
@@ -79,15 +76,14 @@ class _RestaurantListState extends State<RestaurantList> {
           metadata["favourite"] = "false";
           break;
       }
-      
+
       metadata["price"] = metadata["price"].join(",");
       metadata["maxDelivery"] = metadata["maxDelivery"].toString();
       metadata["profileid"] = metadata["profileid"].toString();
       metadata["minOrder"] = metadata["minOrder"].toString();
       metadata["latitude"] = metadata["latitude"].toString();
       metadata["longitude"] = metadata["longitude"].toString();
-      String phpurl =
-          "https://alleat.cpur.net/query/restaurantlist.php"; //Get restaurant list
+      String phpurl = "https://alleat.cpur.net/query/restaurantlist.php"; //Get restaurant list
       try {
         var res = await http.post(Uri.parse(phpurl), body: metadata);
         if (res.statusCode == 200) {
@@ -96,11 +92,7 @@ class _RestaurantListState extends State<RestaurantList> {
           if (data["error"]) {
             //If fails to perform query
             List error = [
-              {
-                "error": true,
-                "message": "Server Response: ${data["message"]}",
-                "restaurants": "[]"
-              } //Send blank list of restaurants
+              {"error": true, "message": "Server Response: ${data["message"]}", "restaurants": "[]"} //Send blank list of restaurants
             ];
             return error;
           } else {
@@ -109,8 +101,7 @@ class _RestaurantListState extends State<RestaurantList> {
               List error = [
                 {
                   "error": true,
-                  "message":
-                      "Failed to get Location. \nTry changing your destination address",
+                  "message": "Failed to get Location. \nTry changing your destination address",
                   "restaurants": "[]"
                 } //Send blank list of restaurants
               ];
@@ -122,23 +113,13 @@ class _RestaurantListState extends State<RestaurantList> {
           }
         } else {
           List error = [
-            {
-              "error": true,
-              "message":
-                  "Error ${res.statusCode}: Failed to connect to server.",
-              "restaurants": "[]"
-            }
+            {"error": true, "message": "Error ${res.statusCode}: Failed to connect to server.", "restaurants": "[]"}
           ];
           return error;
         }
       } catch (e) {
         List error = [
-          {
-            "error": true,
-            "message":
-                "An unexpected error occured.\n Try reopening the app. \n\n ERROR: $e",
-            "restaurants": "[]"
-          }
+          {"error": true, "message": "An unexpected error occured.\n Try reopening the app. \n\n ERROR: $e", "restaurants": "[]"}
         ];
         return error;
       }
@@ -146,8 +127,7 @@ class _RestaurantListState extends State<RestaurantList> {
       List error = [
         {
           "error": true,
-          "message":
-              "Failed to get Location. \nTry changing your destination address",
+          "message": "Failed to get Location. \nTry changing your destination address",
           "restaurants": "[]"
         } //Send blank list of restaurants
       ];
@@ -159,21 +139,15 @@ class _RestaurantListState extends State<RestaurantList> {
     var p = 0.017453292519943295; //Convert constant from degrees to radians
     final prefs = await SharedPreferences.getInstance();
     final double? savedLocationLat = prefs.getDouble('locationLatitude'); //lat2
-    final double? savedLocationLng =
-        prefs.getDouble('locationLongitude'); //lng2
+    final double? savedLocationLng = prefs.getDouble('locationLongitude'); //lng2
     if (savedLocationLat != null && savedLocationLng != null) {
       for (var i = 0; i < restaurantdata["restaurants"].length; i++) {
-        double latRestaurant =
-            double.parse(restaurantdata["restaurants"][i][4]); //lat1
-        double lngRestaurant =
-            double.parse(restaurantdata["restaurants"][i][5]); //lng1
+        double latRestaurant = double.parse(restaurantdata["restaurants"][i][4]); //lat1
+        double lngRestaurant = double.parse(restaurantdata["restaurants"][i][5]); //lng1
         double distance = 12742 *
             asin(sqrt(0.5 -
                 cos((savedLocationLat - latRestaurant) * p) / 2 +
-                cos(latRestaurant * p) *
-                    cos(savedLocationLat * p) *
-                    (1 - cos((savedLocationLng - lngRestaurant) * p)) /
-                    2));
+                cos(latRestaurant * p) * cos(savedLocationLat * p) * (1 - cos((savedLocationLng - lngRestaurant) * p)) / 2));
         restaurantdata["restaurants"][i].add(distance);
       }
       return [true, restaurantdata];
@@ -189,8 +163,7 @@ class _RestaurantListState extends State<RestaurantList> {
     final String? email = prefs.getString('email');
     try {
       var res = await http.post(Uri.parse(phpurl), body: {
-        "action": action
-            .toString(), //Action determines if it will favourite or unfavourite depending on input
+        "action": action.toString(), //Action determines if it will favourite or unfavourite depending on input
         "profileemail": email,
         "restaurantid": restaurantID,
       });
@@ -212,8 +185,7 @@ class _RestaurantListState extends State<RestaurantList> {
   }
 
   Future<List> getFavourites() async {
-    String phpurl =
-        "https://alleat.cpur.net/query/favouriterestaurantlist.php"; //Get favourite restaurant ids using profile email
+    String phpurl = "https://alleat.cpur.net/query/favouriterestaurantlist.php"; //Get favourite restaurant ids using profile email
     final prefs = await SharedPreferences.getInstance();
     final String? email = prefs.getString('email');
     try {
@@ -226,10 +198,7 @@ class _RestaurantListState extends State<RestaurantList> {
         if (data["error"]) {
           //If error querying data
           List error = [
-            {
-              "error": true,
-              "favouriterestaurants": "[]"
-            } //Send empty favourite restaurant ids list
+            {"error": true, "favouriterestaurants": "[]"} //Send empty favourite restaurant ids list
           ];
           return error;
         } else {
@@ -259,24 +228,20 @@ class _RestaurantListState extends State<RestaurantList> {
       builder: ((context, snapshot) {
         if (snapshot.hasData) {
           //If recieved data
-          List restaurantsdata =
-              snapshot.data ?? []; //Data stored in restaurantsdata
+          List restaurantsdata = snapshot.data ?? []; //Data stored in restaurantsdata
           if (restaurantsdata[0]["error"] == true) {
             return Padding(
-                padding: const EdgeInsets.only(
-                    left: 20, right: 20, top: 10, bottom: 10),
+                padding: const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
                 child: Container(
                     decoration: BoxDecoration(
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(20)),
+                        borderRadius: const BorderRadius.all(Radius.circular(20)),
                         color: Theme.of(context).colorScheme.onSurface,
                         boxShadow: [
                           BoxShadow(
                             color: Colors.black.withOpacity(0.1),
                             spreadRadius: 2,
                             blurRadius: 10,
-                            offset: const Offset(
-                                0, 10), // changes position of shadow
+                            offset: const Offset(0, 10), // changes position of shadow
                           ),
                         ]),
                     child: Column(children: [
@@ -313,42 +278,33 @@ class _RestaurantListState extends State<RestaurantList> {
                 builder: ((context, snapshot) {
                   if (!snapshot.hasData) {
                     //While no data recieved, show loading bar
-                    return const LinearProgressIndicator(
-                        color: Color(0xff4100C4),
-                        backgroundColor: Color(0xffEBE0FF));
+                    return const LinearProgressIndicator(color: Color(0xff4100C4), backgroundColor: Color(0xffEBE0FF));
                   } else {
                     //If data recieved
                     List restaurantFavourites = snapshot.data ?? [];
                     return ListView.builder(
                         //Show number of containers depending on number of restaurants
-                        physics:
-                            const NeverScrollableScrollPhysics(), //Dont allow scrolling (Done by main page)
+                        physics: const NeverScrollableScrollPhysics(), //Dont allow scrolling (Done by main page)
                         scrollDirection: Axis.vertical,
                         shrinkWrap: true,
-                        itemCount: restaurantsdata[0]["restaurants"]
-                            .length, //For each restaurant
+                        itemCount: restaurantsdata[0]["restaurants"].length, //For each restaurant
                         itemBuilder: (context, index) {
-                          return Center(child:
-                              LayoutBuilder(builder: (context, constraints) {
+                          return Center(child: LayoutBuilder(builder: (context, constraints) {
                             if (restaurants.isEmpty) {
                               //If there are no restaurants show container saying no restaurants
 
                               return Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 20, right: 20, top: 10, bottom: 10),
+                                  padding: const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
                                   child: Container(
                                       decoration: BoxDecoration(
-                                          borderRadius: const BorderRadius.all(
-                                              Radius.circular(20)),
+                                          borderRadius: const BorderRadius.all(Radius.circular(20)),
                                           color: const Color(0xffffffff),
                                           boxShadow: [
                                             BoxShadow(
-                                              color:
-                                                  Colors.black.withOpacity(0.1),
+                                              color: Colors.black.withOpacity(0.1),
                                               spreadRadius: 2,
                                               blurRadius: 10,
-                                              offset: const Offset(0,
-                                                  10), // changes position of shadow
+                                              offset: const Offset(0, 10), // changes position of shadow
                                             ),
                                           ]),
                                       child: Column(children: const [
@@ -356,9 +312,7 @@ class _RestaurantListState extends State<RestaurantList> {
                                           padding: EdgeInsets.all(30),
                                           child: SizedBox(
                                               width: double.infinity,
-                                              child: Center(
-                                                  child: Text(
-                                                      "No restaurants found"))), //Display no restaurants text
+                                              child: Center(child: Text("No restaurants found"))), //Display no restaurants text
                                         )
                                       ])));
                             } else {
@@ -366,266 +320,160 @@ class _RestaurantListState extends State<RestaurantList> {
                               return InkWell(
                                   //Create clickable container
                                   onTap: () {
-                                    List restaurantinfodata = restaurantsdata[0]
-                                        ["restaurants"][index];
+                                    List restaurantinfodata = restaurantsdata[0]["restaurants"][index];
                                     Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                           builder:
                                               (context) => //On tap, send restaurant data associated with container to main page and go to that new screen
                                                   RestaurantMain(
-                                                      resid:
-                                                          restaurantinfodata[0],
-                                                      resname:
-                                                          restaurantinfodata[1],
-                                                      reslogo:
-                                                          restaurantinfodata[2],
-                                                      resbanner:
-                                                          restaurantinfodata[3],
-                                                      resdistance: (restaurantsdata[
-                                                                      0][
-                                                                  "restaurants"]
-                                                              [index][8])
-                                                          .toStringAsFixed(1),
-                                                      resordermin:
-                                                          restaurantinfodata[6],
-                                                      resdelivery:
-                                                          restaurantinfodata[
-                                                              7]),
+                                                      resid: restaurantinfodata[0],
+                                                      resname: restaurantinfodata[1],
+                                                      reslogo: restaurantinfodata[2],
+                                                      resbanner: restaurantinfodata[3],
+                                                      resdistance: (restaurantsdata[0]["restaurants"][index][8]).toStringAsFixed(1),
+                                                      resordermin: restaurantinfodata[6],
+                                                      resdelivery: restaurantinfodata[7]),
                                         ));
                                   },
                                   child: Container(
-                                      margin: const EdgeInsets.symmetric(
-                                          horizontal: 30, vertical: 20),
+                                      margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
                                       decoration: BoxDecoration(
-                                        borderRadius: const BorderRadius.all(
-                                            Radius.circular(10)),
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onSurface,
+                                        borderRadius: const BorderRadius.all(Radius.circular(10)),
+                                        color: Theme.of(context).colorScheme.onSurface,
                                       ),
                                       child: Stack(
                                         children: [
                                           Container(
                                             //Container filled with restaurant banner
-                                            width: MediaQuery.of(context)
-                                                .size
-                                                .width,
+                                            width: MediaQuery.of(context).size.width,
                                             height: 150,
                                             decoration: BoxDecoration(
-                                              borderRadius:
-                                                  const BorderRadius.only(
+                                              borderRadius: const BorderRadius.only(
                                                 topLeft: Radius.circular(10),
                                                 topRight: Radius.circular(10),
                                               ),
                                               image: DecorationImage(
                                                 fit: BoxFit.fitWidth,
-                                                image: NetworkImage(
-                                                    restaurants[index][3]
-                                                        .toString()),
+                                                image: NetworkImage(restaurants[index][3].toString()),
                                               ),
                                             ),
                                           ),
                                           Align(
                                               alignment: Alignment.topCenter,
                                               child: Container(
-                                                  margin: const EdgeInsets.only(
-                                                      top: 110),
+                                                  margin: const EdgeInsets.only(top: 110),
                                                   width: 70,
                                                   height: 70,
                                                   decoration: BoxDecoration(
                                                     shape: BoxShape.circle,
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .onSurface,
+                                                    color: Theme.of(context).colorScheme.onSurface,
                                                   ))),
                                           Align(
                                               alignment: Alignment.topCenter,
                                               child: Container(
-                                                  margin: const EdgeInsets.only(
-                                                      top: 115),
+                                                  margin: const EdgeInsets.only(top: 115),
                                                   width: 60,
                                                   height: 60,
                                                   decoration: BoxDecoration(
                                                     image: DecorationImage(
                                                       fit: BoxFit.cover,
-                                                      image: NetworkImage(
-                                                          restaurants[index][2]
-                                                              .toString()),
+                                                      image: NetworkImage(restaurants[index][2].toString()),
                                                     ),
                                                     shape: BoxShape.circle,
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .onSurface,
+                                                    color: Theme.of(context).colorScheme.onSurface,
                                                   ))),
                                           Align(
                                               alignment: Alignment.topRight,
                                               child: InkWell(
                                                   onTap: () {
-                                                    if (restaurantFavourites[0]
-                                                            ["restaurantids"]
-                                                        .contains(
-                                                            restaurants[index]
-                                                                    [0]
-                                                                .toString())) {
-                                                      favouriteRestaurant(
-                                                          restaurants[index][0]
-                                                              .toString(),
-                                                          "unfavourite");
+                                                    if (restaurantFavourites[0]["restaurantids"].contains(restaurants[index][0].toString())) {
+                                                      favouriteRestaurant(restaurants[index][0].toString(), "unfavourite");
                                                       setState(() {
                                                         getFavourites();
                                                       });
                                                     } else {
-                                                      favouriteRestaurant(
-                                                          restaurants[index][0]
-                                                              .toString(),
-                                                          "favourite");
+                                                      favouriteRestaurant(restaurants[index][0].toString(), "favourite");
                                                       setState(() {
                                                         getFavourites();
                                                       });
                                                     }
                                                   },
                                                   child: Container(
-                                                      margin:
-                                                          const EdgeInsets.only(
-                                                              top: 10,
-                                                              right: 10),
+                                                      margin: const EdgeInsets.only(top: 10, right: 10),
                                                       width: 45,
                                                       height: 45,
                                                       decoration: BoxDecoration(
                                                         shape: BoxShape.circle,
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .onSurface
-                                                            .withOpacity(0.8),
+                                                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
                                                       ),
-                                                      child: restaurantFavourites[0]
-                                                                  [
-                                                                  "restaurantids"]
-                                                              .contains(
-                                                                  restaurants[index]
-                                                                          [0]
-                                                                      .toString())
+                                                      child: restaurantFavourites[0]["restaurantids"].contains(restaurants[index][0].toString())
                                                           ? Icon(Icons.favorite,
-                                                              size:
-                                                                  30, // ? = favourited
-                                                              color: Theme.of(
-                                                                      context)
-                                                                  .colorScheme
-                                                                  .secondary)
+                                                              size: 30, // ? = favourited
+                                                              color: Theme.of(context).colorScheme.secondary)
                                                           : Icon(
                                                               // : = unfavourited
-                                                              Icons
-                                                                  .favorite_border_outlined,
+                                                              Icons.favorite_border_outlined,
                                                               size: 30,
-                                                              color: Theme.of(
-                                                                      context)
-                                                                  .colorScheme
-                                                                  .onBackground)))),
+                                                              color: Theme.of(context).colorScheme.onBackground)))),
                                           Align(
                                               alignment: Alignment.bottomLeft,
                                               child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          top: 190,
-                                                          left: 20,
-                                                          right: 20),
+                                                  padding: const EdgeInsets.only(top: 190, left: 20, right: 20),
                                                   child: Column(
                                                     children: [
                                                       Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
+                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                         children: [
                                                           Flexible(
                                                               child: Container(
-                                                                  padding: const EdgeInsets
-                                                                          .only(
-                                                                      right:
-                                                                          13.0),
+                                                                  padding: const EdgeInsets.only(right: 13.0),
                                                                   child: Text(
-                                                                    restaurants[
-                                                                        index][1],
-                                                                    overflow:
-                                                                        TextOverflow
-                                                                            .ellipsis,
-                                                                    style: Theme.of(
-                                                                            context)
-                                                                        .textTheme
-                                                                        .headline4,
+                                                                    restaurants[index][1],
+                                                                    overflow: TextOverflow.ellipsis,
+                                                                    style: Theme.of(context).textTheme.headline4,
                                                                   ))),
                                                           Row(
                                                             children: [
                                                               Icon(
                                                                 Icons.star,
                                                                 size: 20,
-                                                                color: Theme.of(
-                                                                        context)
-                                                                    .primaryColor,
+                                                                color: Theme.of(context).primaryColor,
                                                               ),
                                                               const SizedBox(
                                                                 width: 5,
                                                               ),
                                                               Text(
                                                                 "N/A",
-                                                                style: Theme.of(
-                                                                        context)
-                                                                    .textTheme
-                                                                    .bodyText1,
+                                                                style: Theme.of(context).textTheme.bodyText1,
                                                               )
                                                             ],
                                                           ),
                                                         ],
                                                       ),
-                                                      const SizedBox(
-                                                          height: 10),
+                                                      const SizedBox(height: 10),
                                                       Row(
                                                         children: [
-                                                          Text(
-                                                              "${(restaurantsdata[0]["restaurants"][index][8]).toStringAsFixed(1)} km away",
-                                                              style: Theme.of(
-                                                                      context)
-                                                                  .textTheme
-                                                                  .bodyText1!
-                                                                  .copyWith(
-                                                                      fontSize:
-                                                                          12)),
+                                                          Text("${(restaurantsdata[0]["restaurants"][index][8]).toStringAsFixed(1)} km away",
+                                                              style: Theme.of(context).textTheme.bodyText1!.copyWith(fontSize: 12)),
                                                           const SizedBox(
                                                             width: 5,
                                                           ),
                                                           Text(
                                                             "·",
-                                                            style: Theme.of(
-                                                                    context)
-                                                                .textTheme
-                                                                .bodyText1!
-                                                                .copyWith(
-                                                                    fontSize:
-                                                                        12),
+                                                            style: Theme.of(context).textTheme.bodyText1!.copyWith(fontSize: 12),
                                                           ),
                                                           const SizedBox(
                                                             width: 5,
                                                           ),
                                                           Text(
-                                                              (double.parse(restaurantsdata[0]["restaurants"]
-                                                                              [
-                                                                              index]
-                                                                          [
-                                                                          7]) ==
-                                                                      0)
+                                                              (double.parse(restaurantsdata[0]["restaurants"][index][7]) == 0)
                                                                   ? "Free Delivery"
                                                                   : "£${(restaurantsdata[0]["restaurants"][index][7])} Delivery",
-                                                              style: Theme.of(
-                                                                      context)
-                                                                  .textTheme
-                                                                  .bodyText1!
-                                                                  .copyWith(
-                                                                      fontSize:
-                                                                          12)),
+                                                              style: Theme.of(context).textTheme.bodyText1!.copyWith(fontSize: 12)),
                                                         ],
                                                       ),
-                                                      const SizedBox(
-                                                          height: 20),
+                                                      const SizedBox(height: 20),
                                                     ],
                                                   )))
                                         ],
@@ -638,20 +486,17 @@ class _RestaurantListState extends State<RestaurantList> {
               );
             } catch (e) {
               return Padding(
-                  padding: const EdgeInsets.only(
-                      left: 20, right: 20, top: 10, bottom: 10),
+                  padding: const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
                   child: Container(
                       decoration: BoxDecoration(
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(20)),
+                          borderRadius: const BorderRadius.all(Radius.circular(20)),
                           color: Theme.of(context).colorScheme.onSurface,
                           boxShadow: [
                             BoxShadow(
                               color: Colors.black.withOpacity(0.1),
                               spreadRadius: 2,
                               blurRadius: 10,
-                              offset: const Offset(
-                                  0, 10), // changes position of shadow
+                              offset: const Offset(0, 10), // changes position of shadow
                             ),
                           ]),
                       child: Column(children: [
@@ -681,9 +526,7 @@ class _RestaurantListState extends State<RestaurantList> {
             }
           }
         } else {
-          return const LinearProgressIndicator(
-              color: Color(0xff4100C4),
-              backgroundColor: Color.fromARGB(0, 235, 224, 255));
+          return const LinearProgressIndicator(color: Color(0xff4100C4), backgroundColor: Color.fromARGB(0, 235, 224, 255));
         }
       }),
     );

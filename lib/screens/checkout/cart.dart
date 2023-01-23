@@ -78,7 +78,7 @@ class _CartState extends State<Cart> {
         Map customised = json.decode(profileCart[i]["customised"]);
         List customisedtitleids = customised.keys.toList(); //Each customise title is stored here
         List customisedOptions = []; //Each unique option stored here
-        Map updatedCustomised = {};
+        Map updatedCustomised = {}; //Data that will be sent back in the iteminfo key, correctly formatted
         for (int i = 0; i < customisedtitleids.length; i++) {
           //For each customise title
           updatedCustomised[customisedtitleids[i]] = [[], []]; //Add customised key to new Map
@@ -210,7 +210,7 @@ class _CartState extends State<Cart> {
                               )),
                           Divider(
                             thickness: 2,
-                            color: Theme.of(context).colorScheme.onSurface,
+                            color: Theme.of(context).textTheme.headline6?.color?.withOpacity(0.5),
                             indent: 40,
                             endIndent: 40,
                           ),
@@ -268,6 +268,8 @@ class _CartState extends State<Cart> {
                                         itemCount: itemKeyValues.length, //For each item
                                         itemBuilder: (context, index) {
                                           List currentItem = profileCart[0]["iteminfo"][itemKeyValues[index]];
+                                          double itemPrice = double.parse(currentItem[0][2]);
+
                                           return Padding(
                                               padding: const EdgeInsets.symmetric(vertical: 5),
                                               child: Dismissible(
@@ -378,6 +380,11 @@ class _CartState extends State<Cart> {
                                                                 itemBuilder: (context, i) {
                                                                   if (currentItem[1][customiseIDs[i]][0][1] == "SELECT" &&
                                                                       currentItem[1][customiseIDs[i]][1].isNotEmpty) {
+                                                                    for (int s = 0; s < currentItem[1][customiseIDs[i]][1].length; s++) {
+                                                                      itemPrice = ((itemPrice * 100) +
+                                                                              double.parse(currentItem[1][customiseIDs[i]][1][s][3]) * 100) /
+                                                                          100;
+                                                                    }
                                                                     return Container(
                                                                         padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
                                                                         margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
@@ -524,6 +531,9 @@ class _CartState extends State<Cart> {
                                                                 });
                                                           },
                                                         ),
+                                                        LayoutBuilder(builder: (((p0, p1) {
+                                                          return Text(itemPrice.toString());
+                                                        })))
                                                       ]))));
                                         });
                                   }
