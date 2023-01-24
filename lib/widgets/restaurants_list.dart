@@ -76,8 +76,11 @@ class _RestaurantListState extends State<RestaurantList> {
           metadata["favourite"] = "false";
           break;
       }
-
-      metadata["price"] = metadata["price"].join(",").toString();
+      try {
+        metadata["price"] = metadata["price"].join(",").toString();
+      } catch (e) {
+        metadata["price"] = "1,2,3,4";
+      }
 
       metadata["maxDelivery"] = metadata["maxDelivery"].toString();
       metadata["profileid"] = metadata["profileid"].toString();
