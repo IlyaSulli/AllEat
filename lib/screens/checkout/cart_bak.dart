@@ -181,7 +181,6 @@ class _CartState extends State<Cart> {
                   ]
                 ]);
               }
-              bool compeletedGettingCartData = false;
   
               return Scaffold(
                   body: SingleChildScrollView(
@@ -405,7 +404,6 @@ class _CartState extends State<Cart> {
                                                                     if (customiseIDs.length - 1 == i &&
                                                                         availableProfiles.length - 1 == avPrIndex &&
                                                                         itemKeyValues.length - 1 == indexItem) {
-                                                                      compeletedGettingCartData = true;
                                                                     }
                                                                     if (currentItem[1][customiseIDs[i]][0][1] == "SELECT" &&
                                                                         currentItem[1][customiseIDs[i]][1].isNotEmpty) {
