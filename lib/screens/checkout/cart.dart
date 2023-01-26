@@ -592,7 +592,48 @@ class _CartState extends State<Cart> {
                         } else {
                           return LayoutBuilder(
                             builder: (p0, p1) {
-                              return Text(cartInfo[0]["cartinfo"].toString());
+                              for (int iProfilePrice = 0; iProfilePrice < cartInfo[0]["cartinfo"].length; iProfilePrice++) {
+                                //For each profile in the cart
+                                cartInfo[0]["cartinfo"][iProfilePrice].add(0.00); //Add total price to the end of the profile index in the cartInfo
+                                List itemPriceKeys = cartInfo[0]["cartinfo"][iProfilePrice][6].keys.toList(); //Create a list of keys for each item
+                                for (int iItemPrice = 0; iItemPrice < itemPriceKeys.length; iItemPrice++) {
+                                  //For each item
+                                  cartInfo[0]["cartinfo"][iProfilePrice][7] = (cartInfo[0]["cartinfo"][iProfilePrice][7] * 100 +
+                                          double.parse(cartInfo[0]["cartinfo"][iProfilePrice][6][itemPriceKeys[iItemPrice]][0][2]) * 100) /
+                                      100; //Add price to the total price for the profile
+
+                                }
+                              }
+                              return Column(children: [
+                                const SizedBox(height: 50),
+                                LayoutBuilder(builder: ((p0, p1) {
+                                  for (int iProfilePrice = 0; iProfilePrice < cartInfo[0]["cartinfo"].length; iProfilePrice++) {
+                                    //For each profile, display their total price
+                                    return Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 10),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.end,
+                                          children: [
+                                            Text(
+                                              "${cartInfo[0]["cartinfo"][iProfilePrice][1]} ${cartInfo[0]["cartinfo"][iProfilePrice][2]}: ",
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .headline6
+                                                  ?.copyWith(color: Theme.of(context).textTheme.headline1?.color),
+                                            ),
+                                            const SizedBox(
+                                              width: 50,
+                                            ),
+                                            Text("£${cartInfo[0]["cartinfo"][iProfilePrice][7].toStringAsFixed(2)}",
+                                                style: Theme.of(context).textTheme.headline6?.copyWith(fontWeight: FontWeight.w500))
+                                          ],
+                                        ));
+                                  }
+
+                                  return const Text("");
+                                })),
+                                // const ElevatedButton(onPressed: null, child: Text("Checkout"))
+                              ]);
                             },
                           );
                         }
