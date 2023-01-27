@@ -89,4 +89,10 @@ class SQLiteCartItems {
     final db = await SQLiteCartItems.cartdb();
     await db.rawDelete("DELETE FROM cartItems WHERE cartid = $cartID");
   }
+
+  //Remove all items from cart
+  static Future<void> clearCart() async {
+    final db = await SQLiteCartItems.cartdb();
+    await db.rawDelete("DELETE FROM cartItems");
+  }
 }

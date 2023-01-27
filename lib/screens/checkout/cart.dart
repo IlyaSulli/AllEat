@@ -1,3 +1,4 @@
+import 'package:alleat/screens/checkout/checkout.dart';
 import 'package:alleat/services/cart_service.dart';
 import 'package:alleat/services/localprofiles_service.dart';
 import 'package:alleat/services/queryserver.dart';
@@ -673,8 +674,19 @@ class _CartState extends State<Cart> {
                                         if (double.parse(cartInfo[0]["cartinfo"][0][6][itemKeys[0]][0][8]) <= subtotal) {
                                           return Padding(
                                               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-                                              child: Row(
-                                                  children: [Expanded(child: ElevatedButton(onPressed: (() {}), child: const Text("Checkout")))]));
+                                              child: Row(children: [
+                                                Expanded(
+                                                    child: ElevatedButton(
+                                                        onPressed: (() {
+                                                          Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                  builder: (context) => Checkout(
+                                                                        cartInfo: cartInfo[0]["cartinfo"],
+                                                                      )));
+                                                        }),
+                                                        child: const Text("Checkout")))
+                                              ]));
                                         } else {
                                           return Padding(
                                               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:alleat/services/cart_service.dart';
 import 'package:alleat/widgets/genericlocading.dart';
 import 'package:alleat/widgets/navigationbar.dart';
 import 'package:flutter/services.dart';
@@ -23,22 +24,17 @@ class _SelectLocationState extends State<SelectLocation> {
   static TextEditingController postcode = TextEditingController();
   static TextEditingController city = TextEditingController();
   MapPickerController mapPickerController = MapPickerController();
-  late var cameraPosition =
-      const CameraPosition(target: LatLng(0, 0), zoom: 20);
+  late var cameraPosition = const CameraPosition(target: LatLng(0, 0), zoom: 20);
 
   Future<List> getSavedPosition() async {
     //Try to get saved location and current location
 
-    final prefs = await SharedPreferences
-        .getInstance(); // Get saved location from shared preferences
+    final prefs = await SharedPreferences.getInstance(); // Get saved location from shared preferences
     final double? savedLocationLat = prefs.getDouble('locationLatitude');
     final double? savedLocationLng = prefs.getDouble('locationLongitude');
-    final List<String>? savedLocationText =
-        prefs.getStringList('locationPlacemark');
+    final List<String>? savedLocationText = prefs.getStringList('locationPlacemark');
 
-    if (savedLocationLat != null &&
-        savedLocationLng != null &&
-        savedLocationText != null) {
+    if (savedLocationLat != null && savedLocationLng != null && savedLocationText != null) {
       //If not null returned, return the value
       addresslineone = TextEditingController(text: savedLocationText[0]);
       addresslinetwo = TextEditingController(text: savedLocationText[1]);
@@ -53,16 +49,11 @@ class _SelectLocationState extends State<SelectLocation> {
 
   Future<bool> saveLocation() async {
     try {
+      await SQLiteCartItems.clearCart();
       final prefs = await SharedPreferences.getInstance();
       await prefs.setDouble('locationLatitude', cameraPosition.target.latitude);
-      await prefs.setDouble(
-          'locationLongitude', cameraPosition.target.longitude);
-      await prefs.setStringList('locationPlacemark', <String>[
-        addresslineone.text,
-        addresslinetwo.text,
-        city.text,
-        postcode.text
-      ]);
+      await prefs.setDouble('locationLongitude', cameraPosition.target.longitude);
+      await prefs.setStringList('locationPlacemark', <String>[addresslineone.text, addresslinetwo.text, city.text, postcode.text]);
 
       return true;
     } catch (e) {
@@ -86,7 +77,7 @@ class _SelectLocationState extends State<SelectLocation> {
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        await getPlacemark([false, 51.509865, -0.118092]); 
+        await getPlacemark([false, 51.509865, -0.118092]);
         return [51.509865, -0.118092]; //London lat long
       }
     }
@@ -99,8 +90,7 @@ class _SelectLocationState extends State<SelectLocation> {
 
     // Access the current possition of the device
     Position locationDevice = await Geolocator.getCurrentPosition();
-    await getPlacemark(
-        [false, locationDevice.latitude, locationDevice.longitude]);
+    await getPlacemark([false, locationDevice.latitude, locationDevice.longitude]);
     return [locationDevice.latitude, locationDevice.longitude];
   }
 
@@ -116,21 +106,18 @@ class _SelectLocationState extends State<SelectLocation> {
           addresslinetwo = TextEditingController(text: placemarks.first.street);
           postcode = TextEditingController(text: placemarks.first.postalCode);
           if ((placemarks.first.locality) == "") {
-            city = TextEditingController(
-                text: placemarks.first.subAdministrativeArea);
+            city = TextEditingController(text: placemarks.first.subAdministrativeArea);
           } else {
             city = TextEditingController(text: placemarks.first.locality);
           }
           break;
         case false:
-          List<Placemark> placemarks = await placemarkFromCoordinates(
-              placemarkLocation[1], placemarkLocation[2]);
+          List<Placemark> placemarks = await placemarkFromCoordinates(placemarkLocation[1], placemarkLocation[2]);
           addresslineone = TextEditingController(text: placemarks.first.name);
           addresslinetwo = TextEditingController(text: placemarks.first.street);
           postcode = TextEditingController(text: placemarks.first.postalCode);
           if ((placemarks.first.locality) == "") {
-            city = TextEditingController(
-                text: placemarks.first.subAdministrativeArea);
+            city = TextEditingController(text: placemarks.first.subAdministrativeArea);
           } else {
             city = TextEditingController(text: placemarks.first.locality);
           }
@@ -154,13 +141,11 @@ class _SelectLocationState extends State<SelectLocation> {
         if (snapshot.hasData) {
           var savedPosition = snapshot.data ?? [];
 
-          CameraPosition cameraPosition = CameraPosition(
-              target: LatLng(savedPosition[0], savedPosition[1]), zoom: 19);
+          CameraPosition cameraPosition = CameraPosition(target: LatLng(savedPosition[0], savedPosition[1]), zoom: 19);
           return Stack(
             alignment: Alignment.topCenter,
             children: [
-              LayoutBuilder(
-                  builder: (BuildContext context, BoxConstraints constraints) {
+              LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
                 return MapPicker(
                     // pass icon widget
                     iconWidget: const Icon(
@@ -223,15 +208,9 @@ class _SelectLocationState extends State<SelectLocation> {
                     return Container(
                         //Setting bar attributes
                         decoration: BoxDecoration(
-                            borderRadius: const BorderRadius.vertical(
-                                top: Radius.circular(10)),
+                            borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
                             color: Theme.of(context).backgroundColor,
-                            boxShadow: const [
-                              BoxShadow(
-                                  spreadRadius: 2,
-                                  blurRadius: 10,
-                                  color: Color.fromARGB(8, 0, 0, 0))
-                            ]),
+                            boxShadow: const [BoxShadow(spreadRadius: 2, blurRadius: 10, color: Color.fromARGB(8, 0, 0, 0))]),
                         child: ListView.builder(
                             controller: scrollController,
                             itemCount: 1,
@@ -239,110 +218,119 @@ class _SelectLocationState extends State<SelectLocation> {
                               return Column(
                                 children: [
                                   Container(
-                                      width: 40,
-                                      height: 5,
-                                      decoration: BoxDecoration(
-                                          color: Colors.grey,
-                                          borderRadius:
-                                              BorderRadius.circular(5))),
+                                      width: 40, height: 5, decoration: BoxDecoration(color: Colors.grey, borderRadius: BorderRadius.circular(5))),
                                   Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 30, horizontal: 20),
+                                      padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
                                       child: Row(
                                         children: [
+                                          InkWell(
+                                            child: Container(
+                                                width: 50,
+                                                height: 50,
+                                                decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(10), color: Theme.of(context).colorScheme.error),
+                                                child: Icon(
+                                                  Icons.cancel,
+                                                  color: Theme.of(context).backgroundColor,
+                                                )),
+                                            onTap: () {
+                                              setState(() {
+                                                Navigator.pop(context);
+                                              });
+                                            },
+                                          ),
+                                          const SizedBox(width: 10),
                                           Expanded(
                                               child: InkWell(
                                                   //Save Location button
-                                                  onTap: (() async {
-                                                    bool hasSavedLocation =
-                                                        await saveLocation(); //Try to save
+                                                  onTap: (() {
+                                                    showDialog<String>(
+                                                      //Display popup to confirm
+                                                      context: context,
+                                                      builder: (BuildContext context) => AlertDialog(
+                                                        title: Text(
+                                                          'Change Saved Destination',
+                                                          style: Theme.of(context)
+                                                              .textTheme
+                                                              .headline5
+                                                              ?.copyWith(color: Theme.of(context).textTheme.headline1?.color),
+                                                        ),
+                                                        content: Text(
+                                                          'Changing your delivery destination will clear any items currently saved in the cart.',
+                                                          style: Theme.of(context).textTheme.bodyText2,
+                                                        ),
+                                                        actions: <Widget>[
+                                                          TextButton(
+                                                            //Cancel button to close the popup bring user back to the location page
+                                                            onPressed: () => Navigator.pop(context, 'Cancel'),
+                                                            child: const Text('Cancel'),
+                                                          ),
+                                                          TextButton(
+                                                            //Ok button to save the location
+                                                            onPressed: (() async {
+                                                              bool hasSavedLocation = await saveLocation(); //Try to save
 
-                                                    if (hasSavedLocation ==
-                                                        true) {
-                                                      setState(() {
-                                                        Navigator.of(context)
-                                                            .push(
-                                                          MaterialPageRoute(
-                                                              builder: (_) =>
-                                                                  const Navigation()),
-                                                        );
-                                                      });
-                                                    } else {
-                                                      setState(() {
-                                                        //Display failed to update
-                                                        ScaffoldMessenger.of(
-                                                                context)
-                                                            .showSnackBar(
-                                                                const SnackBar(
-                                                                    content: Text(
-                                                                        'Failed to update location.')));
-                                                      });
-                                                    }
+                                                              if (hasSavedLocation == true) {
+                                                                //If the location has saved to shared preferences reopen the navigation page
+                                                                setState(() {
+                                                                  Navigator.pop(context);
+                                                                  Navigator.pop(context);
+                                                                  Navigator.of(context).push(
+                                                                    MaterialPageRoute(builder: (_) => const Navigation()),
+                                                                  );
+                                                                });
+                                                              } else {
+                                                                //If it fails to save
+                                                                setState(() {
+                                                                  //Display failed to update
+                                                                  ScaffoldMessenger.of(context)
+                                                                      .showSnackBar(const SnackBar(content: Text('Failed to update location.')));
+                                                                });
+                                                              }
+                                                            }),
+                                                            child: const Text('OK'),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    );
                                                   }),
                                                   child: Container(
-                                                    decoration: BoxDecoration(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10),
-                                                        color: Theme.of(context)
-                                                            .primaryColor),
-                                                    padding: const EdgeInsets
-                                                            .symmetric(
-                                                        vertical: 15,
-                                                        horizontal: 30),
+                                                    decoration:
+                                                        BoxDecoration(borderRadius: BorderRadius.circular(10), color: Theme.of(context).primaryColor),
+                                                    padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 30),
                                                     child: Text(
                                                       "Save Location",
-                                                      textAlign:
-                                                          TextAlign.center,
+                                                      textAlign: TextAlign.center,
                                                       style: Theme.of(context)
                                                           .textTheme
                                                           .headline6!
-                                                          .copyWith(
-                                                              color: Theme.of(
-                                                                      context)
-                                                                  .colorScheme
-                                                                  .onSurface),
+                                                          .copyWith(color: Theme.of(context).colorScheme.onSurface),
                                                     ),
                                                   ))),
                                           const SizedBox(
-                                            width: 20,
+                                            width: 10,
                                           ),
                                           InkWell(
                                             //Current location button
                                             onTap: () async {
                                               // Get the current location of the device
-                                              List currentLocation =
-                                                  await getCurrentLocation();
+                                              List currentLocation = await getCurrentLocation();
                                               // Move the camera to the current location
-                                              final GoogleMapController
-                                                  controller =
-                                                  await _controller.future;
-                                              controller.animateCamera(
-                                                  CameraUpdate
-                                                      .newCameraPosition(
+                                              final GoogleMapController controller = await _controller.future;
+                                              controller.animateCamera(CameraUpdate.newCameraPosition(
                                                 CameraPosition(
-                                                  target: LatLng(
-                                                      currentLocation[0],
-                                                      currentLocation[1]),
+                                                  target: LatLng(currentLocation[0], currentLocation[1]),
                                                   zoom: 18,
                                                 ),
                                               ));
                                             },
                                             child: Container(
                                                 decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
-                                                    color: Theme.of(context)
-                                                        .backgroundColor),
-                                                padding:
-                                                    const EdgeInsets.all(15),
+                                                    borderRadius: BorderRadius.circular(10), color: Theme.of(context).colorScheme.onSurface),
+                                                padding: const EdgeInsets.all(15),
                                                 child: Icon(
                                                   Icons.my_location,
-                                                  color: Theme.of(context)
-                                                      .textTheme
-                                                      .headline1!
-                                                      .color,
+                                                  color: Theme.of(context).textTheme.headline1!.color,
                                                 )),
                                           )
                                         ],
@@ -350,139 +338,77 @@ class _SelectLocationState extends State<SelectLocation> {
                                   Container(
                                       padding: const EdgeInsets.all(20),
                                       alignment: Alignment.bottomLeft,
-                                      child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text("Edit your address",
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .headline3),
-                                            Padding(
-                                                padding: const EdgeInsets.only(
-                                                    top: 5,
-                                                    right: 20,
-                                                    bottom: 30),
-                                                child: Text(
-                                                    "Set your exact address on the map and edit it below.",
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .headline6)),
-                                            Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 15),
-                                                child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Text(
-                                                        "Address Line 1",
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .headline6,
-                                                      ),
-                                                      TextFormField(
-                                                        controller:
-                                                            addresslineone,
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .bodyText2,
-                                                        inputFormatters: [
-                                                          //Only allows the input of letters a-z and A-Z and @,.-
-                                                          FilteringTextInputFormatter
-                                                              .allow(RegExp(
-                                                                  r'[a-zA-Z0-9,.-]+|\s'))
-                                                        ],
-                                                      )
-                                                    ])),
-                                            Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 15),
-                                                child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Text(
-                                                        "Address Line 2",
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .headline6,
-                                                      ),
-                                                      TextFormField(
-                                                        controller:
-                                                            addresslinetwo,
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .bodyText2,
-                                                        inputFormatters: [
-                                                          //Only allows the input of letters a-z and A-Z and ,.- and space
-                                                          FilteringTextInputFormatter
-                                                              .allow(RegExp(
-                                                                  r'[a-zA-Z0-9,.-]+|\s'))
-                                                        ],
-                                                      )
-                                                    ])),
-                                            Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 15),
-                                                child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Text(
-                                                        "City/County",
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .headline6,
-                                                      ),
-                                                      TextFormField(
-                                                        controller: city,
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .bodyText2,
-                                                        inputFormatters: [
-                                                          //Only allows the input of letters a-z and A-Z and ,.- and space
-                                                          FilteringTextInputFormatter
-                                                              .allow(RegExp(
-                                                                  r'[a-zA-Z0-9,.-]+|\s'))
-                                                        ],
-                                                      )
-                                                    ])),
-                                            Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 15),
-                                                child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Text(
-                                                        "Postcode",
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .headline6,
-                                                      ),
-                                                      TextFormField(
-                                                        controller: postcode,
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .bodyText2,
-                                                        inputFormatters: [
-                                                          //Only allows the input of letters a-z and A-Z and ,.- and space
-                                                          FilteringTextInputFormatter
-                                                              .allow(RegExp(
-                                                                  r'[a-zA-Z0-9,.-]+|\s'))
-                                                        ],
-                                                      )
-                                                    ])),
-                                          ]))
+                                      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                        Text("Edit your address", style: Theme.of(context).textTheme.headline3),
+                                        Padding(
+                                            padding: const EdgeInsets.only(top: 5, right: 20, bottom: 30),
+                                            child: Text("Set your exact address on the map and edit it below.",
+                                                style: Theme.of(context).textTheme.headline6)),
+                                        Padding(
+                                            padding: const EdgeInsets.symmetric(vertical: 15),
+                                            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                              Text(
+                                                "Address Line 1",
+                                                style: Theme.of(context).textTheme.headline6,
+                                              ),
+                                              TextFormField(
+                                                controller: addresslineone,
+                                                style: Theme.of(context).textTheme.bodyText2,
+                                                inputFormatters: [
+                                                  //Only allows the input of letters a-z and A-Z and @,.-
+                                                  FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9,.-]+|\s'))
+                                                ],
+                                              )
+                                            ])),
+                                        Padding(
+                                            padding: const EdgeInsets.symmetric(vertical: 15),
+                                            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                              Text(
+                                                "Address Line 2",
+                                                style: Theme.of(context).textTheme.headline6,
+                                              ),
+                                              TextFormField(
+                                                controller: addresslinetwo,
+                                                style: Theme.of(context).textTheme.bodyText2,
+                                                inputFormatters: [
+                                                  //Only allows the input of letters a-z and A-Z and ,.- and space
+                                                  FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9,.-]+|\s'))
+                                                ],
+                                              )
+                                            ])),
+                                        Padding(
+                                            padding: const EdgeInsets.symmetric(vertical: 15),
+                                            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                              Text(
+                                                "City/County",
+                                                style: Theme.of(context).textTheme.headline6,
+                                              ),
+                                              TextFormField(
+                                                controller: city,
+                                                style: Theme.of(context).textTheme.bodyText2,
+                                                inputFormatters: [
+                                                  //Only allows the input of letters a-z and A-Z and ,.- and space
+                                                  FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9,.-]+|\s'))
+                                                ],
+                                              )
+                                            ])),
+                                        Padding(
+                                            padding: const EdgeInsets.symmetric(vertical: 15),
+                                            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                              Text(
+                                                "Postcode",
+                                                style: Theme.of(context).textTheme.headline6,
+                                              ),
+                                              TextFormField(
+                                                controller: postcode,
+                                                style: Theme.of(context).textTheme.bodyText2,
+                                                inputFormatters: [
+                                                  //Only allows the input of letters a-z and A-Z and ,.- and space
+                                                  FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9,.-]+|\s'))
+                                                ],
+                                              )
+                                            ])),
+                                      ]))
                                 ],
                               );
                             })));
