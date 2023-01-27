@@ -54,14 +54,15 @@ class _CartState extends State<Cart> {
           return returnCartInfo;
         } else {
           tempItemInfo[profileCart[i]["itemid"]][0].addAll([
-            basicItemInfo["message"]["message"][1],
-            basicItemInfo["message"]["message"][3],
-            basicItemInfo["message"]["message"][2],
-            basicItemInfo["message"]["message"][5],
-            basicItemInfo["message"]["message"][4],
-            basicItemInfo["message"]["message"][6],
-            profileCart[i]["quantity"],
-            profileCart[i]["cartid"],
+            basicItemInfo["message"]["message"][1], //Item name
+            basicItemInfo["message"]["message"][3], //Item image link
+            basicItemInfo["message"]["message"][2], //Item price
+            basicItemInfo["message"]["message"][5], //Restaurant name
+            basicItemInfo["message"]["message"][4], //Restaurant id
+            basicItemInfo["message"]["message"][6], //Delivery price
+            profileCart[i]["quantity"], //Item quantity
+            profileCart[i]["cartid"], //Cart ID
+            basicItemInfo["message"]["message"][7], //Minimum order price for restaurant
           ]);
 
           Map customised = json.decode(profileCart[i]["customised"]);
@@ -140,6 +141,7 @@ class _CartState extends State<Cart> {
             returnCartInfo["message"] = "An error occurred while attempting to process the item information.";
           }
         }
+
         // Update item price to be the new customised price
         List customiseOptionsKeys = tempItemInfo[profileCart[i]["itemid"]][1].keys.toList();
         for (int iCust = 0; iCust < customiseOptionsKeys.length; iCust++) {
@@ -167,6 +169,8 @@ class _CartState extends State<Cart> {
             }
           }
         }
+        tempItemInfo[profileCart[i]["itemid"]][0][2] =
+            (double.parse(tempItemInfo[profileCart[i]["itemid"]][0][2]) * tempItemInfo[profileCart[i]["itemid"]][0][6]).toString();
       }
 
       returnCartInfo["cartinfo"].add([
@@ -604,7 +608,7 @@ class _CartState extends State<Cart> {
                                     tempRestaurantID = int.parse(cartInfo[0]["cartinfo"][iProfile][6][itemPriceKeys[iItem]][0][4]);
                                   } else {
                                     if (int.parse(cartInfo[0]["cartinfo"][iProfile][6][itemPriceKeys[iItem]][0][4]) != tempRestaurantID) {
-                                      isOneRestaurant == false;
+                                      isOneRestaurant = false;
                                     }
                                   }
 
@@ -615,6 +619,7 @@ class _CartState extends State<Cart> {
 
                                 }
                               }
+
                               for (int iSubtotalProfile = 0; iSubtotalProfile < cartInfo[0]["cartinfo"].length; iSubtotalProfile++) {
                                 subtotal = (subtotal * 100 + cartInfo[0]["cartinfo"][iSubtotalProfile][7] * 100) /
                                     100; //Add the total price for profile to subtotal
@@ -660,16 +665,78 @@ class _CartState extends State<Cart> {
                                               .headline6
                                               ?.copyWith(fontWeight: FontWeight.w500, color: Theme.of(context).primaryColor))
                                     ])),
-                                Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-                                    child: Row(children: [
-                                      Expanded(
-                                          child: ElevatedButton(
-                                              onPressed: (() {
-                                                print("test");
-                                              }),
-                                              child: const Text("Checkout")))
-                                    ]))
+                                LayoutBuilder(
+                                  builder: (p0, p1) {
+                                    if (isOneRestaurant == true) {
+                                      List itemKeys = cartInfo[0]["cartinfo"][0][6].keys.toList();
+                                      try {
+                                        if (double.parse(cartInfo[0]["cartinfo"][0][6][itemKeys[0]][0][8]) <= subtotal) {
+                                          return Padding(
+                                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+                                              child: Row(
+                                                  children: [Expanded(child: ElevatedButton(onPressed: (() {}), child: const Text("Checkout")))]));
+                                        } else {
+                                          return Padding(
+                                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+                                              child: Row(children: [
+                                                Expanded(
+                                                    child: Opacity(
+                                                        opacity: 0.2,
+                                                        child: ElevatedButton(
+                                                            style: ButtonStyle(
+                                                                backgroundColor:
+                                                                    MaterialStatePropertyAll(Theme.of(context).colorScheme.onBackground)),
+                                                            onPressed: null,
+                                                            child: Text(
+                                                              "Minimum order £${cartInfo[0]["cartinfo"][0][6][itemKeys[0]][0][8]}",
+                                                              textAlign: TextAlign.center,
+                                                              style: Theme.of(context)
+                                                                  .textTheme
+                                                                  .headline6
+                                                                  ?.copyWith(color: Theme.of(context).backgroundColor),
+                                                            ))))
+                                              ]));
+                                        }
+                                      } catch (e) {
+                                        return Padding(
+                                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+                                            child: Row(children: [
+                                              Expanded(
+                                                  child: ElevatedButton(
+                                                      style:
+                                                          ButtonStyle(backgroundColor: MaterialStatePropertyAll(Theme.of(context).colorScheme.error)),
+                                                      onPressed: null,
+                                                      child: Text(
+                                                        "Unknown minimum cart price",
+                                                        textAlign: TextAlign.center,
+                                                        style:
+                                                            Theme.of(context).textTheme.headline6?.copyWith(color: Theme.of(context).backgroundColor),
+                                                      )))
+                                            ]));
+                                      }
+                                    } else {
+                                      return Padding(
+                                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+                                          child: Row(children: [
+                                            Expanded(
+                                                child: Opacity(
+                                                    opacity: 0.2,
+                                                    child: ElevatedButton(
+                                                        style: ButtonStyle(
+                                                            backgroundColor: MaterialStatePropertyAll(Theme.of(context).colorScheme.onBackground)),
+                                                        onPressed: null,
+                                                        child: Text(
+                                                          "Multiple Restaurant Delivery Unavilable",
+                                                          textAlign: TextAlign.center,
+                                                          style: Theme.of(context)
+                                                              .textTheme
+                                                              .headline6
+                                                              ?.copyWith(color: Theme.of(context).backgroundColor),
+                                                        ))))
+                                          ]));
+                                    }
+                                  },
+                                )
                               ]);
                             },
                           );
