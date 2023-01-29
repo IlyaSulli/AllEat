@@ -64,6 +64,9 @@ class _CartState extends State<Cart> {
             profileCart[i]["quantity"], //Item quantity
             profileCart[i]["cartid"], //Cart ID
             basicItemInfo["message"]["message"][7], //Minimum order price for restaurant
+            basicItemInfo["message"]["message"][8], //Restaurant address
+            basicItemInfo["message"]["message"][9], //Restaurant location latitude
+            basicItemInfo["message"]["message"][10] //Restaurant location longitude
           ]);
 
           Map customised = json.decode(profileCart[i]["customised"]);

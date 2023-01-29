@@ -248,6 +248,7 @@ class _SelectLocationState extends State<SelectLocation> {
                                                       //Display popup to confirm
                                                       context: context,
                                                       builder: (BuildContext context) => AlertDialog(
+                                                        backgroundColor: Theme.of(context).backgroundColor,
                                                         title: Text(
                                                           'Change Saved Destination',
                                                           style: Theme.of(context)
