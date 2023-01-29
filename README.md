@@ -23,3 +23,7 @@ Prototype 3: https://docs.google.com/document/d/1qbCiSld-ubUC7P6fJnEctjfQqLSKKBq
 Full Documentation (High RAM Usage): https://docs.google.com/document/d/1wun9TdRfYYltGHttDIxoz-vosU8fFa4ZYgLKlzhVLSc/edit
 
 Final Code: *COMING SOON*
+
+## Credits
+
+Images: Unsplash
