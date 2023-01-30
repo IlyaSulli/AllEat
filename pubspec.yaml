@@ -87,6 +87,8 @@ flutter:
     - lib/assets/images/screens/profilesetup/login-illustration-light.png
     - lib/assets/images/screens/profilesetup/login-illustration-dark.png
     - lib/assets/images/screens/existingsetup/existingsetupscreenfood.jpg
+    - lib/assets/images/screens/checkout/destination-marker.svg
+    - lib/assets/images/screens/checkout/restaurant-marker.svg
     - lib/assets/images/categories/american-category.png
     - lib/assets/images/categories/breakfast-category.png
     - lib/assets/images/categories/burger-category.png
