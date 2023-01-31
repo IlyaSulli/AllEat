@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'package:alleat/services/queryserver.dart';
 import 'package:alleat/widgets/elements/elements.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
+import 'dart:convert';
 
 class Checkout extends StatefulWidget {
   final List cartInfo;
@@ -19,6 +21,20 @@ class _CheckoutState extends State<Checkout> {
   double tipPrice = 0;
   double subtotal = 0;
   static TextEditingController customAmount = TextEditingController(text: "£0.00");
+
+  Future<Map> sendCart(cart, tip, address, latitude, longitude) async {
+    var res = await QueryServer.query("https://alleat.cpur.net/query/orders.php", {
+      //Send data to orders.php . If there is an error, it returns back the error code
+      "type": "add",
+      "cart": cart,
+      "tip": tip,
+      "address": address,
+      "latitude": latitude,
+      "longitude": longitude,
+    });
+    return res;
+  }
+
   Future<List> getDeliveryDestination() async {
     final prefs = await SharedPreferences.getInstance(); // Get saved location from shared preferences
     final double? savedLocationLat = prefs.getDouble('locationLatitude');
@@ -472,7 +488,6 @@ class _CheckoutState extends State<Checkout> {
             indent: 40,
             endIndent: 40,
           )),
-      const SizedBox(height: 30),
       LayoutBuilder(builder: ((p0, p1) {
         List locationItemKeys = widget.cartInfo[0][6].keys.toList();
         double total = (subtotal * 100 + double.parse(widget.cartInfo[0][6][locationItemKeys[0]][0][5]) * 100 + tipPrice * 100) / 100;
@@ -529,7 +544,22 @@ class _CheckoutState extends State<Checkout> {
                 ],
               ),
             ]));
-      }))
+      })),
+      Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+        Expanded(
+            child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+                child: ElevatedButton(
+                    onPressed: (() async {
+                      var encodedCart = json.encode(widget.cartInfo.toString());
+                      List destination = await getDeliveryDestination();
+                      String destinationAddress = [destination[0], destination[1], destination[2], destination[3]].join(" ,");
+                      Map orderCreated =
+                          await sendCart(encodedCart, tipPrice.toString(), destinationAddress, destination[4].toString(), destination[5].toString());
+                      print(orderCreated);
+                    }),
+                    child: const Text("Complete Order"))))
+      ])
     ])));
   }
 }
