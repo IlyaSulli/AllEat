@@ -49,6 +49,7 @@ dependencies:
   geolocator: ^9.0.2
   modal_bottom_sheet: ^2.1.2
   provider: ^6.0.5
+  currency_text_input_formatter: ^2.1.8
 
 dev_dependencies:
   flutter_test:
@@ -87,8 +88,6 @@ flutter:
     - lib/assets/images/screens/profilesetup/login-illustration-light.png
     - lib/assets/images/screens/profilesetup/login-illustration-dark.png
     - lib/assets/images/screens/existingsetup/existingsetupscreenfood.jpg
-    - lib/assets/images/screens/checkout/destination-marker.svg
-    - lib/assets/images/screens/checkout/restaurant-marker.svg
     - lib/assets/images/categories/american-category.png
     - lib/assets/images/categories/breakfast-category.png
     - lib/assets/images/categories/burger-category.png

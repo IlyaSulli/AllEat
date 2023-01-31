@@ -1,11 +1,9 @@
 import 'dart:async';
 import 'package:alleat/widgets/elements/elements.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:map_picker/map_picker.dart';
-import 'dart:math';
+import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 
 class Checkout extends StatefulWidget {
   final List cartInfo;
@@ -17,6 +15,10 @@ class Checkout extends StatefulWidget {
 
 class _CheckoutState extends State<Checkout> {
   final Set<Marker> markers = {}; //markers for google map
+  String selectedTip = "none";
+  double tipPrice = 0;
+  double subtotal = 0;
+  static TextEditingController customAmount = TextEditingController(text: "£0.00");
   Future<List> getDeliveryDestination() async {
     final prefs = await SharedPreferences.getInstance(); // Get saved location from shared preferences
     final double? savedLocationLat = prefs.getDouble('locationLatitude');
@@ -70,8 +72,14 @@ class _CheckoutState extends State<Checkout> {
             "Checkout.",
             style: Theme.of(context).textTheme.headline1,
           )),
+      Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 40),
+          child: Text(
+            "Location",
+            style: Theme.of(context).textTheme.headline2,
+          )),
       const SizedBox(
-        height: 30,
+        height: 20,
       ),
       FutureBuilder<List>(
         future: getDeliveryDestination(),
@@ -189,6 +197,339 @@ class _CheckoutState extends State<Checkout> {
           }
         },
       ),
+      Padding(
+          padding: const EdgeInsets.symmetric(vertical: 20),
+          child: Divider(
+            thickness: 2,
+            color: Theme.of(context).textTheme.headline6?.color?.withOpacity(0.5),
+            indent: 40,
+            endIndent: 40,
+          )),
+      Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 10),
+          child: Text(
+            "Tipping",
+            style: Theme.of(context).textTheme.headline2,
+          )),
+      const SizedBox(
+        height: 10,
+      ),
+      LayoutBuilder(builder: (p0, p1) {
+        subtotal = 0;
+        for (int i = 0; i < widget.cartInfo.length; i++) {
+          subtotal = (subtotal * 100 + widget.cartInfo[0][7] * 100) / 100;
+        }
+        return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Column(children: [
+              Row(
+                children: [
+                  Expanded(
+                      child: Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: InkWell(
+                              onTap: () {
+                                setState(() {
+                                  selectedTip = "15%";
+                                  tipPrice = double.parse((((subtotal * 100) * 0.15) / 100).toStringAsFixed(2));
+                                });
+                              },
+                              child: Container(
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                      color: Theme.of(context).colorScheme.onSurface,
+                                      borderRadius: BorderRadius.circular(10),
+                                      border: Border.all(
+                                          color: (selectedTip == "15%") ? Theme.of(context).primaryColor : Theme.of(context).colorScheme.onSurface,
+                                          width: 2),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.01),
+                                          spreadRadius: 2,
+                                          blurRadius: 10,
+                                          offset: const Offset(0, 10), // changes position of shadow
+                                        ),
+                                      ]),
+                                  child: AspectRatio(
+                                      aspectRatio: 1 / 1,
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            "15%",
+                                            style: Theme.of(context).textTheme.headline3,
+                                          ),
+                                          const SizedBox(
+                                            height: 5,
+                                          ),
+                                          Text(
+                                            "+£${(((subtotal * 100) * 0.15) / 100).toStringAsFixed(2)}",
+                                            style: Theme.of(context).textTheme.bodyText1,
+                                          )
+                                        ],
+                                      )))))),
+                  Expanded(
+                      child: Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: InkWell(
+                              onTap: () {
+                                setState(() {
+                                  selectedTip = "20%";
+                                  tipPrice = double.parse((((subtotal * 100) * 0.20) / 100).toStringAsFixed(2));
+                                });
+                              },
+                              child: Container(
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                      color: Theme.of(context).colorScheme.onSurface,
+                                      borderRadius: BorderRadius.circular(10),
+                                      border: Border.all(
+                                          color: (selectedTip == "20%") ? Theme.of(context).primaryColor : Theme.of(context).colorScheme.onSurface,
+                                          width: 2),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.01),
+                                          spreadRadius: 2,
+                                          blurRadius: 10,
+                                          offset: const Offset(0, 10), // changes position of shadow
+                                        ),
+                                      ]),
+                                  child: AspectRatio(
+                                      aspectRatio: 1 / 1,
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            "20%",
+                                            style: Theme.of(context).textTheme.headline3,
+                                          ),
+                                          const SizedBox(
+                                            height: 5,
+                                          ),
+                                          Text(
+                                            "+£${(((subtotal * 100) * 0.20) / 100).toStringAsFixed(2)}",
+                                            style: Theme.of(context).textTheme.bodyText1,
+                                          )
+                                        ],
+                                      )))))),
+                  Expanded(
+                      child: Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: InkWell(
+                              onTap: () {
+                                setState(() {
+                                  selectedTip = "25%";
+                                  tipPrice = double.parse((((subtotal * 100) * 0.25) / 100).toStringAsFixed(2));
+                                });
+                              },
+                              child: Container(
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                      color: Theme.of(context).colorScheme.onSurface,
+                                      borderRadius: BorderRadius.circular(10),
+                                      border: Border.all(
+                                          color: (selectedTip == "25%") ? Theme.of(context).primaryColor : Theme.of(context).colorScheme.onSurface,
+                                          width: 2),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.01),
+                                          spreadRadius: 2,
+                                          blurRadius: 10,
+                                          offset: const Offset(0, 10), // changes position of shadow
+                                        ),
+                                      ]),
+                                  child: AspectRatio(
+                                      aspectRatio: 1 / 1,
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            "25%",
+                                            style: Theme.of(context).textTheme.headline3,
+                                          ),
+                                          const SizedBox(
+                                            height: 5,
+                                          ),
+                                          Text(
+                                            "+£${(((subtotal * 100) * 0.25) / 100).toStringAsFixed(2)}",
+                                            style: Theme.of(context).textTheme.bodyText1,
+                                          )
+                                        ],
+                                      )))))),
+                ],
+              ),
+              Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: InkWell(
+                      onTap: () {
+                        setState(() {
+                          selectedTip = "custom";
+
+                          try {
+                            tipPrice = double.parse((double.parse((customAmount.text.toString().split("£"))[1])).toStringAsFixed(2));
+                          } catch (e) {
+                            tipPrice = 0;
+                          }
+                        });
+                      },
+                      child: Container(
+                          alignment: Alignment.center,
+                          height: 60,
+                          decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.onSurface,
+                              border: Border.all(
+                                  color: (selectedTip == "custom") ? Theme.of(context).primaryColor : Theme.of(context).colorScheme.onSurface,
+                                  width: 2),
+                              borderRadius: BorderRadius.circular(10),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.01),
+                                  spreadRadius: 2,
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 10), // changes position of shadow
+                                ),
+                              ]),
+                          child: (selectedTip == "custom")
+                              ? Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 10),
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        "Tip:",
+                                        style: Theme.of(context).textTheme.headline6?.copyWith(color: Theme.of(context).textTheme.headline1?.color),
+                                      ),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      Expanded(
+                                        child: TextFormField(
+                                            onChanged: (value) {
+                                              try {
+                                                tipPrice =
+                                                    double.parse((double.parse((customAmount.text.toString().split("£"))[1])).toStringAsFixed(2));
+                                              } catch (e) {
+                                                tipPrice = 0;
+                                              }
+                                            },
+                                            controller: customAmount,
+                                            keyboardType: TextInputType.number,
+                                            style: Theme.of(context).textTheme.bodyText2,
+                                            inputFormatters: [CurrencyTextInputFormatter(symbol: '£')],
+                                            decoration: (InputDecoration(
+                                                hintText: "£3.21",
+                                                contentPadding: Theme.of(context).inputDecorationTheme.contentPadding,
+                                                border: Theme.of(context).inputDecorationTheme.border,
+                                                focusedBorder: Theme.of(context).inputDecorationTheme.focusedBorder,
+                                                enabledBorder: Theme.of(context).inputDecorationTheme.enabledBorder,
+                                                floatingLabelBehavior: FloatingLabelBehavior.never))),
+                                      )
+                                    ],
+                                  ))
+                              : Text(
+                                  "Custom Tip Amount",
+                                  style: Theme.of(context).textTheme.headline6?.copyWith(color: Theme.of(context).textTheme.headline3?.color),
+                                )))),
+              Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: InkWell(
+                      onTap: () {
+                        setState(() {
+                          selectedTip = "none";
+                          tipPrice = 0;
+                        });
+                      },
+                      child: Container(
+                          alignment: Alignment.center,
+                          height: 60,
+                          decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.onSurface,
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(
+                                  color: (selectedTip == "none") ? Theme.of(context).primaryColor : Theme.of(context).colorScheme.onSurface,
+                                  width: 2),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.01),
+                                  spreadRadius: 2,
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 10), // changes position of shadow
+                                ),
+                              ]),
+                          child: Text(
+                            "No Tip",
+                            style: Theme.of(context).textTheme.headline6?.copyWith(color: Theme.of(context).textTheme.headline3?.color),
+                          ))))
+            ]));
+      }),
+      const SizedBox(
+        height: 20,
+      ),
+      Padding(
+          padding: const EdgeInsets.symmetric(vertical: 20),
+          child: Divider(
+            thickness: 2,
+            color: Theme.of(context).textTheme.headline6?.color?.withOpacity(0.5),
+            indent: 40,
+            endIndent: 40,
+          )),
+      const SizedBox(height: 30),
+      LayoutBuilder(builder: ((p0, p1) {
+        List locationItemKeys = widget.cartInfo[0][6].keys.toList();
+        double total = (subtotal * 100 + double.parse(widget.cartInfo[0][6][locationItemKeys[0]][0][5]) * 100 + tipPrice * 100) / 100;
+        return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+            child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+              Row(
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Subtotal",
+                        style: Theme.of(context).textTheme.headline6,
+                      ),
+                      Text(
+                        "Delivery Fee",
+                        style: Theme.of(context).textTheme.headline6,
+                      ),
+                      Text(
+                        "Tip",
+                        style: Theme.of(context).textTheme.headline6,
+                      ),
+                      const SizedBox(height: 20),
+                      Text(
+                        "Total",
+                        style: Theme.of(context).textTheme.headline5?.copyWith(color: Theme.of(context).primaryColor),
+                      )
+                    ],
+                  ),
+                  const SizedBox(
+                    width: 50,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        "£${subtotal.toStringAsFixed(2)}",
+                        style: Theme.of(context).textTheme.bodyText2,
+                      ),
+                      Text(
+                        "£${widget.cartInfo[0][6][locationItemKeys[0]][0][5].toString()}",
+                        style: Theme.of(context).textTheme.bodyText2,
+                      ),
+                      Text(
+                        "£${tipPrice.toStringAsFixed(2)}",
+                        style: Theme.of(context).textTheme.bodyText2,
+                      ),
+                      const SizedBox(height: 20),
+                      Text("£${total.toStringAsFixed(2)}",
+                          style: Theme.of(context).textTheme.headline5?.copyWith(color: Theme.of(context).textTheme.headline1?.color)),
+                    ],
+                  )
+                ],
+              ),
+            ]));
+      }))
     ])));
   }
 }
