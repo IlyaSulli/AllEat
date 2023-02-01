@@ -26,6 +26,7 @@ class _CheckoutState extends State<Checkout> {
     int indexid = 0;
     List iteminfo = [];
     List customiseinfo = [];
+    int restaurantid = 0;
     for (int i = 0; i < cart.length; i++) {
       //For each profile
       int profileid = cart[i][0]; //Save the profile id as profileid
@@ -33,6 +34,7 @@ class _CheckoutState extends State<Checkout> {
       for (int j = 0; j < itemkeys.length; j++) {
         //For each item
         List item = cart[i][6][itemkeys[j]];
+        restaurantid = int.parse(item[0][4]);
         int itemid = int.parse(item[0][12]); //Save item id as itemid
         int itemQuantity = item[0][6];
         iteminfo.add([
@@ -67,8 +69,9 @@ class _CheckoutState extends State<Checkout> {
       "address": address,
       "latitude": latitude,
       "longitude": longitude,
-      "iteminfo": iteminfo,
-      "customiseinfo": customiseinfo,
+      "restaurantid": restaurantid.toString(),
+      "iteminfo": json.encode(iteminfo),
+      "customiseinfo": json.encode(customiseinfo),
     });
     return res;
   }
