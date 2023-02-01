@@ -23,14 +23,52 @@ class _CheckoutState extends State<Checkout> {
   static TextEditingController customAmount = TextEditingController(text: "£0.00");
 
   Future<Map> sendCart(cart, tip, address, latitude, longitude) async {
+    int indexid = 0;
+    List iteminfo = [];
+    List customiseinfo = [];
+    for (int i = 0; i < cart.length; i++) {
+      //For each profile
+      int profileid = cart[i][0]; //Save the profile id as profileid
+      List itemkeys = cart[i][6].keys.toList();
+      for (int j = 0; j < itemkeys.length; j++) {
+        //For each item
+        List item = cart[i][6][itemkeys[j]];
+        int itemid = int.parse(item[0][12]); //Save item id as itemid
+        int itemQuantity = item[0][6];
+        iteminfo.add([
+          indexid,
+          profileid,
+          itemid,
+          itemQuantity,
+        ]);
+
+        List customisekeys = item[1].keys.toList();
+        for (int k = 0; k < customisekeys.length; k++) {
+          //For each customise title
+          List customiseTitle = item[1][customisekeys[k]];
+          for (int l = 0; l < customiseTitle[1].length; l++) {
+            // For each option
+            List customiseOption = customiseTitle[1][l];
+            print(customiseOption);
+            int customiseOptionid = int.parse(customiseOption[0]); //Save option id as customiseoptionid
+            int optionQuantity = customiseOption[1];
+            customiseinfo.add([indexid, customiseOptionid, optionQuantity]);
+          }
+        }
+        indexid++; //Add one to index (incremental for each item)
+      }
+    }
+    print(iteminfo);
+    print(customiseinfo);
     var res = await QueryServer.query("https://alleat.cpur.net/query/orders.php", {
       //Send data to orders.php . If there is an error, it returns back the error code
       "type": "add",
-      "cart": cart,
       "tip": tip,
       "address": address,
       "latitude": latitude,
       "longitude": longitude,
+      "iteminfo": iteminfo,
+      "customiseinfo": customiseinfo,
     });
     return res;
   }
@@ -551,12 +589,32 @@ class _CheckoutState extends State<Checkout> {
                 padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
                 child: ElevatedButton(
                     onPressed: (() async {
-                      var encodedCart = json.encode(widget.cartInfo.toString());
                       List destination = await getDeliveryDestination();
                       String destinationAddress = [destination[0], destination[1], destination[2], destination[3]].join(" ,");
-                      Map orderCreated =
-                          await sendCart(encodedCart, tipPrice.toString(), destinationAddress, destination[4].toString(), destination[5].toString());
-                      print(orderCreated);
+                      Map orderCreated = await sendCart(
+                          widget.cartInfo, tipPrice.toString(), destinationAddress, destination[4].toString(), destination[5].toString());
+                      setState(() {
+                        showDialog<String>(
+                            //Display popup to confirm
+                            context: context,
+                            builder: (BuildContext context) => AlertDialog(
+                                    backgroundColor: Theme.of(context).backgroundColor,
+                                    title: Text(
+                                      'Server Response',
+                                      style: Theme.of(context).textTheme.headline5?.copyWith(color: Theme.of(context).textTheme.headline1?.color),
+                                    ),
+                                    content: Text(
+                                      orderCreated.toString(),
+                                      style: Theme.of(context).textTheme.bodyText2,
+                                    ),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        //Cancel button to close the popup bring user back to the location page
+                                        onPressed: () => Navigator.pop(context, 'Cancel'),
+                                        child: const Text('Cancel'),
+                                      ),
+                                    ]));
+                      });
                     }),
                     child: const Text("Complete Order"))))
       ])
