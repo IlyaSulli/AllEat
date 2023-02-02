@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:alleat/services/cart_service.dart';
 import 'package:alleat/services/queryserver.dart';
 import 'package:alleat/widgets/elements/elements.dart';
 import 'package:flutter/material.dart';
@@ -38,7 +39,6 @@ class _CheckoutState extends State<Checkout> {
         int itemid = int.parse(item[0][12]); //Save item id as itemid
         int itemQuantity = item[0][6];
         iteminfo.add([
-          indexid,
           profileid,
           itemid,
           itemQuantity,
@@ -60,8 +60,6 @@ class _CheckoutState extends State<Checkout> {
         indexid++; //Add one to index (incremental for each item)
       }
     }
-    print(iteminfo);
-    print(customiseinfo);
     var res = await QueryServer.query("https://alleat.cpur.net/query/orders.php", {
       //Send data to orders.php . If there is an error, it returns back the error code
       "type": "add",
@@ -596,6 +594,27 @@ class _CheckoutState extends State<Checkout> {
                       String destinationAddress = [destination[0], destination[1], destination[2], destination[3]].join(" ,");
                       Map orderCreated = await sendCart(
                           widget.cartInfo, tipPrice.toString(), destinationAddress, destination[4].toString(), destination[5].toString());
+                      if (orderCreated["error"] == true) {
+                        setState(() {
+                          Navigator.of(context).pop();
+                          Navigator.of(context).pop();
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("ERROR: ${orderCreated["message"]}")));
+                        });
+                      } else {
+                        try {
+                          await SQLiteCartItems.clearCart();
+                        } catch (e) {
+                          setState(() {
+                            Navigator.of(context).pop();
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(SnackBar(content: Text("ERROR: Successfully created order but failed to clear cart. \n $e")));
+                          });
+                        }
+                        setState(() {
+                          Navigator.of(context).pop();
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Successfully ordered.")));
+                        });
+                      }
                       setState(() {
                         showDialog<String>(
                             //Display popup to confirm
