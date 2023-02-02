@@ -153,22 +153,26 @@ class _CartState extends State<Cart> {
           //For each customise title
           if (tempItemInfo[profileCart[i]["itemid"]][1][customiseOptionsKeys[iCust]][0][1] == "SELECT" ||
               tempItemInfo[profileCart[i]["itemid"]][1][customiseOptionsKeys[iCust]][0][1] == "ADD") {
-            //If it is either a selection or an add function add it to the item price
+            //If it is either a selection or an add function add it to the item price (multiplyed by the quantity)
             for (int iCustOptions = 0;
                 iCustOptions < tempItemInfo[profileCart[i]["itemid"]][1][customiseOptionsKeys[iCust]][1].length;
                 iCustOptions++) {
               tempItemInfo[profileCart[i]["itemid"]][0][2] = ((double.parse(tempItemInfo[profileCart[i]["itemid"]][0][2]) * 100 +
-                          double.parse(tempItemInfo[profileCart[i]["itemid"]][1][customiseOptionsKeys[iCust]][1][iCustOptions][3]) * 100) /
+                          double.parse(tempItemInfo[profileCart[i]["itemid"]][1][customiseOptionsKeys[iCust]][1][iCustOptions][3]) *
+                              100 *
+                              tempItemInfo[profileCart[i]["itemid"]][1][customiseOptionsKeys[iCust]][1][iCustOptions][1]) /
                       100)
                   .toString();
             }
           } else if (tempItemInfo[profileCart[i]["itemid"]][1][customiseOptionsKeys[iCust]][0][1] == "REMOVE") {
-            //If it is a remove function, remove from the item price
+            //If it is a remove function, remove from the item price (multiplyed by the quantity)
             for (int iCustOptions = 0;
                 iCustOptions < tempItemInfo[profileCart[i]["itemid"]][1][customiseOptionsKeys[iCust]][1].length;
                 iCustOptions++) {
               tempItemInfo[profileCart[i]["itemid"]][0][2] = ((double.parse(tempItemInfo[profileCart[i]["itemid"]][0][2]) * 100 -
-                          double.parse(tempItemInfo[profileCart[i]["itemid"]][1][customiseOptionsKeys[iCust]][1][iCustOptions][3]) * 100) /
+                          double.parse(tempItemInfo[profileCart[i]["itemid"]][1][customiseOptionsKeys[iCust]][1][iCustOptions][3]) *
+                              100 *
+                              tempItemInfo[profileCart[i]["itemid"]][1][customiseOptionsKeys[iCust]][1][iCustOptions][1]) /
                       100)
                   .toString();
             }
