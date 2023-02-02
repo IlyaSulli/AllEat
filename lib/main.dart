@@ -15,9 +15,10 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
   Future getTheme() async {
-    final prefs = await SharedPreferences.getInstance();
+    //Get theme preferences from theme.dart
+    final prefs = await SharedPreferences.getInstance(); //Load shared preferences as new instance
     final int? appTheme = prefs.getInt('appTheme');
-    globals.appthemepreference = appTheme;
+    globals.appthemepreference = appTheme; //Save theme under app theme within a global instance
   }
 
   @override
@@ -36,8 +37,7 @@ class MyApp extends StatelessWidget {
           title: 'AllEat.',
           themeMode: ThemeMode.light,
           theme: ThemeClass.lightTheme,
-          home:
-              const SetupWrapper(), //SetupWrapper(), //Check if setup is complete for app (reference)
+          home: const SetupWrapper(), //SetupWrapper(), //Check if setup is complete for app (reference)
         );
       case 2:
         return MaterialApp(
@@ -45,8 +45,7 @@ class MyApp extends StatelessWidget {
           title: 'AllEat.',
           themeMode: ThemeMode.dark,
           theme: ThemeClass.darkTheme,
-          home:
-              const SetupWrapper(), //SetupWrapper(), //Check if setup is complete for app (reference)
+          home: const SetupWrapper(), //SetupWrapper(), //Check if setup is complete for app (reference)
         );
     }
     return MaterialApp(
@@ -55,8 +54,7 @@ class MyApp extends StatelessWidget {
       themeMode: ThemeMode.system,
       theme: ThemeClass.lightTheme,
       darkTheme: ThemeClass.darkTheme,
-      home:
-          const SetupWrapper(), //SetupWrapper(), //Check if setup is complete for app (reference)
+      home: const SetupWrapper(), //SetupWrapper(), //Check if setup is complete for app (reference)
     );
   }
 }

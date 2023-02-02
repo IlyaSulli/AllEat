@@ -15,16 +15,21 @@ class Cart extends StatefulWidget {
 
 class _CartState extends State<Cart> {
   Future<Map> getCart() async {
-    Map returnCartInfo = {"error": false, "message": "", "cartinfo": []};
-    List availableProfiles = [];
+    //Get cart data including restaurant info, profile info, item data, customise titles for each item and the customised options performed on the item
+    Map returnCartInfo = {"error": false, "message": "", "cartinfo": []}; //Set returned cart info to be empty and there to be no errors
+    List availableProfiles =
+        []; //Each profile that is in the cart is stored in available profiles, storing their basic information including profileid, firstname, lastname, profile icon colour
     List cartProfileIDs = await SQLiteCartItems.getProfilesInCart(); //Get profile ids that are in the cart
-    List profileInfo = await SQLiteLocalProfiles.getProfiles();
+    List profileInfo = await SQLiteLocalProfiles.getProfiles(); //Get all info stored for each profile within the local profiles database
 
     //Get profiles
 
     for (int i = 0; i < cartProfileIDs.length; i++) {
+      //For each profile id that is in the available profiles
       for (int j = 0; j < profileInfo.length; j++) {
+        //For each profile in the list of total profiles
         if (cartProfileIDs[i] == profileInfo[j]["profileid"]) {
+          //If the id of the current available profile in the cart is equal to the currently searched profile, add its details to availableprofiles
           availableProfiles.add([
             profileInfo[j]["profileid"],
             profileInfo[j]["firstname"],
@@ -37,9 +42,11 @@ class _CartState extends State<Cart> {
       }
     }
     for (int iProfile = 0; iProfile < availableProfiles.length; iProfile++) {
+      //For each available profile
       Map tempItemInfo = {};
 
-      List profileCart = await SQLiteCartItems.getProfileCart(availableProfiles[iProfile][0]); //{cartid, itemid, customised, quantity}
+      List profileCart = await SQLiteCartItems.getProfileCart(
+          availableProfiles[iProfile][0]); //Get list of items for profile. Returns in format {cartid, itemid, customised, quantity}
       for (int i = 0; i < profileCart.length; i++) {
         // For each item, add it as an index i
         tempItemInfo[profileCart[i]["itemid"]] = [[], {}];
@@ -85,6 +92,7 @@ class _CartState extends State<Cart> {
                 customisedOptions.add(customised[customisedtitleids[i]][j]);
               } else {
                 for (int k = 0; k < updatedCustomised[customisedtitleids[i]][1].length; k++) {
+                  //If there is more than one of an option add it to the quantity eg. (192, 162, 192) = [192, 2]
                   if (updatedCustomised[customisedtitleids[i]][1][k][0] == customised[customisedtitleids[i]][j]) {
                     updatedCustomised[customisedtitleids[i]][1][k][1] += 1;
                   }
@@ -94,10 +102,11 @@ class _CartState extends State<Cart> {
           }
           try {
             if (customisedtitleids.isNotEmpty) {
+              //If there is at least one customisable title get the details of all the customise titles using the list of titles that have been gotten from the keys of the map (each key is the title id)
               Map customisedTitlesInfo = await QueryServer.query(
                   "https://alleat.cpur.net/query/cartiteminfo.php", {"type": "title", "term": json.encode(customisedtitleids)});
 
-              if (customisedTitlesInfo["error"] == true) {
+              if (customisedTitlesInfo["error"] == true) { //If there is an error, return error=true with the message returned from the server and end future
                 returnCartInfo["error"] = true;
                 returnCartInfo["message"] = customisedTitlesInfo["message"];
                 return returnCartInfo;
@@ -107,7 +116,7 @@ class _CartState extends State<Cart> {
                   Map customisedOptionInfo = await QueryServer.query(
                       "https://alleat.cpur.net/query/cartiteminfo.php", {"type": "option", "term": customisedOptions.toString()});
 
-                  if (customisedOptionInfo["error"] == true) {
+                  if (customisedOptionInfo["error"] == true) { //If there is an error, return error=true with the message returned from the server and end future
                     returnCartInfo["error"] = true;
                     returnCartInfo["message"] = customisedOptionInfo["message"];
                     return returnCartInfo;
@@ -195,7 +204,7 @@ class _CartState extends State<Cart> {
     return returnCartInfo;
   }
 
-  //Remove Item
+  //Remove Item from cart in local profiles table
   Future<bool> removeItem(cartID) async {
     try {
       await SQLiteCartItems.removeItem(cartID);
@@ -603,7 +612,7 @@ class _CartState extends State<Cart> {
                                 })
                           ]);
                         } else {
-                          return LayoutBuilder(
+                          return LayoutBuilder( //Calculate the price for each profile in the botttom section of the cart
                             builder: (p0, p1) {
                               double subtotal = 0;
                               bool isOneRestaurant = true;
@@ -661,7 +670,7 @@ class _CartState extends State<Cart> {
                                             ],
                                           ));
                                     }),
-                                Padding(
+                                Padding( //Display subtotal
                                     padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 10),
                                     child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
                                       Text("SUBTOTAL", style: Theme.of(context).textTheme.headline6?.copyWith(color: Theme.of(context).primaryColor)),
@@ -674,12 +683,12 @@ class _CartState extends State<Cart> {
                                               .headline6
                                               ?.copyWith(fontWeight: FontWeight.w500, color: Theme.of(context).primaryColor))
                                     ])),
-                                LayoutBuilder(
+                                LayoutBuilder( //Checkout button with checks for multiple conditions
                                   builder: (p0, p1) {
-                                    if (isOneRestaurant == true) {
-                                      List itemKeys = cartInfo[0]["cartinfo"][0][6].keys.toList();
+                                    if (isOneRestaurant == true) { //If there is only one restaurant being ordered from
+                                      List itemKeys = cartInfo[0]["cartinfo"][0][6].keys.toList(); // Get a list of item ids
                                       try {
-                                        if (double.parse(cartInfo[0]["cartinfo"][0][6][itemKeys[0]][0][8]) <= subtotal) {
+                                        if (double.parse(cartInfo[0]["cartinfo"][0][6][itemKeys[0]][0][8]) <= subtotal) { //If the subtotal is more than the minimum order price for the restaurant return the 
                                           return Padding(
                                               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
                                               child: Row(children: [
