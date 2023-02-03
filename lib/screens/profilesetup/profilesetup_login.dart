@@ -30,7 +30,6 @@ class _AddProfileLoginPageState extends State<AddProfileLoginPage> {
       "email": email.text,
       "password": encryptPassword,
     });
-    print(recievedServerData);
     if (recievedServerData["error"] == true) {
       //If there is an error, clear password and display error from server
       setState(() {
@@ -38,7 +37,6 @@ class _AddProfileLoginPageState extends State<AddProfileLoginPage> {
       });
       password.text = "";
     } else {
-      print(recievedServerData["message"]);
       if (recievedServerData["message"]["exists"] == true) {
         //If ther profile is correct and exists
         List importedProfile = recievedServerData["message"]["profile"];

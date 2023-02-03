@@ -106,7 +106,8 @@ class _CartState extends State<Cart> {
               Map customisedTitlesInfo = await QueryServer.query(
                   "https://alleat.cpur.net/query/cartiteminfo.php", {"type": "title", "term": json.encode(customisedtitleids)});
 
-              if (customisedTitlesInfo["error"] == true) { //If there is an error, return error=true with the message returned from the server and end future
+              if (customisedTitlesInfo["error"] == true) {
+                //If there is an error, return error=true with the message returned from the server and end future
                 returnCartInfo["error"] = true;
                 returnCartInfo["message"] = customisedTitlesInfo["message"];
                 return returnCartInfo;
@@ -116,7 +117,8 @@ class _CartState extends State<Cart> {
                   Map customisedOptionInfo = await QueryServer.query(
                       "https://alleat.cpur.net/query/cartiteminfo.php", {"type": "option", "term": customisedOptions.toString()});
 
-                  if (customisedOptionInfo["error"] == true) { //If there is an error, return error=true with the message returned from the server and end future
+                  if (customisedOptionInfo["error"] == true) {
+                    //If there is an error, return error=true with the message returned from the server and end future
                     returnCartInfo["error"] = true;
                     returnCartInfo["message"] = customisedOptionInfo["message"];
                     return returnCartInfo;
@@ -187,6 +189,7 @@ class _CartState extends State<Cart> {
             }
           }
         }
+        //Multiply price of each item by the quantity of the item
         tempItemInfo[profileCart[i]["itemid"]][0][2] =
             (double.parse(tempItemInfo[profileCart[i]["itemid"]][0][2]) * tempItemInfo[profileCart[i]["itemid"]][0][6]).toString();
       }
@@ -199,7 +202,7 @@ class _CartState extends State<Cart> {
         availableProfiles[iProfile][4],
         availableProfiles[iProfile][5],
         tempItemInfo
-      ]);
+      ]); //Return the item information of profile with the profile information
     }
     return returnCartInfo;
   }
@@ -429,6 +432,7 @@ class _CartState extends State<Cart> {
                                                     itemBuilder: (context, indexCustomise) {
                                                       List currentCustomiseTitle = currentItem[1][itemCustomiseIDs[indexCustomise]];
                                                       if (currentCustomiseTitle[0][1] == "SELECT" && currentCustomiseTitle[1].toList().length != 0) {
+                                                        //If the customise title type is select and there is at least one customised option for the title return the customised options in black text
                                                         return Container(
                                                             padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
                                                             margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
@@ -478,6 +482,7 @@ class _CartState extends State<Cart> {
                                                                 ]));
                                                       } else if (currentCustomiseTitle[0][1] == "ADD" &&
                                                           currentCustomiseTitle[1].toList().length != 0) {
+                                                        //If the customise title type is add and there is at least one customised option for the title return the customised options in green text
                                                         return Container(
                                                             padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
                                                             margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
@@ -530,6 +535,7 @@ class _CartState extends State<Cart> {
                                                                 ]));
                                                       } else if (currentCustomiseTitle[0][1] == "REMOVE" &&
                                                           currentCustomiseTitle[1].toList().length != 0) {
+                                                        //If the customise title type is remove and there is at least one customised option for the title return the customised options in red text
                                                         return Container(
                                                             padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
                                                             margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
@@ -612,7 +618,8 @@ class _CartState extends State<Cart> {
                                 })
                           ]);
                         } else {
-                          return LayoutBuilder( //Calculate the price for each profile in the botttom section of the cart
+                          return LayoutBuilder(
+                            //Calculate the price for each profile in the botttom section of the cart
                             builder: (p0, p1) {
                               double subtotal = 0;
                               bool isOneRestaurant = true;
@@ -622,6 +629,7 @@ class _CartState extends State<Cart> {
                                 cartInfo[0]["cartinfo"][iProfile].add(0.00); //Add total price to the end of the profile index in the cartInfo
                                 List itemPriceKeys = cartInfo[0]["cartinfo"][iProfile][6].keys.toList(); //Create a list of keys for each item
                                 for (int iItem = 0; iItem < itemPriceKeys.length; iItem++) {
+                                  //For the first check, the default value is -1 so replace with the first restaurant id. For the remaining items check if it is equal to the current restaurant id and if it isnt set OneRestaurant to false
                                   if (tempRestaurantID == -1) {
                                     tempRestaurantID = int.parse(cartInfo[0]["cartinfo"][iProfile][6][itemPriceKeys[iItem]][0][4]);
                                   } else {
@@ -670,7 +678,8 @@ class _CartState extends State<Cart> {
                                             ],
                                           ));
                                     }),
-                                Padding( //Display subtotal
+                                Padding(
+                                    //Display subtotal
                                     padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 10),
                                     child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
                                       Text("SUBTOTAL", style: Theme.of(context).textTheme.headline6?.copyWith(color: Theme.of(context).primaryColor)),
@@ -683,12 +692,15 @@ class _CartState extends State<Cart> {
                                               .headline6
                                               ?.copyWith(fontWeight: FontWeight.w500, color: Theme.of(context).primaryColor))
                                     ])),
-                                LayoutBuilder( //Checkout button with checks for multiple conditions
+                                LayoutBuilder(
+                                  //Checkout button with checks for multiple conditions
                                   builder: (p0, p1) {
-                                    if (isOneRestaurant == true) { //If there is only one restaurant being ordered from
+                                    if (isOneRestaurant == true) {
+                                      //If there is only one restaurant being ordered from
                                       List itemKeys = cartInfo[0]["cartinfo"][0][6].keys.toList(); // Get a list of item ids
                                       try {
-                                        if (double.parse(cartInfo[0]["cartinfo"][0][6][itemKeys[0]][0][8]) <= subtotal) { //If the subtotal is more than the minimum order price for the restaurant return the 
+                                        if (double.parse(cartInfo[0]["cartinfo"][0][6][itemKeys[0]][0][8]) <= subtotal) {
+                                          //If the subtotal is more than the minimum order price for the restaurant return the
                                           return Padding(
                                               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
                                               child: Row(children: [
@@ -705,6 +717,7 @@ class _CartState extends State<Cart> {
                                                         child: const Text("Checkout")))
                                               ]));
                                         } else {
+                                          // If it isnt more than the minimum order price, display the minimum order price in greyed out button
                                           return Padding(
                                               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
                                               child: Row(children: [
@@ -727,6 +740,7 @@ class _CartState extends State<Cart> {
                                               ]));
                                         }
                                       } catch (e) {
+                                        // If it fails to check the price, return that there is an error. This fixes when the first item is removed and app tries to check if it is equal during the rebuild
                                         return Padding(
                                             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
                                             child: Row(children: [
@@ -744,6 +758,7 @@ class _CartState extends State<Cart> {
                                             ]));
                                       }
                                     } else {
+                                      //Return that there is more than one restaurant in the cart
                                       return Padding(
                                           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
                                           child: Row(children: [
