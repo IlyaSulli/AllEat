@@ -356,7 +356,7 @@ class _SelectLocationState extends State<SelectLocation> {
                                                 controller: addresslineone,
                                                 style: Theme.of(context).textTheme.bodyText2,
                                                 inputFormatters: [
-                                                  //Only allows the input of letters a-z and A-Z and @,.-
+                                                  //Only allows the input of letters a-z and A-Z and ,- and spaces
                                                   FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9,.-]+|\s'))
                                                 ],
                                               )

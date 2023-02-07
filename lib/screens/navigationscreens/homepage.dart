@@ -1,3 +1,4 @@
+import 'package:alleat/services/localprofiles_service.dart';
 import 'package:alleat/widgets/topbar.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -21,8 +22,7 @@ class HomePage extends StatelessWidget {
         height: 150,
       ),
       Padding(
-          padding:
-              const EdgeInsets.only(left: 40, top: 40, right: 60, bottom: 80),
+          padding: const EdgeInsets.only(left: 40, top: 40, right: 60, bottom: 80),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -61,7 +61,7 @@ class HomePage extends StatelessWidget {
                     );
                   }
                 },
-              )
+              ),
             ],
           ))
     ]);

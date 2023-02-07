@@ -44,8 +44,7 @@ class SQLiteLocalProfiles {
 
   // Create new profile
 
-  static Future<void> createProfile(dynamic profileid, String firstname,
-      String lastname, String email, String password) async {
+  static Future<void> createProfile(dynamic profileid, String firstname, String lastname, String email, String password) async {
     //Create profile using firstname, lastname, email and encrypted password
     List colors = [
       [46, 41, 78],
@@ -74,10 +73,8 @@ class SQLiteLocalProfiles {
 
   static Future<void> selectProfile(dynamic email) async {
     final db = await SQLiteLocalProfiles.db();
-    db.rawUpdate(
-        'UPDATE localprofiles SET selected = false'); //Set all profiles selected status to false
-    db.rawUpdate(
-        'UPDATE localprofiles SET selected = true WHERE email = "$email"');
+    db.rawUpdate('UPDATE localprofiles SET selected = false'); //Set all profiles selected status to false
+    db.rawUpdate('UPDATE localprofiles SET selected = true WHERE email = "$email"');
   }
 
   //------------------------------------------------------------
@@ -88,6 +85,7 @@ class SQLiteLocalProfiles {
 
   static Future<List<Map<String, dynamic>>> getProfiles() async {
     final db = await SQLiteLocalProfiles.db();
+    print(db.query('localprofiles', orderBy: "id"));
     return db.query('localprofiles', orderBy: "id"); //get local profiles
   }
 
@@ -102,8 +100,7 @@ class SQLiteLocalProfiles {
 
   static Future<List<Map<String, Object?>>> getSelectedProfileColor() async {
     final db = await SQLiteLocalProfiles.db();
-    return db.rawQuery(
-        'SELECT profilecolorred, profilecolorgreen, profilecolorblue FROM localprofiles ORDER BY id ASC LIMIT 1');
+    return db.rawQuery('SELECT profilecolorred, profilecolorgreen, profilecolorblue FROM localprofiles ORDER BY id ASC LIMIT 1');
   }
 
   // Get all unselected profiles to be displayed
@@ -118,8 +115,7 @@ class SQLiteLocalProfiles {
 
   static Future<List<Map<String, Object?>>> getProfileFromID(id) async {
     final db = await SQLiteLocalProfiles.db();
-    return db.rawQuery(
-        'SELECT profileid, firstname, lastname, email FROM localprofiles WHERE id = $id');
+    return db.rawQuery('SELECT profileid, firstname, lastname, email FROM localprofiles WHERE id = $id');
   }
 
   //------------------------------------------------------------
@@ -127,8 +123,7 @@ class SQLiteLocalProfiles {
   //------------------------------------------------------------
 
   // Update an profile by id
-  static Future<void> updateProfile(int id, String firstname, String lastname,
-      String email, String password) async {
+  static Future<void> updateProfile(int id, String firstname, String lastname, String email, String password) async {
     //Update profile using firstname, lastname, email and encrypted password
     final db = await SQLiteLocalProfiles.db();
 
