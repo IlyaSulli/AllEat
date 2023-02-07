@@ -284,8 +284,9 @@ class _SelectLocationState extends State<SelectLocation> {
                                                                 //If it fails to save
                                                                 setState(() {
                                                                   //Display failed to update
+                                                                  Navigator.pop(context);
                                                                   ScaffoldMessenger.of(context)
-                                                                      .showSnackBar(const SnackBar(content: Text('Failed to update location.')));
+                                                                      .showSnackBar(const SnackBar(content: Text("Failed to update location")));
                                                                 });
                                                               }
                                                             }),

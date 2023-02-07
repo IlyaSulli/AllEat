@@ -17,6 +17,7 @@ class AddProfileLoginPage extends StatefulWidget {
 }
 
 class _AddProfileLoginPageState extends State<AddProfileLoginPage> {
+  bool disableButton = false;
   final _formKey = GlobalKey<FormState>();
   static TextEditingController email = TextEditingController(); //Create text controllers to allow for dynamic variable for form fields
   static TextEditingController password = TextEditingController();
@@ -32,6 +33,7 @@ class _AddProfileLoginPageState extends State<AddProfileLoginPage> {
     });
     if (recievedServerData["error"] == true) {
       //If there is an error, clear password and display error from server
+
       setState(() {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(recievedServerData["message"] + " : Failed to login. Please try again")));
       });
@@ -40,6 +42,7 @@ class _AddProfileLoginPageState extends State<AddProfileLoginPage> {
       if (recievedServerData["message"]["exists"] == true) {
         //If ther profile is correct and exists
         List importedProfile = recievedServerData["message"]["profile"];
+
         bool trySelect = await SetSelected.selectProfile(
             importedProfile[0], //Try select profile
             importedProfile[1],
@@ -48,6 +51,7 @@ class _AddProfileLoginPageState extends State<AddProfileLoginPage> {
         if (trySelect == false) {
           // If the profile fails to select display error
           setState(() {
+            disableButton = false;
             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Failed to select profile")));
           });
         } else {
@@ -63,8 +67,9 @@ class _AddProfileLoginPageState extends State<AddProfileLoginPage> {
             email.text = ""; //Clear email and password
             password.text = "";
             setState(() {
+              disableButton = false;
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Successflully logged in.')),
+                const SnackBar(content: Text('Successfully logged in.')),
               );
               Navigator.push(
                   context, //Go to main area
@@ -73,6 +78,7 @@ class _AddProfileLoginPageState extends State<AddProfileLoginPage> {
           } catch (e) {
             //If there is an error, display that there was an error
             setState(() {
+              disableButton = false;
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('Failed to save profile on device.')),
               );
@@ -82,6 +88,7 @@ class _AddProfileLoginPageState extends State<AddProfileLoginPage> {
       } else {
         // If the password or email is incorrect, display incorrect email or password
         setState(() {
+          disableButton = false;
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Incorrect email or password")));
         });
       }
@@ -92,7 +99,7 @@ class _AddProfileLoginPageState extends State<AddProfileLoginPage> {
     List profileList = await SQLiteLocalProfiles.getProfiles();
     bool alreadyLogged = false;
     for (int i = 0; i < (profileList.length - 1); i++) {
-      if (profileList[i]["email"].contains(email.text)) {
+      if (profileList[i]["email"] == email.text) {
         alreadyLogged = true;
       }
     }
@@ -223,8 +230,13 @@ class _AddProfileLoginPageState extends State<AddProfileLoginPage> {
                       //submit button
                       style: Theme.of(context).elevatedButtonTheme.style,
                       onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          _checkDuplicate();
+                        if (disableButton == false) {
+                          setState(() {
+                            disableButton = true;
+                          });
+                          if (_formKey.currentState!.validate()) {
+                            _checkDuplicate();
+                          }
                         }
                       },
                       child: const Text('Login to Profile'),

@@ -1,4 +1,5 @@
 import 'package:alleat/screens/navigationscreens/browse.dart';
+import 'package:alleat/widgets/navigationbar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
@@ -354,8 +355,10 @@ class _FilterSortState extends State<FilterSort> {
                   String encodedCustomiseSelected = json.encode(customiseSelected);
                   await prefs.setString('filtersort', encodedCustomiseSelected);
                   setState(() {
+                    Navigator.pop(context);
+                    Navigator.pop(context);
                     Navigator.of(context).push(
-                      MaterialPageRoute(builder: (_) => const BrowsePage()),
+                      MaterialPageRoute(builder: (_) => const Navigation()),
                     );
                   });
                 },

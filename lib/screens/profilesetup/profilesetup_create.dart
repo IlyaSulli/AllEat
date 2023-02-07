@@ -83,9 +83,11 @@ class _AddProfileCreationPageNameState extends State<AddProfileCreationPageName>
                               FilteringTextInputFormatter.allow(RegExp('[a-zA-Z0-9@,.-]'))
                             ],
                             validator: (firstname) {
-                              //Required field and uses emailvalidator package to verify it is an email to simplify the code
+                              //Required field
                               if (firstname == null || firstname.isEmpty) {
                                 return "Required";
+                              } else if (firstname.length > 50) {
+                                return "Enter a name less than 50 characters";
                               }
 
                               return null;
@@ -111,9 +113,11 @@ class _AddProfileCreationPageNameState extends State<AddProfileCreationPageName>
                               FilteringTextInputFormatter.allow(RegExp('[a-zA-Z0-9@,.-]'))
                             ],
                             validator: (lastname) {
-                              //Required field and uses emailvalidator package to verify it is an email to simplify the code
+                              //Required field
                               if (lastname == null || lastname.isEmpty) {
                                 return "Required";
+                              } else if (lastname.length > 50) {
+                                return "Enter a name less than 50 characters";
                               }
                               return null;
                             },

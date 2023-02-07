@@ -85,7 +85,6 @@ class SQLiteLocalProfiles {
 
   static Future<List<Map<String, dynamic>>> getProfiles() async {
     final db = await SQLiteLocalProfiles.db();
-    print(db.query('localprofiles', orderBy: "id"));
     return db.query('localprofiles', orderBy: "id"); //get local profiles
   }
 
