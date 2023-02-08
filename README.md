@@ -11,6 +11,9 @@ All Eat is a food delivery app developed as part of the A-Level OCR course. Deve
 - **No restaurants are appearing** - Since the app was designed to be a standalone app and not rely on other food delivery apps, the database of restaurants was made as an example, having only 10 restaurants made for the Berkhamsted, England area. The app only shows restaurants that deliver to the destination. If you wish to see the restaurants, move your delivery destination to Berkhamsted on the map.
 - **Can I trust this app?** - While the app is not malicious, it is recommended that you do not enter any valid information like a password you use or a valid email address. Never enter any valid payment cards into the app as other than the password, it is unencrypted and uses HTTP not HTTPS. For more information: [Click Here](https://www.cloudflare.com/en-gb/learning/ssl/why-is-http-not-secure/)
 
+## Building the Source Code
+If you wish to build the code for yourself, you will need to have your own API Key for the google maps functionality. Go to https://mapsplatform.google.com/ and get an API key. Then go to android/app/src/main and edit the AndroidManifest.xml.bak to be AndroidManifest.xml and replace the API KEY HERE to be the API Key.
+
 ## Documentation
 
 Pre-prototype & Prototype 1A: https://docs.google.com/document/d/1qSwBISs3bfNNDpBvJHmaDCh-OqqwEP4sYRr-8F5wsAU/edit
