@@ -427,7 +427,7 @@ class _AddProfileCreationPagePasswordState extends State<AddProfileCreationPageP
                               FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9@$&!#?]'))
                             ],
                             validator: (password) {
-                              //Required field and uses emailvalidator package to verify it is an email to simplify the code
+                              //Required field and checks length of password if it is between 8 and 99 characters
                               if (password == null || password.isEmpty) {
                                 return "Required";
                               } else if (!password.contains(RegExp(r'[0-9]')) || !password.contains(RegExp(r'[a-z]'))) {
@@ -521,6 +521,7 @@ class _AddProfileCreationPagePasswordState extends State<AddProfileCreationPageP
     });
     if (recievedServerData["error"] == true) {
       //If error, display failed to create profile and reset password fields
+      print(recievedServerData);
       setState(() {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(recievedServerData["message"] + " : Failed to create profile. Please try again")));
@@ -539,38 +540,40 @@ class _AddProfileCreationPagePasswordState extends State<AddProfileCreationPageP
           );
         });
       } else {
-        try {
-          List importedProfile = (recievedServerData["message"])["profile"];
-          await SQLiteLocalProfiles.createProfile(importedProfile[0], importedProfile[1], importedProfile[2], importedProfile[3], importedProfile[4]);
+        //try {
+        print(recievedServerData["message"]);
+        List importedProfile = (recievedServerData["message"]["profile"]);
+        print(importedProfile);
+        await SQLiteLocalProfiles.createProfile(importedProfile[0], importedProfile[1], importedProfile[2], importedProfile[3], importedProfile[4]);
 
-          bool trySelect = await SetSelected.selectProfile(
-              importedProfile[0], //Try to select profile
-              importedProfile[1],
-              importedProfile[2],
-              importedProfile[3]);
-          if (trySelect == false) {
-            setState(() {
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Failed to select profile")));
-            });
-          } else {
-            //If is able to select profile, clear password fields and go to navigation page (defaults to homepage)
-            passwordText.text = "";
-            confirmpasswordText.text = "";
-            setState(() {
-              Navigator.pop(context);
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Successflully created profile.')),
-              );
-              Navigator.push(context, MaterialPageRoute(builder: (context) => const Navigation()));
-            });
-          }
-        } catch (e) {
-          // If error, display error
+        bool trySelect = await SetSelected.selectProfile(
+            importedProfile[0], //Try to select profile
+            importedProfile[1],
+            importedProfile[2],
+            importedProfile[3]);
+        if (trySelect == false) {
           setState(() {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("ERROR: $e")));
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Failed to select profile")));
+          });
+        } else {
+          //If is able to select profile, clear password fields and go to navigation page (defaults to homepage)
+          passwordText.text = "";
+          confirmpasswordText.text = "";
+          setState(() {
+            Navigator.pop(context);
+            Navigator.pop(context);
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Successflully created profile.')),
+            );
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const Navigation()));
           });
         }
+        // } catch (e) {
+        //   // If error, display error
+        //   setState(() {
+        //     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("ERROR: $e")));
+        //   });
+        // }
       }
     }
   }

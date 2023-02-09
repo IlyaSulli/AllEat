@@ -51,8 +51,8 @@ class _SelectLocationState extends State<SelectLocation> {
     try {
       await SQLiteCartItems.clearCart();
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setDouble('locationLatitude', cameraPosition.target.latitude);
-      await prefs.setDouble('locationLongitude', cameraPosition.target.longitude);
+      await prefs.setDouble('locationLatitude', cameraPosition.target.latitude.toDouble());
+      await prefs.setDouble('locationLongitude', cameraPosition.target.longitude.toDouble());
       await prefs.setStringList('locationPlacemark', <String>[addresslineone.text, addresslinetwo.text, city.text, postcode.text]);
 
       return true;
@@ -140,7 +140,6 @@ class _SelectLocationState extends State<SelectLocation> {
         }
         if (snapshot.hasData) {
           var savedPosition = snapshot.data ?? [];
-
           CameraPosition cameraPosition = CameraPosition(target: LatLng(savedPosition[0], savedPosition[1]), zoom: 19);
           return Stack(
             alignment: Alignment.topCenter,
@@ -168,6 +167,12 @@ class _SelectLocationState extends State<SelectLocation> {
                       initialCameraPosition: cameraPosition,
                       onMapCreated: (GoogleMapController controller) {
                         _controller.complete(controller);
+                        controller.animateCamera(CameraUpdate.newCameraPosition(
+                          CameraPosition(
+                            target: LatLng(savedPosition[0], savedPosition[1]),
+                            zoom: 18,
+                          ),
+                        ));
                       },
                       onCameraMoveStarted: () {
                         // notify map is moving
