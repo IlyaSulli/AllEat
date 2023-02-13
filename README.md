@@ -24,7 +24,7 @@ Prototype 2: https://docs.google.com/document/d/1hzStvex3392VNqWgk1splfH5_jMYp9-
 
 Prototype 3: https://docs.google.com/document/d/1qbCiSld-ubUC7P6fJnEctjfQqLSKKBqsXGeqrCcA8-4/edit
 
-Final Code: *COMING SOON*
+Full Documentation: COMING SOON
 
 ## Credits
 
