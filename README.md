@@ -16,15 +16,7 @@ If you wish to build the code for yourself, you will need to have your own API K
 
 ## Documentation
 
-Pre-prototype & Prototype 1A: https://docs.google.com/document/d/1qSwBISs3bfNNDpBvJHmaDCh-OqqwEP4sYRr-8F5wsAU/edit
-
-Prototype 1B: https://docs.google.com/document/d/1somHT_j4UgcCpapECmO0GAGShc6dlx7MeBySGX69sIg/edit
-
-Prototype 2: https://docs.google.com/document/d/1hzStvex3392VNqWgk1splfH5_jMYp9-h-LUl9WkYxuc/edit
-
-Prototype 3: https://docs.google.com/document/d/1qbCiSld-ubUC7P6fJnEctjfQqLSKKBqsXGeqrCcA8-4/edit
-
-Full Documentation: COMING SOON
+Full Documentation: https://drive.google.com/file/d/1vpQXmp_2L-R1-dW4Bfuu9QxGUybPQ2oG/view
 
 ## Credits
 
