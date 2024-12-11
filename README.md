@@ -16,7 +16,7 @@ If you wish to build the code for yourself, you will need to have your own API K
 
 ## Documentation
 
-Full Documentation: https://drive.google.com/file/d/10cTw0lEe5xnIoMcSPZ0twXlR7QbYGoXM/preview
+Full Documentation: [View PDF Here](https://github.com/IlyaSulli/AllEat/blob/main/Documentation/All%20Eat.%20-%20A%20Computer%20Science%20Project_compressed.pdf)
 
 ## Credits
 
